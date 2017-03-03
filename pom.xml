@@ -91,6 +91,12 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+		<repository>
+			<id>snapshots-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases><enabled>false</enabled></releases>
+			<snapshots><enabled>true</enabled></snapshots>
+		</repository>
     </repositories>
 
 	<build>
@@ -1032,7 +1038,23 @@
 
 
 	<dependencies>
-	
+
+        <!-- Emma -->
+        <dependency>
+            <groupId>org.emmalanguage</groupId>
+            <artifactId>emma-language</artifactId>
+            <version>0.2-SNAPSHOT</version>
+        </dependency>
+
+		<!-- Emma (test jars) -->
+		<dependency>
+			<groupId>org.emmalanguage</groupId>
+			<artifactId>emma-language</artifactId>
+			<version>0.2-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- For GPU backend
 			Use org.mystic:mavenized-jcuda until Alan puts org.jcuda:*
 		 -->
@@ -1249,6 +1271,16 @@
 			<artifactId>scalap</artifactId>
 			<version>${scala.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-compiler</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-reflect</artifactId>
+			<version>${scala.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scalatest</groupId>

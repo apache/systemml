@@ -40,7 +40,7 @@ import org.apache.spark.sql.types.StructType;
 import org.apache.sysml.api.mlcontext.FrameFormat;
 import org.apache.sysml.api.mlcontext.FrameMetadata;
 import org.apache.sysml.api.mlcontext.MLContext;
-import org.apache.sysml.api.mlcontext.Matrix;
+import org.apache.sysml.api.linalg.Matrix;
 import org.apache.sysml.api.mlcontext.Script;
 import org.apache.sysml.conf.ConfigurationManager;
 import org.apache.sysml.parser.Expression.ValueType;

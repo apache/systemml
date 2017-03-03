@@ -19,6 +19,9 @@
 
 package org.apache.sysml.api.mlcontext;
 
+import java.lang.Boolean;
+import java.lang.Double;
+import java.lang.Long;
 import java.util.Set;
 
 import org.apache.spark.api.java.JavaRDD;
@@ -60,6 +63,8 @@ import scala.Tuple6;
 import scala.Tuple7;
 import scala.Tuple8;
 import scala.Tuple9;
+import scala.Option;
+import org.apache.sysml.api.linalg.Matrix;
 
 /**
  * MLResults handles the results returned from executing a Script using the
@@ -473,7 +478,8 @@ public class MLResults {
 	 */
 	public Matrix getMatrix(String outputName) {
 		MatrixObject mo = getMatrixObject(outputName);
-		return new Matrix(mo, sparkExecutionContext);
+		//return new Matrix(mo, sparkExecutionContext);
+		return new Matrix((int) mo.getNumRows(), (int) mo.getNumColumns(), Option.apply(mo), Option.apply(sparkExecutionContext), Option.<double[]>empty());
 	}
 
 	/**

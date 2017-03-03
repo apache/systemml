@@ -47,6 +47,7 @@ import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
+import org.apache.sysml.api.linalg.Matrix;
 import org.apache.sysml.conf.CompilerConfig;
 import org.apache.sysml.conf.CompilerConfig.ConfigType;
 import org.apache.sysml.conf.ConfigurationManager;
@@ -90,8 +91,8 @@ public final class MLContextUtil {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static final Class[] COMPLEX_DATA_TYPES = { JavaRDD.class, RDD.class, Dataset.class,
-			BinaryBlockMatrix.class, BinaryBlockFrame.class, Matrix.class, Frame.class, (new double[][] {}).getClass(),
-			MatrixBlock.class, URL.class };
+			BinaryBlockMatrix.class, BinaryBlockFrame.class, Frame.class, (new double[][] {}).getClass(),
+			MatrixBlock.class, URL.class, org.apache.sysml.api.linalg.Matrix.class };
 
 	/**
 	 * All data types supported by the MLContext API

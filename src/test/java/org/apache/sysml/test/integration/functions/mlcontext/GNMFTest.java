@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -39,7 +39,7 @@ import org.apache.sysml.api.DMLScript;
 import org.apache.sysml.api.DMLScript.RUNTIME_PLATFORM;
 import org.apache.sysml.api.mlcontext.MLContext;
 import org.apache.sysml.api.mlcontext.MLResults;
-import org.apache.sysml.api.mlcontext.Matrix;
+import org.apache.sysml.api.linalg.Matrix;
 import org.apache.sysml.api.mlcontext.MatrixFormat;
 import org.apache.sysml.api.mlcontext.MatrixMetadata;
 import org.apache.sysml.api.mlcontext.Script;
@@ -67,12 +67,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(value = Parameterized.class)
-public class GNMFTest extends AutomatedTestBase 
+public class GNMFTest extends AutomatedTestBase
 {
 	private final static String TEST_DIR = "applications/gnmf/";
 	private final static String TEST_NAME = "GNMF";
 	private final static String TEST_CLASS_DIR = TEST_DIR + GNMFTest.class.getSimpleName() + "/";
-	
+
 	int numRegisteredInputs;
 	int numRegisteredOutputs;
 
@@ -100,24 +100,24 @@ public class GNMFTest extends AutomatedTestBase
 	   Object[][] data = new Object[][] { { 0, 0 }, { 3, 2 }, { 2, 2 }, { 2, 1 }, { 2, 0 }, { 3, 0 }};
 	   return Arrays.asList(data);
 	 }
-	 
+
 	@Override
 	public void setUp() {
 		addTestConfiguration(TEST_CLASS_DIR, TEST_NAME);
 	}
-	
+
 	@Test
 	public void testGNMFWithRDMLAndJava() throws IOException, DMLException, ParseException {
 		System.out.println("------------ BEGIN " + TEST_NAME + " TEST {" + numRegisteredInputs + ", "
 				+ numRegisteredOutputs + "} ------------");
 		this.scriptType = ScriptType.DML;
-		
+
 		int m = 2000;
 		int n = 1500;
 		int k = 50;
 		int maxiter = 2;
 		double Eps = Math.pow(10, -8);
-		
+
 		getAndLoadTestConfiguration(TEST_NAME);
 
 		List<String> proArgs = new ArrayList<String>();
@@ -128,9 +128,9 @@ public class GNMFTest extends AutomatedTestBase
 		proArgs.add(output("w"));
 		proArgs.add(output("h"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
-		
+
 		fullDMLScriptName = getScript();
-		
+
 		rCmd = getRCmd(inputDir(), Integer.toString(maxiter), expectedDir());
 
 		double[][] v = getRandomMatrix(m, n, 1, 5, 0.2, System.currentTimeMillis());
@@ -162,12 +162,12 @@ public class GNMFTest extends AutomatedTestBase
 				}
 			}
 		}
-		
-		boolean oldConfig = DMLScript.USE_LOCAL_SPARK_CONFIG; 
+
+		boolean oldConfig = DMLScript.USE_LOCAL_SPARK_CONFIG;
 		DMLScript.USE_LOCAL_SPARK_CONFIG = true;
 		RUNTIME_PLATFORM oldRT = DMLScript.rtplatform;
-		
-		try 
+
+		try
 		{
 			DMLScript.rtplatform = RUNTIME_PLATFORM.HYBRID_SPARK;
 
@@ -183,37 +183,37 @@ public class GNMFTest extends AutomatedTestBase
 				MatrixMetadata mm = new MatrixMetadata(MatrixFormat.IJV, m, n);
 				script.in("V", vIn, mm);
 			}
-			
+
 			if(numRegisteredInputs >= 2) {
 				JavaRDD<String> wIn = sc.sc().textFile(input("w"), 2).toJavaRDD();
 				MatrixMetadata mm = new MatrixMetadata(MatrixFormat.IJV, m, k);
 				script.in("W", wIn, mm);
 			}
-			
+
 			if(numRegisteredInputs >= 3) {
 				JavaRDD<String> hIn = sc.sc().textFile(input("h"), 2).toJavaRDD();
 				MatrixMetadata mm = new MatrixMetadata(MatrixFormat.IJV, k, n);
 				script.in("H", hIn, mm);
 			}
-			
+
 			// Output one matrix to HDFS and get one as RDD
 			if(numRegisteredOutputs >= 1) {
 				script.out("H");
 			}
-			
+
 			if(numRegisteredOutputs >= 2) {
 				script.out("W");
 				ml.setConfigProperty("cp.parallel.matrixmult", "false");
 			}
-			
+
 			MLResults results = ml.execute(script);
-			
+
 			if(numRegisteredOutputs >= 2) {
 				String configStr = ConfigurationManager.getDMLConfig().getConfigInfo();
 				if(configStr.contains("cp.parallel.matrixmult: true"))
 					Assert.fail("Configuration not updated via setConfig");
 			}
-			
+
 			if(numRegisteredOutputs >= 1) {
 				RDD<String> hOut = results.getRDDStringIJV("H");
 				String fName = output("h");
@@ -224,7 +224,7 @@ public class GNMFTest extends AutomatedTestBase
 				}
 				hOut.saveAsTextFile(fName);
 			}
-			
+
 			if(numRegisteredOutputs >= 2) {
 				JavaRDD<String> javaRDDStringIJV = results.getJavaRDDStringIJV("W");
 				JavaRDD<MatrixEntry> matRDD = javaRDDStringIJV.map(new StringToMatrixEntry());
@@ -234,7 +234,7 @@ public class GNMFTest extends AutomatedTestBase
 				CoordinateMatrix coordinateMatrix = new CoordinateMatrix(matRDD.rdd(), mcW.getRows(), mcW.getCols());
 				JavaPairRDD<MatrixIndexes, MatrixBlock> binaryRDD = RDDConverterUtilsExt.coordinateMatrixToBinaryBlock(sc, coordinateMatrix, mcW, true);
 				JavaRDD<String> wOut = RDDConverterUtils.binaryBlockToTextCell(binaryRDD, mcW);
-				
+
 				String fName = output("w");
 				try {
 					MapReduceTool.deleteFileIfExistOnHDFS( fName );
@@ -243,7 +243,7 @@ public class GNMFTest extends AutomatedTestBase
 				}
 				wOut.saveAsTextFile(fName);
 			}
-			
+
 			runRScript(true);
 
 			//compare matrices
@@ -259,7 +259,7 @@ public class GNMFTest extends AutomatedTestBase
 			DMLScript.USE_LOCAL_SPARK_CONFIG = oldConfig;
 		}
 	}
-	
+
 	@After
 	public void tearDown() {
 		super.tearDown();
@@ -277,7 +277,7 @@ public class GNMFTest extends AutomatedTestBase
 		ml.close();
 		ml = null;
 	}
-	
+
 	public static class StringToMatrixEntry implements Function<String, MatrixEntry> {
 
 		private static final long serialVersionUID = 7456391906436606324L;
@@ -288,12 +288,12 @@ public class GNMFTest extends AutomatedTestBase
 			if(elem.length != 3) {
 				throw new Exception("Expected text entry but got: " + str);
 			}
-			
+
 			long row = Long.parseLong(elem[0]);
 			long col = Long.parseLong(elem[1]);
 			double value = Double.parseDouble(elem[2]);
 			return new MatrixEntry(row, col, value);
 		}
-		
+
 	}
 }

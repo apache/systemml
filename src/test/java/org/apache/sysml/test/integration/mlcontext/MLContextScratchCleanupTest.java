@@ -28,7 +28,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.sysml.api.DMLScript;
 import org.apache.sysml.api.DMLScript.RUNTIME_PLATFORM;
 import org.apache.sysml.api.mlcontext.MLContext;
-import org.apache.sysml.api.mlcontext.Matrix;
+import org.apache.sysml.api.linalg.Matrix;
 import org.apache.sysml.api.mlcontext.Script;
 import org.apache.sysml.runtime.controlprogram.context.SparkExecutionContext;
 import org.apache.sysml.test.integration.AutomatedTestBase;

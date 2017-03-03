@@ -1,0 +1,1017 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+title,abstract,categories,created,id,year
+"Towards Microservices and Beyond: An incoming Paradigm Shift in
+  Distributed Computing","The microservice architecture is a style inspired by service-oriented
+computing that has recently started gaining popularity and that promises to
+change the way in which software is perceived, conceived and designed. In this
+paper we offer a short overview intended as a collection of bibliographic
+references and links in the field of Microservices Science and Engineering
+(MSE).",['cs.SE'],2016-10-06,1610.01778,2016
+Discriminative Information Retrieval for Knowledge Discovery,"We propose a framework for discriminative Information Retrieval (IR) atop
+linguistic features, trained to improve the recall of tasks such as answer
+candidate passage retrieval, the initial step in text-based Question Answering
+(QA). We formalize this as an instance of linear feature-based IR (Metzler and
+Croft, 2007), illustrating how a variety of knowledge discovery tasks are
+captured under this approach, leading to a 44% improvement in recall for
+candidate triage for QA.",['cs.IR'],2016-10-06,1610.01901,2016
+"Downlink Coordinated Joint Transmission for Mutual Information
+  Accumulation","In this letter, we propose a new coordinated multipoint (CoMP) technique
+based on mutual information (MI) accumulation using rateless codes. Using a
+stochastic geometry model for the cellular downlink, we quantify the
+performance enhancements in coverage probability and rate due to MI
+accumulation. By simulation and analysis, we show that MI accumulation using
+rateless codes leads to remarkable improvements in coverage and rate for
+general users and specific cell edge users.","['cs.IT', 'math.IT']",2016-10-06,1610.01897,2016
+Distributed Nash Equilibrium Seeking By Gossip in Games on Graphs,"We consider a gossip approach for finding a Nash equilibrium in a distributed
+multi-player network game. We extend previous results on Nash equilibrium
+seeking to the case when the players' cost functions may be affected by the
+actions of any subset of players. An interference graph is employed to
+illustrate the partially-coupled cost functions and the asymmetric information
+requirements. For a given interference graph, we design a generalized
+communication graph so that players with possibly partially-coupled cost
+functions exchange only their required information and make decisions based on
+them. Using a set of standard assumptions on the cost functions, interference
+and communication graphs, we prove almost sure convergence to a Nash
+equilibrium for diminishing step sizes. We then quantify the effect of the
+second largest eigenvalue of the expected communication matrix on the
+convergence rate, and illustrate the trade-off between the parameters
+associated with the communication and the interference graphs. Finally, the
+efficacy of the proposed algorithm on a large-scale networked game is
+demonstrated via simulation.","['cs.SY', 'cs.GT']",2016-10-06,1610.01896,2016
+"A New Data Representation Based on Training Data Characteristics to
+  Extract Drug Named-Entity in Medical Text","One essential task in information extraction from the medical corpus is drug
+name recognition. Compared with text sources come from other domains, the
+medical text is special and has unique characteristics. In addition, the
+medical text mining poses more challenges, e.g., more unstructured text, the
+fast growing of new terms addition, a wide range of name variation for the same
+drug. The mining is even more challenging due to the lack of labeled dataset
+sources and external knowledge, as well as multiple token representations for a
+single drug name that is more common in the real application setting. Although
+many approaches have been proposed to overwhelm the task, some problems
+remained with poor F-score performance (less than 0.75). This paper presents a
+new treatment in data representation techniques to overcome some of those
+challenges. We propose three data representation techniques based on the
+characteristics of word distribution and word similarities as a result of word
+embedding training. The first technique is evaluated with the standard NN
+model, i.e., MLP (Multi-Layer Perceptrons). The second technique involves two
+deep network classifiers, i.e., DBN (Deep Belief Networks), and SAE (Stacked
+Denoising Encoders). The third technique represents the sentence as a sequence
+that is evaluated with a recurrent NN model, i.e., LSTM (Long Short Term
+Memory). In extracting the drug name entities, the third technique gives the
+best F-score performance compared to the state of the art, with its average
+F-score being 0.8645.","['cs.CL', 'cs.AI', 'cs.LG', 'cs.NE']",2016-10-06,1610.01891,2016
+Neural-based Noise Filtering from Word Embeddings,"Word embeddings have been demonstrated to benefit NLP tasks impressively.
+Yet, there is room for improvement in the vector representations, because
+current word embeddings typically contain unnecessary information, i.e., noise.
+We propose two novel models to improve word embeddings by unsupervised
+learning, in order to yield word denoising embeddings. The word denoising
+embeddings are obtained by strengthening salient information and weakening
+noise in the original word embeddings, based on a deep feed-forward neural
+network filter. Results from benchmark tasks show that the filtered word
+denoising embeddings outperform the original word embeddings.",['cs.CL'],2016-10-06,1610.01874,2016
+On Equivalent Color Transform and Four Coloring Theorem,"In this paper, we apply an equivalent color transform (ECT) for a minimal
+$k$-coloring of any graph $G$. It contracts each color class of the graph to a
+single vertex and produces a complete graph $K_k$ for $G$ by removing redundant
+edges between any two vertices. Based on ECT, a simple proof for four color
+theorem for planar graph is then proposed.",['cs.DS'],2016-10-06,1610.01865,2016
+Distortion Varieties,"The distortion varieties of a given projective variety are parametrized by
+duplicating coordinates and multiplying them with monomials. We study their
+degrees and defining equations. Exact formulas are obtained for the case of
+one-parameter distortions. These are based on Chow polytopes and Gr\""obner
+bases. Multi-parameter distortions are studied using tropical geometry. The
+motivation for distortion varieties comes from multi-view geometry in computer
+vision. Our theory furnishes a new framework for formulating and solving
+minimal problems for camera models with image distortion.","['math.AG', 'cs.CV']",2016-10-06,1610.01860,2016
+"A Robust Framework for Classifying Evolving Document Streams in an
+  Expert-Machine-Crowd Setting","An emerging challenge in the online classification of social media data
+streams is to keep the categories used for classification up-to-date. In this
+paper, we propose an innovative framework based on an Expert-Machine-Crowd
+(EMC) triad to help categorize items by continuously identifying novel concepts
+in heterogeneous data streams often riddled with outliers. We unify constrained
+clustering and outlier detection by formulating a novel optimization problem:
+COD-Means. We design an algorithm to solve the COD-Means problem and show that
+COD-Means will not only help detect novel categories but also seamlessly
+discover human annotation errors and improve the overall quality of the
+categorization process. Experiments on diverse real data sets demonstrate that
+our approach is both effective and efficient.","['cs.CL', 'cs.IR']",2016-10-06,1610.01858,2016
+"Do They All Look the Same? Deciphering Chinese, Japanese and Koreans by
+  Fine-Grained Deep Learning","We study to what extend Chinese, Japanese and Korean faces can be classified
+and which facial attributes offer the most important cues. First, we propose a
+novel way of obtaining large numbers of facial images with nationality labels.
+Then we train state-of-the-art neural networks with these labeled images. We
+are able to achieve an accuracy of 75.03% in the classification task, with
+chances being 33.33% and human accuracy 38.89% . Further, we train multiple
+facial attribute classifiers to identify the most distinctive features for each
+group. We find that Chinese, Japanese and Koreans do exhibit substantial
+differences in certain attributes, such as bangs, smiling, and bushy eyebrows.
+Along the way, we uncover several gender-related cross-country patterns as
+well. Our work, which complements existing APIs such as Microsoft Cognitive
+Services and Face++, could find potential applications in tourism, e-commerce,
+social media marketing, criminal justice and even counter-terrorism.",['cs.CV'],2016-10-06,1610.01854,2016
+"What are teachers interested in toward educational examples? A study of
+  trainees' use of video-enhanced resources","This article reports on a case study on teachers' video-enhanced education.
+Considering the fact that video exemplification is a thriving practice in the
+field although there is little consensus in the literature regarding its
+instructional issues, it seems appropriate to focus on the activity carried out
+by teachers in video-enhanced devices in order to identify promising
+characteristics (nature of the examples, types of associations between them,
+documentation methods, organization and scenarization, etc.). This study
+involved six trainees who used, during two sessions of 45 minutes, a digital
+device based on a "" pedagogy of typical professional paths "" (Durand, 2014; Ria
+\& Leblanc, 2011). The goal was to better understand their use of video
+exemplification and sense-making. The results indicate that student teachers
+(i) preferentially target resources about ""economic rules""; (ii) plebiscite
+classroom situations, always consulted; (iii) are particularly interested (even
+if they are sometimes disappointed) in the experts' testimonies; (iv) initially
+show a distrust toward resources assumed to be theoretical; (v) get gradually
+interested in these resources during the second session. We conclude with
+several empirical and technological prospects for the design of video-enhanced
+devices for teacher induction.",['cs.CY'],2016-10-06,1610.01838,2016
+Epiphany-V: A 1024 processor 64-bit RISC System-On-Chip,"This paper describes the design of a 1024-core processor chip in 16nm FinFet
+technology. The chip (""Epiphany-V"") contains an array of 1024 64-bit RISC
+processors, 64MB of on-chip SRAM, three 136-bit wide mesh Networks-On-Chip, and
+1024 programmable IO pins. The chip has taped out and is being manufactured by
+TSMC.
+  This research was developed with funding from the Defense Advanced Research
+Projects Agency (DARPA). The views, opinions and/or findings expressed are
+those of the author and should not be interpreted as representing the official
+views or policies of the Department of Defense or the U.S. Government.",['cs.AR'],2016-10-06,1610.01832,2016
+Parallel Large-Scale Attribute Reduction on Cloud Systems,"The rapid growth of emerging information technologies and application
+patterns in modern society, e.g., Internet, Internet of Things, Cloud Computing
+and Tri-network Convergence, has caused the advent of the era of big data. Big
+data contains huge values, however, mining knowledge from big data is a
+tremendously challenging task because of data uncertainty and inconsistency.
+Attribute reduction (also known as feature selection) can not only be used as
+an effective preprocessing step, but also exploits the data redundancy to
+reduce the uncertainty. However, existing solutions are designed 1) either for
+a single machine that means the entire data must fit in the main memory and the
+parallelism is limited; 2) or for the Hadoop platform which means that the data
+have to be loaded into the distributed memory frequently and therefore become
+inefficient. In this paper, we overcome these shortcomings for maximum
+efficiency possible, and propose a unified framework for Parallel Large-scale
+Attribute Reduction, termed PLAR, for big data analysis. PLAR consists of three
+components: 1) Granular Computing (GrC)-based initialization: it converts a
+decision table (i.e., original data representation) into a granularity
+representation which reduces the amount of space and hence can be easily cached
+in the distributed memory: 2) model-parallelism: it simultaneously evaluates
+all feature candidates and makes attribute reduction highly parallelizable; 3)
+data-parallelism: it computes the significance of an attribute in parallel
+using a MapReduce-style manner. We implement PLAR with four representative
+heuristic feature selection algorithms on Spark, and evaluate them on various
+huge datasets, including UCI and astronomical datasets, finding our method's
+advantages beyond existing solutions.","['cs.DC', 'cs.AI']",2016-10-06,1610.01807,2016
+Searching Scenes by Abstracting Things,"In this paper we propose to represent a scene as an abstraction of 'things'.
+We start from 'things' as generated by modern object proposals, and we
+investigate their immediately observable properties: position, size, aspect
+ratio and color, and those only. Where the recent successes and excitement of
+the field lie in object identification, we represent the scene composition
+independent of object identities. We make three contributions in this work.
+First, we study simple observable properties of 'things', and call it things
+syntax. Second, we propose translating the things syntax in linguistic abstract
+statements and study their descriptive effect to retrieve scenes. Thirdly, we
+propose querying of scenes with abstract block illustrations and study their
+effectiveness to discriminate among different types of scenes. The benefit of
+abstract statements and block illustrations is that we generate them directly
+from the images, without any learning beforehand as in the standard attribute
+learning. Surprisingly, we show that even though we use the simplest of
+features from 'things' layout and no learning at all, we can still retrieve
+scenes reasonably well.",['cs.CV'],2016-10-06,1610.01801,2016
+"A Joint Detection-Classification Model for Audio Tagging of Weakly
+  Labelled Data","Audio tagging aims to assign one or several tags to an audio clip. Most of
+the datasets are weakly labelled, which means only the tags of the clip are
+known, without knowing the occurrence time of the tags. The labeling of an
+audio clip is often based on the audio events in the clip and no event level
+label is provided to the user. Previous works have used the bag of frames model
+assume the tags occur all the time, which is not the case in practice. We
+propose a joint detection-classification (JDC) model to detect and classify the
+audio clip simultaneously. The JDC model has the ability to attend to
+informative and ignore uninformative sounds. Then only informative regions are
+used for classification. Experimental results on the ""CHiME Home"" dataset show
+that the JDC model reduces the equal error rate (EER) from 19.0% to 16.9%. More
+interestingly, the audio event detector is trained successfully without needing
+the event level label.",['cs.SD'],2016-10-06,1610.01797,2016
+"Multiple Regularizations Deep Learning for Paddy Growth Stages
+  Classification from LANDSAT-8","This study uses remote sensing technology that can provide information about
+the condition of the earth's surface area, fast, and spatially. The study area
+was in Karawang District, lying in the Northern part of West Java-Indonesia. We
+address a paddy growth stages classification using LANDSAT 8 image data
+obtained from multi-sensor remote sensing image taken in October 2015 to August
+2016. This study pursues a fast and accurate classification of paddy growth
+stages by employing multiple regularizations learning on some deep learning
+methods such as DNN (Deep Neural Networks) and 1-D CNN (1-D Convolutional
+Neural Networks). The used regularizations are Fast Dropout, Dropout, and Batch
+Normalization. To evaluate the effectiveness, we also compared our method with
+other machine learning methods such as (Logistic Regression, SVM, Random
+Forest, and XGBoost). The data used are seven bands of LANDSAT-8 spectral data
+samples that correspond to paddy growth stages data obtained from i-Sky (eye in
+the sky) Innovation system. The growth stages are determined based on paddy
+crop phenology profile from time series of LANDSAT-8 images. The classification
+results show that MLP using multiple regularization Dropout and Batch
+Normalization achieves the highest accuracy for this dataset.","['cs.CV', 'cs.NE']",2016-10-06,1610.01795,2016
+Predicting encounter and colocation events in metropolitan areas,"Despite an extensive literature has been devoted to mine and model mobility
+features, forecasting where, when and whom people will encounter/colocate still
+deserve further research efforts. Forecasting people's encounter and colocation
+features is the key point for the success of many applications ranging from
+epidemiology to the design of new networking paradigms and services such as
+delay tolerant and opportunistic networks. While many algorithms which rely on
+both mobility and social information have been proposed, we propose a novel
+encounter and colocation predictive model which predicts user's encounter and
+colocation events and their features by exploiting the spatio-temporal
+regularity in the history of these events. We adopt weighted features Bayesian
+predictor and evaluate its accuracy on two large scales WiFi and cellular
+datasets. Results show that our approach could improve prediction accuracy
+w.r.t standard naive Bayesian and some of the state-of-the-art predictors.",['cs.SI'],2016-10-06,1610.01790,2016
+A Survey and Measurement Study of GPU DVFS on Energy Conservation,"Energy efficiency has become one of the top design criteria for current
+computing systems. The dynamic voltage and frequency scaling (DVFS) has been
+widely adopted by laptop computers, servers, and mobile devices to conserve
+energy, while the GPU DVFS is still at a certain early age. This paper aims at
+exploring the impact of GPU DVFS on the application performance and power
+consumption, and furthermore, on energy conservation. We survey the
+state-of-the-art GPU DVFS characterizations, and then summarize recent research
+works on GPU power and performance models. We also conduct real GPU DVFS
+experiments on NVIDIA Fermi and Maxwell GPUs. According to our experimental
+results, GPU DVFS has significant potential for energy saving. The effect of
+scaling core voltage/frequency and memory voltage/frequency depends on not only
+the GPU architectures, but also the characteristic of GPU applications.",['cs.DC'],2016-10-06,1610.01784,2016
+"Referral-Embedded Provision Point Mechanisms for Crowdfunding of Public
+  Projects","Civic Crowdfunding is emerging as a popular means to mobilize funding from
+citizens for public projects. A popular mechanism deployed on civic
+crowdfunding platforms is a provision point mechanism, wherein, the total
+contributions must reach a predetermined threshold in order for the project to
+be provisioned (undertaken). Such a mechanism may have multiple equilibria;
+unfortunately, in many of these equilibria, the project is not funded even if
+it is highly valued among the agents. Recent work has proposed mechanisms with
+refund bonuses where the project gets funded in equilibrium if its net value is
+higher than a threshold among the agents who are aware of the crowdfunding
+effort. In this paper, we formalize the notion of social desirability of a
+public project and propose mechanisms which use the idea of referrals to expand
+the pool of participants and achieve an equilibrium in which the project gets
+funded if its net value exceeds a threshold among the entire agent population.
+We call this new class of mechanisms Referral-Embedded Provision Point
+Mechanisms (REPPM). We specifically propose two variants of REPPM and both
+these mechanisms have the remarkable property that, at equilibrium, referral
+bonuses are offered but there is no need for actual payment of these bonuses.
+We establish that any given agent's equilibrium strategy is to refer other
+agents and to contribute in proportion to the agent's true value for the
+project. By referring others to contribute, an agent can, in fact, reduce his
+equilibrium contribution. In our view, the proposed mechanisms will lead to an
+increase in the number of projects that are funded on civic crowdfunding
+platforms.",['cs.GT'],2016-10-06,1610.01768,2016
+"Ischemic Stroke Identification Based on EEG and EOG using 1D
+  Convolutional Neural Network and Batch Normalization","In 2015, stroke was the number one cause of death in Indonesia. The majority
+type of stroke is ischemic. The standard tool for diagnosing stroke is CT-Scan.
+For developing countries like Indonesia, the availability of CT-Scan is very
+limited and still relatively expensive. Because of the availability, another
+device that potential to diagnose stroke in Indonesia is EEG. Ischemic stroke
+occurs because of obstruction that can make the cerebral blood flow (CBF) on a
+person with stroke has become lower than CBF on a normal person (control) so
+that the EEG signal have a deceleration. On this study, we perform the ability
+of 1D Convolutional Neural Network (1DCNN) to construct classification model
+that can distinguish the EEG and EOG stroke data from EEG and EOG control data.
+To accelerate training process our model we use Batch Normalization. Involving
+62 person data object and from leave one out the scenario with five times
+repetition of measurement we obtain the average of accuracy 0.86 (F-Score
+0.861) only at 200 epoch. This result is better than all over shallow and
+popular classifiers as the comparator (the best result of accuracy 0.69 and
+F-Score 0.72 ). The feature used in our study were only 24 handcrafted feature
+with simple feature extraction process.","['cs.LG', 'cs.NE']",2016-10-06,1610.01757,2016
+A general lower bound for collaborative tree exploration,"We consider collaborative graph exploration with a set of $k$ agents. All
+agents start at a common vertex of an initially unknown graph and need to
+collectively visit all other vertices. We assume agents are deterministic,
+vertices are distinguishable, moves are simultaneous, and we allow agents to
+communicate globally. For this setting, we give the first non-trivial lower
+bounds that bridge the gap between small ($k \leq \sqrt n$) and large ($k \geq
+n$) teams of agents. Remarkably, our bounds tightly connect to existing results
+in both domains.
+  First, we significantly extend a lower bound of $\Omega(\log k / \log\log k)$
+by Dynia et al. on the competitive ratio of a collaborative tree exploration
+strategy to the range $k \leq n \log^c n$ for any $c \in \mathbb{N}$. Second,
+we provide a tight lower bound on the number of agents needed for any
+competitive exploration algorithm. In particular, we show that any
+collaborative tree exploration algorithm with $k = Dn^{1+o(1)}$ agents has a
+competitive ratio of $\omega(1)$, while Dereniowski et al. gave an algorithm
+with $k = Dn^{1+\varepsilon}$ agents and competitive ratio $O(1)$, for any
+$\varepsilon > 0$ and with $D$ denoting the diameter of the graph. Lastly, we
+show that, for any exploration algorithm using $k = n$ agents, there exist
+trees of arbitrarily large height $D$ that require $\Omega(D^2)$ rounds, and we
+provide a simple algorithm that matches this bound for all trees.","['cs.DM', 'cs.DS']",2016-10-06,1610.01753,2016
+"Variable-Length Coding with Cost Allowing Non-Vanishing Error
+  Probability","We derive a general formula of the minimum achievable rate for
+fixed-to-variable length coding with a regular cost function by allowing the
+error probability up to a constant $\varepsilon$. For a fixed-to-variable
+length code, we call the set of source sequences that can be decoded without
+error the dominant set of source sequences. For any two regular cost functions,
+it is revealed that the dominant set of source sequences for a code attaining
+the minimum achievable rate with a cost function is also the dominant set for a
+code attaining the minimum achievable rate with the other cost function. We
+also give a general formula of the second-order minimum achievable rate.","['cs.IT', 'math.IT']",2016-10-06,1610.01749,2016
+"Combining Generative and Discriminative Neural Networks for Sleep Stages
+  Classification","Sleep stages pattern provides important clues in diagnosing the presence of
+sleep disorder. By analyzing sleep stages pattern and extracting its features
+from EEG, EOG, and EMG signals, we can classify sleep stages. This study
+presents a novel classification model for predicting sleep stages with a high
+accuracy. The main idea is to combine the generative capability of Deep Belief
+Network (DBN) with a discriminative ability and sequence pattern recognizing
+capability of Long Short-term Memory (LSTM). We use DBN that is treated as an
+automatic higher level features generator. The input to DBN is 28 ""handcrafted""
+features as used in previous sleep stages studies. We compared our method with
+other techniques which combined DBN with Hidden Markov Model (HMM).In this
+study, we exploit the sequence or time series characteristics of sleep dataset.
+To the best of our knowledge, most of the present sleep analysis from
+polysomnogram relies only on single instanced label (nonsequence) for
+classification. In this study, we used two datasets: an open data set that is
+treated as a benchmark; the other dataset is our sleep stages dataset
+(available for download) to verify the results further. Our experiments showed
+that the combination of DBN with LSTM gives better overall accuracy 98.75\%
+(Fscore=0.9875) for benchmark dataset and 98.94\% (Fscore=0.9894) for MKG
+dataset. This result is better than the state of the art of sleep stages
+classification that was 91.31\%.","['cs.LG', 'cs.NE']",2016-10-06,1610.01741,2016
+Computer Network Defense Through Radial Wave Functions,"The purpose of this research was to synthesize basic and fundamental findings
+in quantum computing, as applied to the attack and defense of conventional
+computer networks. The concept focuses on uses of radio waves as a shield for,
+and attack against traditional computers. A logic bomb is analogous to a
+landmine in a computer network, and if one was to implement it as non-trivial
+mitigation, it will aid computer network defense. As has been seen in kinetic
+warfare, the use of landmines has been devastating to geopolitical regions in
+that they are severely difficult for a civilian to avoid triggering given the
+unknown position of a landmine. Thus, the importance of understanding a logic
+bomb is relevant and has corollaries to quantum mechanics as well. The research
+synthesizes quantum logic phase shifts in certain respects using the Dynamic
+Data Exchange protocol in software written for this work, as well as a C-NOT
+gate applied to a virtual quantum circuit environment by implementing a Quantum
+Fourier Transform. The research focus applies the principles of coherence and
+entanglement from quantum physics, the concept of expert systems in artificial
+intelligence, principles of prime number based cryptography with trapdoor
+functions, and modeling radio wave propagation against an event from unknown
+parameters. This comes as a program relying on the artificial intelligence
+concept of an expert system in conjunction with trigger events for a trapdoor
+function relying on infinite recursion, as well as system mechanics for
+elliptic curve cryptography along orbital angular momenta. Here trapdoor both
+denotes the form of cipher, as well as the implied relationship to logic bombs.",['cs.CR'],2016-10-06,1610.01734,2016
+"Towards Cognitive Exploration through Deep Reinforcement Learning for
+  Mobile Robots","Exploration in an unknown environment is the core functionality for mobile
+robots. Learning-based exploration methods, including convolutional neural
+networks, provide excellent strategies without human-designed logic for the
+feature extraction. But the conventional supervised learning algorithms cost
+lots of efforts on the labeling work of datasets inevitably. Scenes not
+included in the training set are mostly unrecognized either. We propose a deep
+reinforcement learning method for the exploration of mobile robots in an indoor
+environment with the depth information from an RGB-D sensor only. Based on the
+Deep Q-Network framework, the raw depth image is taken as the only input to
+estimate the Q values corresponding to all moving commands. The training of the
+network weights is end-to-end. In arbitrarily constructed simulation
+environments, we show that the robot can be quickly adapted to unfamiliar
+scenes without any man-made labeling. Besides, through analysis of receptive
+fields of feature representations, deep reinforcement learning motivates the
+convolutional networks to estimate the traversability of the scenes. The test
+results are compared with the exploration strategies separately based on deep
+learning or reinforcement learning. Even trained only in the simulated
+environment, experimental results in real-world environment demonstrate that
+the cognitive ability of robot controller is dramatically improved compared
+with the supervised method. We believe it is the first time that raw sensor
+information is used to build cognitive exploration strategy for mobile robots
+through end-to-end deep reinforcement learning.",['cs.RO'],2016-10-06,1610.01733,2016
+"PCA-aided Fully Convolutional Networks for Semantic Segmentation of
+  Multi-channel fMRI","Semantic segmentation of functional magnetic resonance imaging (fMRI) makes
+great sense for pathology diagnosis and decision system of medical robots. The
+multi-channel fMRI data provide more information of the pathological features.
+But the increased amount of data causes complexity in feature detection. This
+paper proposes a principal component analysis (PCA)-aided fully convolutional
+network to particularly deal with multi-channel fMRI. We transfer the learned
+weights of contemporary classification networks to the segmentation task by
+fine-tuning. The experiments results are compared with various methods e.g.
+k-NN. A new labelling strategy is proposed to solve the semantic segmentation
+problem with unclear boundaries. Even with a small-sized training dataset, the
+test results demonstrate that our model outperforms other pathological feature
+detection methods. Besides, its forward inference only takes 90 milliseconds
+for a single set of fMRI data. To our knowledge, this is the first time to
+realize pixel-wise labeling of multi-channel magnetic resonance image using
+FCN.","['cs.CV', 'cs.RO']",2016-10-06,1610.01732,2016
+"RedThreads: An Interface for Application-level Fault
+  Detection/Correction through Adaptive Redundant Multithreading","In the presence of accelerated fault rates, which are projected to be the
+norm on future exascale systems, it will become increasingly difficult for
+high-performance computing (HPC) applications to accomplish useful computation.
+Due to the fault-oblivious nature of current HPC programming paradigms and
+execution environments, HPC applications are insufficiently equipped to deal
+with errors. We believe that HPC applications should be enabled with
+capabilities to actively search for and correct errors in their computations.
+The redundant multithreading (RMT) approach offers lightweight replicated
+execution streams of program instructions within the context of a single
+application process. However, the use of complete redundancy incurs significant
+overhead to the application performance.
+  In this paper we present RedThreads, an interface that provides
+application-level fault detection and correction based on RMT, but applies the
+thread-level redundancy adaptively. We describe the RedThreads syntax and
+semantics, and the supporting compiler infrastructure and runtime system. Our
+approach enables application programmers to scope the extent of redundant
+computation. Additionally, the runtime system permits the use of RMT to be
+dynamically enabled, or disabled, based on the resiliency needs of the
+application and the state of the system. Our experimental results demonstrate
+how adaptive RMT exploits programmer insight and runtime inference to
+dynamically navigate the trade-off space between an application's resilience
+coverage and the associated performance overhead of redundant computation.",['cs.DC'],2016-10-06,1610.01728,2016
+Distance rationalization of anonymous and homogeneous voting rules,"The concept of distance rationalizability of voting rules has been explored
+in recent years by several authors. Most previous work has dealt with a
+definition in terms of preference profiles. However, most voting rules in
+common use are anonymous and homogeneous. In this case there is a much more
+succinct representation (using the voting simplex) of the inputs to the rule.
+This representation has been widely used in the voting literature, but rarely
+in the context of distance rationalizability.
+  Recently, the present authors showed, as a special case of general results on
+quotient spaces, exactly how to connect distance rationalizability on profiles
+for anonymous and homogeneous rules to geometry in the simplex. In this article
+we develop the connection for the important special case of votewise distances,
+recently introduced and studied by Elkind, Faliszewski and Slinko in several
+papers. This yields a direct interpretation in terms of well-developed
+mathematical topics not seen before in the voting literature, namely
+Kantorovich (also called Wasserstein) distances and the geometry of Minkowski
+spaces.
+  As an application of this approach, we prove some positive and some negative
+results about the decisiveness of distance rationalizable anonymous and
+homogeneous rules. The positive results connect with the recent theory of
+hyperplane rules, while the negative ones deal with distances that are not
+metrics, controversial notions of consensus, and the fact that the
+$\ell^1$-norm is not strictly convex.
+  We expect that the above novel geometric interpretation will aid the analysis
+of rules defined by votewise distances, and the discovery of new rules with
+desirable properties.",['cs.GT'],2016-10-06,1610.01900,2016
+"Efficient Best-Response Computation for Strategic Network Formation
+  under Attack","Strategic network formation models the uncoordinated creation of a network by
+selfish agents. Inspired by real world examples, e.g. the Internet, researchers
+have introduced an abundance of strategic games to study natural phenomena in
+networks. Most of these games have the conceptual drawback of being
+computationally intractable. For example, computing a best response strategy or
+checking whether an equilibrium is reached is NP-hard. Thus, a main challenge
+in the field is to find models which incorporate many interesting features and
+to devise efficient algorithms for solving the entailed computational tasks.
+  We address this challenge by providing an efficient algorithm to compute a
+best response strategy for a recently introduced model, thereby answering the
+open question posed by Goyal et al. [WINE'16]. Their promising model focuses on
+network robustness by considering an adversary who attacks (and kills) nodes in
+the network and lets this attack spread virus-like to neighboring nodes.
+  Additionally, we augment their model by introducing a less predictable
+adversary and show that our algorithm, with minor modifications, can cope with
+this more complex scenario.","['cs.GT', 'cs.DM', 'cs.DS', 'cs.NI']",2016-10-06,1610.01861,2016
+Distance rationalization of social rules,"The concept of distance rationalizability of social choice rules has been
+explored in recent years by several authors. We deal here with several
+foundational questions, and unify, correct, and generalize previous work. For
+example, we study a new question involving uniqueness of representation in the
+distance rationalizability framework, and present a counterexample.
+  For rules satisfying various axiomatic properties such as anonymity,
+neutrality and homogeneity, the standard profile representation of input can be
+compressed substantially. We explain in detail using quotient constructions and
+symmetry groups how distance rationalizability is interpreted in this
+situation. This enables us to connect the theory of distance rationalizability
+with geometric concepts such as Earth Mover distance and optimal
+transportation. We expect this connection to prove fruitful in future work.
+  We improve on the best-known sufficient conditions for rules rationalized via
+votewise distances to satisfy anonymity, neutrality, homogeneity, consistency
+and continuity. This leads to a class of well-behaved rules which deserve
+closer scrutiny in future.",['cs.GT'],2016-10-06,1610.01902,2016
+Connecting Generative Adversarial Networks and Actor-Critic Methods,"Both generative adversarial networks (GAN) in unsupervised learning and
+actor-critic methods in reinforcement learning (RL) have gained a reputation
+for being difficult to optimize. Practitioners in both fields have amassed a
+large number of strategies to mitigate these instabilities and improve
+training. Here we show that GANs can be viewed as actor-critic methods in an
+environment where the actor cannot affect the reward. We review the strategies
+for stabilizing training for each class of models, both those that generalize
+between the two and those that are particular to that model. We also review a
+number of extensions to GANs and RL algorithms with even more complicated
+information flow. We hope that by highlighting this formal connection we will
+encourage both GAN and RL communities to develop general, scalable, and stable
+algorithms for multilevel optimization with deep networks, and to draw
+inspiration across communities.","['cs.LG', 'stat.ML']",2016-10-06,1610.01945,2016
+"Geometric decoding of subspace codes with explicit Schubert calculus
+  applied to spread codes","This article is about a decoding algorithm for error-correcting subspace
+codes. A version of this algorithm was previously described by Rosenthal,
+Silberstein and Trautmann. The decoding algorithm requires the code to be
+defined as the intersection of the Pl\""ucker embedding of the Grassmannian and
+an algebraic variety. We call such codes \emph{geometric subspace codes}.
+Complexity is substantially improved compared to the algorithm by Rosenthal,
+Silberstein and Trautmann and connections to finite geometry are given. The
+decoding algorithm is applied to Desarguesian spread codes, which are known to
+be defined as the intersection of the Pl\""ucker embedding of the Grassmannian
+with a linear space.","['cs.IT', 'math.IT']",2016-10-06,1610.02022,2016
+Scalable Machine Translation in Memory Constrained Environments,"Machine translation is the discipline concerned with developing automated
+tools for translating from one human language to another. Statistical machine
+translation (SMT) is the dominant paradigm in this field. In SMT, translations
+are generated by means of statistical models whose parameters are learned from
+bilingual data. Scalability is a key concern in SMT, as one would like to make
+use of as much data as possible to train better translation systems.
+  In recent years, mobile devices with adequate computing power have become
+widely available. Despite being very successful, mobile applications relying on
+NLP systems continue to follow a client-server architecture, which is of
+limited use because access to internet is often limited and expensive. The goal
+of this dissertation is to show how to construct a scalable machine translation
+system that can operate with the limited resources available on a mobile
+device.
+  The main challenge for porting translation systems on mobile devices is
+memory usage. The amount of memory available on a mobile device is far less
+than what is typically available on the server side of a client-server
+application. In this thesis, we investigate alternatives for the two components
+which prevent standard translation systems from working on mobile devices due
+to high memory usage. We show that once these standard components are replaced
+with our proposed alternatives, we obtain a scalable translation system that
+can work on a device with limited memory.",['cs.CL'],2016-10-06,1610.02003,2016
+"Fundamental properties of solutions to utility maximization problems in
+  wireless networks","We introduce a unified framework for the study of utility maximization
+problems in interference-coupled wireless networks. The framework can be
+applied to a large class of utilities, but in this study special attention is
+devoted to the rate. In more detail, we resort to results from concave
+Perron-Frobenius theory to show that, within the class of problems we consider
+here, each problem has a unique solution. As a consequence, given any network
+utility maximization problem belonging to this class, we can define two
+functions that relate the power budget $\bar{p}$ of a network to the network
+utility and to the energy efficiency achieved by the solution to the given
+problem. Among many interesting properties, we prove that these functions are
+continuous and monotonic. In addition, we derive bounds revealing that the
+solution is characterized by a low and a high power regime. In the low power
+regime, the energy efficiency can decrease slowly as the power budget
+increases, and the network utility grows linearly at best. In contrast, in the
+high power regime, the energy efficiency typically scales as
+$\mathcal{O}(1/\bar{p})$ as $\bar{p}\to\infty$, and the network utility scales
+as $\mathcal{O}(1)$. We apply the theoretical findings to a novel weighted rate
+maximization problem involving the joint optimization of the uplink power and
+the base station assignment. For this novel problem formulation, we also
+propose a simple and practical iterative solver.","['cs.IT', 'cs.NI', 'math.IT']",2016-10-06,1610.01988,2016
+Active exploration in parameterized reinforcement learning,"Online model-free reinforcement learning (RL) methods with continuous actions
+are playing a prominent role when dealing with real-world applications such as
+Robotics. However, when confronted to non-stationary environments, these
+methods crucially rely on an exploration-exploitation trade-off which is rarely
+dynamically and automatically adjusted to changes in the environment. Here we
+propose an active exploration algorithm for RL in structured (parameterized)
+continuous action space. This framework deals with a set of discrete actions,
+each of which is parameterized with continuous variables. Discrete exploration
+is controlled through a Boltzmann softmax function with an inverse temperature
+$\beta$ parameter. In parallel, a Gaussian exploration is applied to the
+continuous action parameters. We apply a meta-learning algorithm based on the
+comparison between variations of short-term and long-term reward running
+averages to simultaneously tune $\beta$ and the width of the Gaussian
+distribution from which continuous action parameters are drawn. When applied to
+a simple virtual human-robot interaction task, we show that this algorithm
+outperforms continuous parameterized RL both without active exploration and
+with active exploration based on uncertainty variations measured by a
+Kalman-Q-learning algorithm.",['cs.LG'],2016-10-06,1610.01986,2016
+"Driving in the Matrix: Can Virtual Worlds Replace Human-Generated
+  Annotations for Real World Tasks?","Deep learning has rapidly transformed the state of the art algorithms used to
+address a variety of problems in computer vision and robotics. These
+breakthroughs have however relied upon massive amounts of human annotated
+training data. This time-consuming process has begun impeding the progress of
+these deep learning efforts. This paper describes a method to incorporate
+photo-realistic computer images from a simulation engine to rapidly generate
+annotated data that can be used for training of machine learning algorithms. We
+demonstrate that a state of the art architecture, which is trained only using
+these synthetic annotations, performs better than the identical architecture
+trained on human annotated real-world data, when tested on the KITTI data set
+for vehicle detection. By training machine learning algorithms on a rich
+virtual world, this paper illustrates that real objects in real scenes can be
+learned and classified using synthetic data. This approach offers the
+possibility of accelerating deep learning's application to sensor based
+classification problems like those that appear in self-driving cars.","['cs.CV', 'cs.RO']",2016-10-06,1610.01983,2016
+"Quantum Game Theory for Beam Alignment in Millimeter Wave
+  Device-to-Device Communications","In this paper, the problem of optimized beam alignment for wearable
+device-to-device (D2D) communications over millimeter wave (mmW) frequencies is
+studied. In particular, a noncooperative game is formulated between wearable
+communication pairs that engage in D2D communications. In this game, wearable
+devices acting as transmitters autonomously select the directions of their
+beams so as to maximize the data rate to their receivers. To solve the game, an
+algorithm based on best response dynamics is proposed that allows the
+transmitters to reach a Nash equilibrium in a distributed manner. To further
+improve the performance of mmW D2D communications, a novel quantum game model
+is formulated to enable the wearable devices to exploit new quantum directions
+during their beam alignment so as to further enhance their data rate.
+Simulation results show that the proposed game-theoretic approach improves the
+performance, in terms of data rate, of about 75% compared to a uniform beam
+alignment. The results also show that the quantum game model can further yield
+up to 20% improvement in data rates, relative to the classical game approach.","['cs.IT', 'cs.GT', 'math.IT']",2016-10-06,1610.01982,2016
+A Vision-based Indoor Positioning System on Shopping Mall Context,"With the help of a map and GPS, outdoor navigation from one spot to another
+can be done quickly and well. Unfortunately, inside a shopping mall, where GPS
+signal is hardly available, navigation becomes troublesome. In this paper, we
+propose an indoor navigation system to address the problem. Unlike most
+existing indoor navigation systems, which relies heavily on infrastructures and
+pre-labelled maps, our system uses only photos taken by cellphone cameras as
+input. We utilize multiple image processing techniques to parse photos of a
+mall's shopping instruction and a construct topological map of the mall. During
+navigation, we make use of deep neural networks to extract information from
+environment and find out the real-time position of the user. We propose a new
+feature fusion method to help automatically identifying shops in a photo.",['cs.CV'],2016-10-06,1610.01906,2016
+DeepDGA: Adversarially-Tuned Domain Generation and Detection,"Many malware families utilize domain generation algorithms (DGAs) to
+establish command and control (C&C) connections. While there are many methods
+to pseudorandomly generate domains, we focus in this paper on detecting (and
+generating) domains on a per-domain basis which provides a simple and flexible
+means to detect known DGA families. Recent machine learning approaches to DGA
+detection have been successful on fairly simplistic DGAs, many of which produce
+names of fixed length. However, models trained on limited datasets are somewhat
+blind to new DGA variants.
+  In this paper, we leverage the concept of generative adversarial networks to
+construct a deep learning based DGA that is designed to intentionally bypass a
+deep learning based detector. In a series of adversarial rounds, the generator
+learns to generate domain names that are increasingly more difficult to detect.
+In turn, a detector model updates its parameters to compensate for the
+adversarially generated domains. We test the hypothesis of whether
+adversarially generated domains may be used to augment training sets in order
+to harden other machine learning models against yet-to-be-observed DGAs. We
+detail solutions to several challenges in training this character-based
+generative adversarial network (GAN). In particular, our deep learning
+architecture begins as a domain name auto-encoder (encoder + decoder) trained
+on domains in the Alexa one million. Then the encoder and decoder are
+reassembled competitively in a generative adversarial network (detector +
+generator), with novel neural architectures and training strategies to improve
+convergence.",['cs.CR'],2016-10-06,1610.01969,2016
+Fast Hierarchy Construction for Dense Subgraphs,"Discovering dense subgraphs and understanding the relations among them is a
+fundamental problem in graph mining. We want to not only identify dense
+subgraphs, but also build a hierarchy among them (e.g., larger but sparser
+subgraphs formed by two smaller dense subgraphs). Peeling algorithms (k-core,
+k-truss, and nucleus decomposition) have been effective to locate many dense
+subgraphs. However, constructing a hierarchical representation of density
+structure, even correctly computing the connected k-cores and k-trusses, have
+been mostly overlooked. Keeping track of connected components during peeling
+requires an additional traversal operation, which is as expensive as the
+peeling process. In this paper, we start with a thorough survey and point to
+nuances in problem formulations that lead to significant differences in
+runtimes. We then propose efficient and generic algorithms to construct the
+hierarchy of dense subgraphs for k-core, k-truss, or any nucleus decomposition.
+Our algorithms leverage the disjoint-set forest data structure to efficiently
+construct the hierarchy during traversal. Furthermore, we introduce a new idea
+to avoid traversal. We construct the subgraphs while visiting neighborhoods in
+the peeling process, and build the relations to previously constructed
+subgraphs. We also consider an existing idea to find the k-core hierarchy and
+adapt for our objectives efficiently. Experiments on different types of large
+scale real-world networks show significant speedups over naive algorithms and
+existing alternatives. Our algorithms also outperform the hypothetical limits
+of any possible traversal-based solution.",['cs.SI'],2016-10-06,1610.01961,2016
+Efficient L1-Norm Principal-Component Analysis via Bit Flipping,"It was shown recently that the $K$ L1-norm principal components (L1-PCs) of a
+real-valued data matrix $\mathbf X \in \mathbb R^{D \times N}$ ($N$ data
+samples of $D$ dimensions) can be exactly calculated with cost
+$\mathcal{O}(2^{NK})$ or, when advantageous, $\mathcal{O}(N^{dK - K + 1})$
+where $d=\mathrm{rank}(\mathbf X)$, $K<d$ [1],[2]. In applications where
+$\mathbf X$ is large (e.g., ""big"" data of large $N$ and/or ""heavy"" data of
+large $d$), these costs are prohibitive. In this work, we present a novel
+suboptimal algorithm for the calculation of the $K < d$ L1-PCs of $\mathbf X$
+of cost $\mathcal O(ND \mathrm{min} \{ N,D\} + N^2(K^4 + dK^2) + dNK^3)$, which
+is comparable to that of standard (L2-norm) PC analysis. Our theoretical and
+experimental studies show that the proposed algorithm calculates the exact
+optimal L1-PCs with high frequency and achieves higher value in the L1-PC
+optimization metric than any known alternative algorithm of comparable
+computational cost. The superiority of the calculated L1-PCs over standard
+L2-PCs (singular vectors) in characterizing potentially faulty
+data/measurements is demonstrated with experiments on data dimensionality
+reduction and disease diagnosis from genomic data.","['cs.DS', 'cs.LG', 'stat.ML']",2016-10-06,1610.01959,2016
+MoveSteg: A Method of Network Steganography Detection,"This article presents a new method for detecting a source point of time based
+network steganography - MoveSteg. A steganography carrier could be an example
+of multimedia stream made with packets. These packets are then delayed
+intentionally to send hidden information using time based steganography
+methods. The presented analysis describes a method that allows finding the
+source of steganography stream in network that is under our management.","['cs.MM', 'cs.CR']",2016-10-06,1610.01955,2016
+The Future Internet of Things and Security of its Control Systems,"We consider the future cyber security of industrial control systems. As best
+as we can see, much of this future unfolds in the context of the Internet of
+Things (IoT). In fact, we envision that all industrial and infrastructure
+environments, and cyber-physical systems in general, will take the form
+reminiscent of what today is referred to as the IoT. IoT is envisioned as
+multitude of heterogeneous devices densely interconnected and communicating
+with the objective of accomplishing a diverse range of objectives, often
+collaboratively. One can argue that in the relatively near future, the IoT
+construct will subsume industrial plants, infrastructures, housing and other
+systems that today are controlled by ICS and SCADA systems. In the IoT
+environments, cybersecurity will derive largely from system agility,
+moving-target defenses, cybermaneuvering, and other autonomous or
+semi-autonomous behaviors. Cyber security of IoT may also benefit from new
+design methods for mixed-trusted systems; and from big data analytics --
+predictive and autonomous.","['cs.CY', 'cs.CR']",2016-10-06,1610.01953,2016
+Polynomial-time Tensor Decompositions with Sum-of-Squares,"We give new algorithms based on the sum-of-squares method for tensor
+decomposition. Our results improve the best known running times from
+quasi-polynomial to polynomial for several problems, including decomposing
+random overcomplete 3-tensors and learning overcomplete dictionaries with
+constant relative sparsity. We also give the first robust analysis for
+decomposing overcomplete 4-tensors in the smoothed analysis model. A key
+ingredient of our analysis is to establish small spectral gaps in moment
+matrices derived from solutions to sum-of-squares relaxations. To enable this
+analysis we augment sum-of-squares relaxations with spectral analogs of maximum
+entropy constraints.","['cs.DS', 'cs.LG']",2016-10-06,1610.01980,2016
+"PetroSurf3D - A high-resolution 3D Dataset of Rock Art for Surface
+  Segmentation","Ancient rock engravings (so called petroglyphs) represent one of the earliest
+surviving artifacts describing life of our ancestors. Recently, modern 3D
+scanning techniques found their application in the domain of rock art
+documentation by providing high-resolution reconstructions of rock surfaces.
+Reconstruction results demonstrate the strengths of novel 3D techniques and
+have the potential to replace the traditional (manual) documentation techniques
+of archaeologists.
+  An important analysis task in rock art documentation is the segmentation of
+petroglyphs. To foster automation of this tedious step, we present a
+high-resolution 3D surface dataset of natural rock surfaces which exhibit
+different petroglyphs together with accurate expert ground-truth annotations.
+To our knowledge, this dataset is the first public 3D surface dataset which
+allows for surface segmentation at sub-millimeter scale. We conduct experiments
+with state-of-the-art methods to generate a baseline for the dataset and verify
+that the size and variability of the data is sufficient to successfully adopt
+even recent data-hungry Convolutional Neural Networks (CNNs). Furthermore, we
+experimentally demonstrate that the provided geometric information is key to
+successful automatic segmentation and strongly outperforms color-based
+segmentation. The introduced dataset represents a novel benchmark for 3D
+surface segmentation methods in general and is intended to foster comparability
+among different approaches in future.",['cs.CV'],2016-10-06,1610.01944,2016
+"The Moser-Tardos lopsidependency criterion can be stronger than
+  Shearer's criterion","The Lopsided Lov\'{a}sz Local Lemma (LLLL) is a probabilistic tool which is a
+cornerstone of the probabilistic method of combinatorics, which shows that it
+is possible to avoid a collection of ""bad"" events as long as their
+probabilities and interdependencies are sufficiently small. The strongest
+possible criterion that can be stated in these terms is due to Shearer (1985),
+although it is technically difficult to apply to constructions in
+combinatorics.
+  The original formulation of the LLLL was non-constructive; a seminal
+algorithm of Moser & Tardos (2010) gave an efficient constructive algorithm for
+nearly all applications of it, including applications to $k$-SAT instances with
+a bounded number of occurrences per variables. Harris (2015) later gave an
+alternate criterion for this algorithm to converge, which appeared to give
+stronger bounds than the standard LLL. Unlike the LLL criterion or its
+variants, this criterion depends in a fundamental way on the decomposition of
+bad-events into variables.
+  In this note, we show that the criterion given by Harris can be stronger in
+some cases even than Shearer's criterion. We construct $k$-SAT formulas with
+bounded variable occurrence, and show that the criterion of Harris is satisfied
+while the criterion of Shearer is violated. In fact, there is an exponentially
+growing gap between the bounds provable from any form of the LLLL and from the
+bound shown by Harris.","['math.PR', 'cs.DM', 'math.CO']",2016-10-06,1610.01926,2016
+Optimal Separation in Exact Query Complexities for Simon's Problem,"\emph{Simon's problem} is one of the most important problems demonstrating
+the power of quantum computers, which achieves a large separation between
+quantum and classical query complexities. However, Simon's discussion on his
+problem was limited to \emph{bounded-error} setting, which means his algorithm
+can not always get the correct answer. \emph{Exact} quantum algorithms for
+Simon's problem have also been proposed, which deterministically solve the
+problem with $O(n)$ queries. Although these algorithms are either complicated
+or specialized, their results give a $O(n)$ versus $\Omega(\sqrt{2^{n}})$
+separation in exact query complexities for Simon's problem. Later results
+indicate the the quantum lower bound for Simon's problem, but it has not been
+proved whether this separation is optimal. In this paper, we propose another
+exact quantum algorithm for solving Simon's problem with $O(n)$ queries, which
+is simple, concrete and does not rely on some special query oracles. Our
+algorithm combines Simon's algorithm with the quantum amplitude amplification
+technique to ensure its determinism. Moreover, we show that Simon's problem can
+be solved by a classically \emph{deterministic} algorithm with
+$O(\sqrt{2^{n}})$ queries (as we are aware, there were no classically
+deterministic algorithms for solving Simon's problem with $O(\sqrt{2^{n}})$
+queries). Combining some previous results, we prove the optimal separation in
+exact query complexities for Simon's problem: $\Theta({n})$ versus
+$\Theta({\sqrt{2^{n}}})$.","['quant-ph', 'cs.CC']",2016-10-06,1610.01920,2016
+Adaptive Online Sequential ELM for Concept Drift Tackling,"A machine learning method needs to adapt to over time changes in the
+environment. Such changes are known as concept drift. In this paper, we propose
+concept drift tackling method as an enhancement of Online Sequential Extreme
+Learning Machine (OS-ELM) and Constructive Enhancement OS-ELM (CEOS-ELM) by
+adding adaptive capability for classification and regression problem. The
+scheme is named as adaptive OS-ELM (AOS-ELM). It is a single classifier scheme
+that works well to handle real drift, virtual drift, and hybrid drift. The
+AOS-ELM also works well for sudden drift and recurrent context change type. The
+scheme is a simple unified method implemented in simple lines of code. We
+evaluated AOS-ELM on regression and classification problem by using concept
+drift public data set (SEA and STAGGER) and other public data sets such as
+MNIST, USPS, and IDS. Experiments show that our method gives higher kappa value
+compared to the multiclassifier ELM ensemble. Even though AOS-ELM in practice
+does not need hidden nodes increase, we address some issues related to the
+increasing of the hidden nodes such as error condition and rank values. We
+propose taking the rank of the pseudoinverse matrix as an indicator parameter
+to detect underfitting condition.","['cs.AI', 'cs.LG', 'cs.NE']",2016-10-06,1610.01922,2016
+Metaheuristic Algorithms for Convolution Neural Network,"A typical modern optimization technique is usually either heuristic or
+metaheuristic. This technique has managed to solve some optimization problems
+in the research area of science, engineering, and industry. However,
+implementation strategy of metaheuristic for accuracy improvement on
+convolution neural networks (CNN), a famous deep learning method, is still
+rarely investigated. Deep learning relates to a type of machine learning
+technique, where its aim is to move closer to the goal of artificial
+intelligence of creating a machine that could successfully perform any
+intellectual tasks that can be carried out by a human. In this paper, we
+propose the implementation strategy of three popular metaheuristic approaches,
+that is, simulated annealing, differential evolution, and harmony search, to
+optimize CNN. The performances of these metaheuristic methods in optimizing CNN
+on classifying MNIST and CIFAR dataset were evaluated and compared.
+Furthermore, the proposed methods are also compared with the original CNN.
+Although the proposed methods show an increase in the computation time, their
+accuracy has also been improved (up to 7.14 percent).","['cs.CV', 'cs.AI', 'cs.NE']",2016-10-06,1610.01925,2016
+"Toward Automatic Understanding of the Function of Affective Language in
+  Support Groups","Understanding expressions of emotions in support forums has considerable
+value and NLP methods are key to automating this. Many approaches
+understandably use subjective categories which are more fine-grained than a
+straightforward polarity-based spectrum. However, the definition of such
+categories is non-trivial and, in fact, we argue for a need to incorporate
+communicative elements even beyond subjectivity. To support our position, we
+report experiments on a sentiment-labelled corpus of posts taken from a medical
+support forum. We argue that not only is a more fine-grained approach to text
+analysis important, but simultaneously recognising the social function behind
+affective expressions enable a more accurate and valuable level of
+understanding.",['cs.CL'],2016-10-06,1610.01910,2016
+"Using Non-invertible Data Transformations to Build Adversary-Resistant
+  Deep Neural Networks","Deep neural networks have proven to be quite effective in a wide variety of
+machine learning tasks, ranging from improved speech recognition systems to
+advancing the development of autonomous vehicles. However, despite their
+superior performance in many applications, these models have been recently
+shown to be susceptible to a particular type of attack possible through the
+generation of particular synthetic examples referred to as adversarial samples.
+These samples are constructed by manipulating real examples from the training
+data distribution in order to ""fool"" the original neural model, resulting in
+misclassification (with high confidence) of previously correctly classified
+samples. Addressing this weakness is of utmost importance if deep neural
+architectures are to be applied to critical applications, such as those in the
+domain of cybersecurity. In this paper, we present an analysis of this
+fundamental flaw lurking in all neural architectures to uncover limitations of
+previously proposed defense mechanisms. More importantly, we present a unifying
+framework for protecting deep neural models using a non-invertible data
+transformation--developing two adversary-resilient architectures utilizing both
+linear and nonlinear dimensionality reduction. Empirical results indicate that
+our framework provides better robustness compared to state-of-art solutions
+while having negligible degradation in accuracy.",['cs.LG'],2016-10-06,1610.01934,2016
+"Sequence-based Sleep Stage Classification using Conditional Neural
+  Fields","Sleep signals from a polysomnographic database are sequences in nature.
+Commonly employed analysis and classification methods, however, ignored this
+fact and treated the sleep signals as non-sequence data. Treating the sleep
+signals as sequences, this paper compared two powerful unsupervised feature
+extractors and three sequence-based classifiers regarding accuracy and
+computational (training and testing) time after 10-folds cross-validation. The
+compared feature extractors are Deep Belief Networks (DBN) and Fuzzy C-Means
+(FCM) clustering. Whereas the compared sequence-based classifiers are Hidden
+Markov Models (HMM), Conditional Random Fields (CRF) and its variants, i.e.,
+Hidden-state CRF (HCRF) and Latent-Dynamic CRF (LDCRF); and Conditional Neural
+Fields (CNF) and its variant (LDCNF). In this study, we use two datasets. The
+first dataset is an open (public) polysomnographic dataset downloadable from
+the Internet, while the second dataset is our polysomnographic dataset (also
+available for download). For the first dataset, the combination of FCM and CNF
+gives the highest accuracy (96.75\%) with relatively short training time (0.33
+hours). For the second dataset, the combination of DBN and CRF gives the
+accuracy of 99.96\% but with 1.02 hours training time, whereas the combination
+of DBN and CNF gives slightly less accuracy (99.69\%) but also less computation
+time (0.89 hours).","['cs.NE', 'cs.LG']",2016-10-06,1610.01935,2016
+"Visual Question Answering: Datasets, Algorithms, and Future Challenges","Visual Question Answering (VQA) is a recent problem in computer vision and
+natural language processing that has garnered a large amount of interest from
+the deep learning, computer vision, and natural language processing
+communities. In VQA, an algorithm needs to answer text-based questions about
+images. Since the release of the first VQA dataset in 2014, several additional
+datasets have been released and many algorithms have been proposed. In this
+review, we critically examine the current state of VQA in terms of problem
+formulation, existing datasets, evaluation metrics, and algorithms. In
+particular, we discuss the limitations of current datasets with regard to their
+ability to properly train and assess VQA algorithms. We then exhaustively
+review existing algorithms for VQA. Finally, we discuss possible future
+directions for VQA and image understanding research.","['cs.CV', 'cs.AI', 'cs.CL']",2016-10-05,1610.01465,2016
+Nonlinear Systems Identification Using Deep Dynamic Neural Networks,"Neural networks are known to be effective function approximators. Recently,
+deep neural networks have proven to be very effective in pattern recognition,
+classification tasks and human-level control to model highly nonlinear
+realworld systems. This paper investigates the effectiveness of deep neural
+networks in the modeling of dynamical systems with complex behavior. Three deep
+neural network structures are trained on sequential data, and we investigate
+the effectiveness of these networks in modeling associated characteristics of
+the underlying dynamical systems. We carry out similar evaluations on select
+publicly available system identification datasets. We demonstrate that deep
+neural networks are effective model estimators from input-output data",['cs.NE'],2016-10-05,1610.01439,2016
+Decision problems on unary probabilistic and quantum automata,"It is well known that the emptiness problem for binary probabilistic automata
+and so for quantum automata is undecidable. We present the current status of
+the emptiness problems for unary probabilistic and quantum automata with
+connections with Skolem's and positivity problems. We also introduce the
+concept of linear recurrence automata in order to show the connection
+naturally. Then, we also give possible generalizations of linear recurrence
+relations and automata on vectors.",['cs.FL'],2016-10-05,1610.01397,2016
+"Convex Histogram-Based Joint Image Segmentation with Regularized Optimal
+  Transport Cost","We investigate in this work a versatile convex framework for multiple image
+segmentation, relying on the regularized optimal mass transport theory. In this
+setting, several transport cost functions are considered and used to match
+statistical distributions of features. In practice, global multidimensional
+histograms are estimated from the segmented image regions, and are compared to
+referring models that are either fixed histograms given a priori, or directly
+inferred in the non-supervised case. The different convex problems studied are
+solved efficiently using primal-dual algorithms. The proposed approach is
+generic and enables multi-phase segmentation as well as co-segmentation of
+multiple images.","['cs.CV', 'math.OC']",2016-10-05,1610.01400,2016
+"A Probably Approximately Correct Answer to Distributed Stochastic
+  Optimization in a Non-stationary Environment","This paper considers a distributed stochastic optimization problem where the
+goal is to minimize the time average of a cost function subject to a set of
+constraints on the time averages of a related stochastic processes called
+penalties. We assume that a delayed information about an event in the system is
+available as a common information at every user, and the state of the system is
+evolving in an independent and non-stationary fashion. We show that an
+approximate Drift-plus-penalty (DPP) algorithm that we propose achieves a time
+average cost that is within some positive constant epsilon of the optimal cost
+with high probability. Further, we provide a condition on the waiting time for
+this result to hold. The condition is shown to be a function of the mixing
+coefficient, the number of samples (w) used to compute an estimate of the
+distribution of the state, and the delay. Unlike the existing work, the method
+used in the paper can be adapted to prove high probability results when the
+state is evolving in a non-i.i.d and non-stationary fashion. Under mild
+conditions, we show that the dependency of the error bound on w is exponential,
+which is a significant improvement compared to the exiting work.","['cs.IT', 'math.IT']",2016-10-05,1610.01405,2016
+Towards semi-episodic learning for robot damage recovery,"The recently introduced Intelligent Trial and Error algorithm (IT\&E) enables
+robots to creatively adapt to damage in a matter of minutes by combining an
+off-line evolutionary algorithm and an on-line learning algorithm based on
+Bayesian Optimization. We extend the IT\&E algorithm to allow for robots to
+learn to compensate for damages while executing their task(s). This leads to a
+semi-episodic learning scheme that increases the robot's lifetime autonomy and
+adaptivity. Preliminary experiments on a toy simulation and a 6-legged robot
+locomotion task show promising results.","['cs.RO', 'cs.AI', 'cs.NE']",2016-10-05,1610.01407,2016
+Decentralized Topic Modelling with Latent Dirichlet Allocation,"Privacy preserving networks can be modelled as decentralized networks (e.g.,
+sensors, connected objects, smartphones), where communication between nodes of
+the network is not controlled by an all-knowing, central node. For this type of
+networks, the main issue is to gather/learn global information on the network
+(e.g., by optimizing a global cost function) while keeping the (sensitive)
+information at each node. In this work, we focus on text information that
+agents do not want to share (e.g., text messages, emails, confidential
+reports). We use recent advances on decentralized optimization and topic models
+to infer topics from a graph with limited communication. We propose a method to
+adapt latent Dirichlet allocation (LDA) model to decentralized optimization and
+show on synthetic data that we still recover similar parameters and similar
+performance at each node than with stochastic methods accessing to the whole
+information in the graph.","['stat.ML', 'cs.LG']",2016-10-05,1610.01417,2016
+Read-Write Memory and k-Set Consensus as an Affine Task,"The wait-free read-write memory model has been characterized as an iterated
+\emph{Immediate Snapshot} (IS) task. The IS task is \emph{affine}---it can be
+defined as a (sub)set of simplices of the standard chromatic subdivision. It is
+known that the task of \emph{Weak Symmetry Breaking} (WSB) cannot be
+represented as an affine task. In this paper, we highlight the phenomenon of a
+""natural"" model that can be captured by an iterated affine task and, thus, by a
+subset of runs of the iterated immediate snapshot model. We show that the
+read-write memory model in which, additionally, $k$-set-consensus objects can
+be used is, unlike WSB, ""natural"" by presenting the corresponding simple affine
+task captured by a subset of $2$-round IS runs. Our results imply the first
+combinatorial characterization of models equipped with abstractions other than
+read-write memory that applies to generic tasks.",['cs.DC'],2016-10-05,1610.01423,2016
+"On the Joint Impact of Hardware Impairments and Imperfect CSI on
+  Successive Decoding","In this paper, a spatial multiplexing multiple-input multiple-output (MIMO)
+system when hardware along with RF imperfections occur during the communication
+setup is analytically investigated. More specifically, the scenario of hardware
+impairments at the transceiver and imperfect channel state information (CSI) at
+the receiver is considered, when successive interference cancellation (SIC) is
+implemented. Two popular linear detection schemes are analyzed, namely, zero
+forcing SIC (ZF-SIC) and minimum mean-square error SIC (MMSE-SIC). New
+analytical expressions for the outage probability of each SIC stage are
+provided, when independent and identically distributed Rayleigh fading channels
+are considered. In addition, the well-known error propagation effect between
+consecutive SIC stages is analyzed, while closed-form expressions are derived
+for some special cases of interest. Finally, useful engineering insights are
+manifested, such as the achievable diversity order, the performance difference
+between ZF- and MMSE-SIC, and the impact of imperfect CSI and/or the presence
+of hardware impairments to the overall system performance.","['cs.IT', 'math.IT']",2016-10-05,1610.01426,2016
+LAYERS: Yet another Neural Network toolkit,"Layers is an open source neural network toolkit aim at providing an easy way
+to implement modern neural networks. The main user target are students and to
+this end layers provides an easy scriptting language that can be early adopted.
+The user has to focus only on design details as network totpology and parameter
+tunning.",['cs.NE'],2016-10-05,1610.01430,2016
+"Effective Low-Complexity Optimization Methods for Joint Phase Noise and
+  Channel Estimation in OFDM","Phase noise correction is crucial to exploit full advantage of orthogonal
+frequency division multiplexing (OFDM) in modern high-data-rate communications.
+OFDM channel estimation with simultaneous phase noise compensation has
+therefore drawn much attention and stimulated continuing efforts. Existing
+methods, however, either have not taken into account the fundamental properties
+of phase noise or are only able to provide estimates of limited applicability
+owing to considerable computational complexity. In this paper, we have
+reformulated the joint estimation problem in the time domain as opposed to
+existing frequency-domain approaches, which enables us to develop much more
+efficient algorithms using the majorization-minimization technique. In
+addition, we propose a method based on dimensionality reduction and the
+Bayesian Information Criterion (BIC) that can adapt to various phase noise
+levels and accomplish much lower mean squared error than the benchmarks without
+incurring much additional computational cost. Several numerical examples with
+phase noise generated by free-running oscillators or phase-locked loops
+demonstrate that our proposed algorithms outperform existing methods with
+respect to both computational efficiency and mean squared error within a large
+range of signal-to-noise ratios.","['cs.IT', 'math.IT', 'math.OC']",2016-10-05,1610.01433,2016
+Markov Chain Modeling and Simulation of Breathing Patterns,"The lack of large video databases obtained from real patients with
+respiratory disorders makes the design and optimization of video-based
+monitoring systems quite critical. The purpose of this study is the development
+of suitable models and simulators of breathing behaviors and disorders, such as
+respiratory pauses and apneas, in order to allow efficient design and test of
+video-based monitoring systems. More precisely, a novel Continuous-Time Markov
+Chain (CTMC) statistical model of breathing patterns is presented. The
+Respiratory Rate (RR) pattern, estimated by measured vital signs of
+hospital-monitored patients, is approximated as a CTMC, whose states and
+parameters are selected through an appropriate statistical analysis. Then, two
+simulators, software- and hardware-based, are proposed. After validation of the
+CTMC model, the proposed simulators are tested with previously developed
+video-based algorithms for the estimation of the RR and the detection of apnea
+events. Examples of application to assess the performance of systems for
+video-based RR estimation and apnea detection are presented. The results, in
+terms of Kullback-Leibler divergence, show that realistic breathing patterns,
+including specific respiratory disorders, can be accurately described by the
+proposed model; moreover, the simulators are able to reproduce practical
+breathing patterns for video analysis. The presented CTMC statistical model can
+be strategic to describe realistic breathing patterns and devise simulators
+useful to develop and test novel and effective video processing-based
+monitoring systems.","['stat.AP', 'cs.CV']",2016-10-05,1610.01444,2016
+Efficiency and Budget Balance,"We study efficiency and budget balance for designing mechanisms in general
+quasi-linear domains. Green and Laffont (1979) proved that one cannot
+generically achieve both. We consider strategyproof budget-balanced mechanisms
+that are approximately efficient. For deterministic mechanisms, we show that a
+strategyproof and budget-balanced mechanism must have a sink agent whose
+valuation function is ignored in selecting an alternative, and she is
+compensated with the payments made by the other agents. We assume the
+valuations of the agents come from a bounded open interval. Using this result,
+we find a tight lower bound on the inefficiencies of strategyproof,

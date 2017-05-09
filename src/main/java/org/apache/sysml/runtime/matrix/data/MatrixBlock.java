@@ -85,7 +85,6 @@ import org.apache.sysml.runtime.util.FastBufferedDataInputStream;
 import org.apache.sysml.runtime.util.FastBufferedDataOutputStream;
 import org.apache.sysml.runtime.util.IndexRange;
 import org.apache.sysml.runtime.util.UtilFunctions;
-import org.apache.sysml.utils.NativeHelper;
 
 
 
@@ -4875,24 +4874,14 @@ public class MatrixBlock extends MatrixValue implements CacheBlock, Externalizab
 		
 		return sum_wt;
 	}
-	
-	public MatrixValue aggregateBinaryOperations(MatrixIndexes m1Index, MatrixValue m1Value, MatrixIndexes m2Index, MatrixValue m2Value, 
-			MatrixValue result, AggregateBinaryOperator op ) throws DMLRuntimeException
-	{
-		return aggregateBinaryOperations(m1Value, m2Value, result, op, NativeHelper.isNativeLibraryLoaded());
-	}
 
 	public MatrixValue aggregateBinaryOperations(MatrixIndexes m1Index, MatrixValue m1Value, MatrixIndexes m2Index, MatrixValue m2Value, 
-			MatrixValue result, AggregateBinaryOperator op, boolean enableNativeBLAS ) throws DMLRuntimeException
+			MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS ) throws DMLRuntimeException
 	{
-		return aggregateBinaryOperations(m1Value, m2Value, result, op, enableNativeBLAS);
-	}
-	
-	public MatrixValue aggregateBinaryOperations(MatrixValue m1Value, MatrixValue m2Value, MatrixValue result, AggregateBinaryOperator op) throws DMLRuntimeException {
-		return aggregateBinaryOperations(m1Value, m2Value, result, op, NativeHelper.isNativeLibraryLoaded());
+		return aggregateBinaryOperations(m1Value, m2Value, result, op, useNativeBLAS);
 	}
 
-	public MatrixValue aggregateBinaryOperations(MatrixValue m1Value, MatrixValue m2Value, MatrixValue result, AggregateBinaryOperator op, boolean nativeMatMult) 
+	public MatrixValue aggregateBinaryOperations(MatrixValue m1Value, MatrixValue m2Value, MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS) 
 		throws DMLRuntimeException
 	{
 		//check input types, dimensions, configuration
@@ -4918,7 +4907,7 @@ public class MatrixBlock extends MatrixValue implements CacheBlock, Externalizab
 			ret.reset(rl, cl, sp.sparse, sp.estimatedNonZeros);
 		
 		//compute matrix multiplication (only supported binary aggregate operation)
-		if( nativeMatMult )
+		if( useNativeBLAS )
 			LibMatrixNative.matrixMult(m1, m2, ret, op.getNumThreads());
 		else if( op.getNumThreads() > 1 )
 			LibMatrixMult.matrixMult(m1, m2, ret, op.getNumThreads());

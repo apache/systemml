@@ -41,6 +41,7 @@ public class ParVectorMatrixMultTest extends AutomatedTestBase
 	private static final double sparsity1 = 0.9;
 	private static final double sparsity2 = 0.1;
 	private static final double sparsity3 = 0.0;
+	private static final boolean useNativeBLAS = false;
 	
 	public enum SparsityType {
 		DENSE,
@@ -177,10 +178,10 @@ public class ParVectorMatrixMultTest extends AutomatedTestBase
 			AggregateOperator aop = new AggregateOperator(0, Plus.getPlusFnObject());
 			AggregateBinaryOperator abop = new AggregateBinaryOperator(Multiply.getMultiplyFnObject(), aop,
 					InfrastructureAnalyzer.getLocalParallelism());
-			MatrixBlock ret1 = (MatrixBlock)vector.aggregateBinaryOperations(vector, mb, new MatrixBlock(), abop);
+			MatrixBlock ret1 = (MatrixBlock)vector.aggregateBinaryOperations(vector, mb, new MatrixBlock(), abop, useNativeBLAS);
 			
 			//matrix-vector compressed
-			MatrixBlock ret2 = (MatrixBlock)cmb.aggregateBinaryOperations(vector, cmb, new MatrixBlock(), abop);
+			MatrixBlock ret2 = (MatrixBlock)cmb.aggregateBinaryOperations(vector, cmb, new MatrixBlock(), abop, useNativeBLAS);
 			
 			//compare result with input
 			double[][] d1 = DataConverter.convertToDoubleMatrix(ret1);

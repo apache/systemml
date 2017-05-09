@@ -47,6 +47,8 @@ public class MMCJMRReducerWithAggregator extends MMCJMRCombinerReducerBase
 	
 	public static long MIN_CACHE_SIZE = 64*1024*1024; //64MB
 	
+	boolean useNativeBLAS = false; // Since MR is in maintenance mode
+	
 	private MMCJMRInputCache cache = null;
 	private PartialAggregator aggregator = null;
 	
@@ -124,14 +126,14 @@ public class MMCJMRReducerWithAggregator extends MMCJMRCombinerReducerBase
 						//perform matrix multiplication
 						indexesbuffer.setIndexes(tmp.getKey().getRowIndex(), inIndex);
 						OperationsOnMatrixValues.performAggregateBinaryIgnoreIndexes(tmp.getValue(), inValue, valueBuffer, 
-								                               (AggregateBinaryOperator)aggBinInstruction.getOperator());
+								                               (AggregateBinaryOperator)aggBinInstruction.getOperator(), useNativeBLAS);
 					}
 					else //right cached
 					{
 						//perform matrix multiplication
 						indexesbuffer.setIndexes(inIndex, tmp.getKey().getColumnIndex());
 						OperationsOnMatrixValues.performAggregateBinaryIgnoreIndexes(inValue, tmp.getValue(), valueBuffer, 
-								                               (AggregateBinaryOperator)aggBinInstruction.getOperator());		
+								                               (AggregateBinaryOperator)aggBinInstruction.getOperator(), useNativeBLAS);		
 					}
 					
 					//aggregate block to output buffer or direct output

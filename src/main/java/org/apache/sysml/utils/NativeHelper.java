@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Vector;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -196,16 +197,21 @@ public class NativeHelper {
 		return loadBLAS("openblas", null);
 	}
 	
+	// This avoids unnecessary loading of previously loaded libraries.
+	private static HashSet<String> failedLoadingBLAS = new HashSet<String>();
 	private static boolean loadBLAS(String blas, String optionalMsg) {
 		try {
-			 System.loadLibrary(blas);
-			 return true;
+			if(failedLoadingBLAS.contains(blas))
+				return false;
+			System.loadLibrary(blas);
+			return true;
 		}
 		catch (UnsatisfiedLinkError e) {
 			if(!hintOnFailures.contains(blas))
 				hintOnFailures = hintOnFailures + blas + " ";
+			failedLoadingBLAS.add(blas);
 			if(optionalMsg != null)
-				LOG.debug("Unable to load " + blas + "(" + optionalMsg + "):" + e.getMessage());
+				LOG.warn("Unable to load " + blas + "(" + optionalMsg + "):" + e.getMessage());
 			else
 				LOG.debug("Unable to load " + blas + ":" + e.getMessage());
 			return false;

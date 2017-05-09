@@ -44,6 +44,7 @@ import org.apache.sysml.runtime.matrix.data.TripleIndexes;
 import org.apache.sysml.runtime.matrix.operators.AggregateBinaryOperator;
 import org.apache.sysml.runtime.matrix.operators.AggregateOperator;
 import org.apache.sysml.runtime.matrix.operators.Operator;
+import org.apache.sysml.utils.NativeHelper;
 
 public class RmmSPInstruction extends BinarySPInstruction 
 {
@@ -94,7 +95,7 @@ public class RmmSPInstruction extends BinarySPInstruction
 		//step 2: join prepared datasets, multiply, and aggregate
 		JavaPairRDD<MatrixIndexes,MatrixBlock> out = 
 				tmp1.join( tmp2 )                              //join by result block 
-		            .mapToPair( new RmmMultiplyFunction() );   //do matrix multiplication
+		            .mapToPair( new RmmMultiplyFunction(NativeHelper.isNativeLibraryLoaded()) );   //do matrix multiplication
 		out = RDDAggregateUtils.sumByKeyStable(out, false);    //aggregation per result block
 		
 		//put output block into symbol table (no lineage because single block)
@@ -162,11 +163,13 @@ public class RmmSPInstruction extends BinarySPInstruction
 		private static final long serialVersionUID = -5772410117511730911L;
 		
 		private AggregateBinaryOperator _op = null;
+		private boolean _useNativeBLAS;
 		
-		public RmmMultiplyFunction()
+		public RmmMultiplyFunction(boolean useNativeBLAS)
 		{
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
 			_op = new AggregateBinaryOperator(Multiply.getMultiplyFnObject(), agg);
+			_useNativeBLAS = useNativeBLAS;
 		}
 
 		@Override
@@ -181,7 +184,7 @@ public class RmmSPInstruction extends BinarySPInstruction
 			MatrixBlock blkOut = new MatrixBlock();
 			
 			//core block matrix multiplication 
-			blkIn1.aggregateBinaryOperations(blkIn1, blkIn2, blkOut, _op);
+			blkIn1.aggregateBinaryOperations(blkIn1, blkIn2, blkOut, _op, _useNativeBLAS);
 							
 			//output new tuple
 			return new Tuple2<MatrixIndexes, MatrixBlock>(ixOut, blkOut);

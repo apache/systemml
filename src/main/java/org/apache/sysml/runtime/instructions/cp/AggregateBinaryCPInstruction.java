@@ -73,12 +73,12 @@ public class AggregateBinaryCPInstruction extends BinaryCPInstruction
 		//get inputs
 		MatrixBlock matBlock1 = ec.getMatrixInput(input1.getName());
     MatrixBlock matBlock2 = ec.getMatrixInput(input2.getName());
-		
+    
     //compute matrix multiplication
     AggregateBinaryOperator ab_op = (AggregateBinaryOperator) _optr;
 		MatrixBlock soresBlock = null;
 		if( matBlock2 instanceof CompressedMatrixBlock )
-			soresBlock = (MatrixBlock) (matBlock2.aggregateBinaryOperations(matBlock1, matBlock2, new MatrixBlock(), ab_op));
+			soresBlock = (MatrixBlock) (matBlock2.aggregateBinaryOperations(matBlock1, matBlock2, new MatrixBlock(), ab_op, NativeHelper.isNativeLibraryLoaded()));
 		else  {
 			soresBlock = (MatrixBlock) (matBlock1.aggregateBinaryOperations(matBlock1, matBlock2, new MatrixBlock(), ab_op, NativeHelper.isNativeLibraryLoaded()));
 		}

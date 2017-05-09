@@ -40,6 +40,7 @@ import org.apache.sysml.runtime.matrix.operators.AggregateBinaryOperator;
 import org.apache.sysml.runtime.matrix.operators.AggregateOperator;
 import org.apache.sysml.runtime.matrix.operators.Operator;
 import org.apache.sysml.runtime.matrix.operators.ReorgOperator;
+import org.apache.sysml.utils.NativeHelper;
 
 
 public class ZipmmSPInstruction extends BinarySPInstruction 
@@ -90,7 +91,7 @@ public class ZipmmSPInstruction extends BinarySPInstruction
 		//process core zipmm matrix multiply (in contrast to cpmm, the join over original indexes
 		//preserves the original partitioning and with that potentially unnecessary join shuffle)
 		JavaRDD<MatrixBlock> out = in1.join(in2).values()     // join over original indexes
-				   .map(new ZipMultiplyFunction(_tRewrite));  // compute block multiplications, incl t(y)
+				   .map(new ZipMultiplyFunction(_tRewrite, NativeHelper.isNativeLibraryLoaded()));  // compute block multiplications, incl t(y)
 				   
 		//single-block aggregation (guaranteed by zipmm blocksize constraint)
 		MatrixBlock out2 = RDDAggregateUtils.sumStable(out);
@@ -113,13 +114,15 @@ public class ZipmmSPInstruction extends BinarySPInstruction
 		private AggregateBinaryOperator _abop = null;
 		private ReorgOperator _rop = null;
 		private boolean _tRewrite = true;
+		private boolean _useNativeBLAS;
 		
-		public ZipMultiplyFunction(boolean tRewrite)
+		public ZipMultiplyFunction(boolean tRewrite, boolean useNativeBLAS)
 		{
 			_tRewrite = tRewrite;
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
 			_abop = new AggregateBinaryOperator(Multiply.getMultiplyFnObject(), agg);
 			_rop = new ReorgOperator(SwapIndex.getSwapIndexFnObject());
+			_useNativeBLAS = useNativeBLAS;
 		}
 
 		@Override
@@ -133,7 +136,7 @@ public class ZipmmSPInstruction extends BinarySPInstruction
 			MatrixBlock tmp = (MatrixBlock)in2.reorgOperations(_rop, new MatrixBlock(), 0, 0, 0);
 				
 			//core matrix multiplication (for t(y)%*%X or t(X)%*%y)
-			return (MatrixBlock)tmp.aggregateBinaryOperations(tmp, in1, new MatrixBlock(), _abop);
+			return (MatrixBlock)tmp.aggregateBinaryOperations(tmp, in1, new MatrixBlock(), _abop, _useNativeBLAS);
 		}
 	}
 }

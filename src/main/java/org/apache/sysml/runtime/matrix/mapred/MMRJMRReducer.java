@@ -50,6 +50,7 @@ implements Reducer<TripleIndexes, TaggedMatrixValue, MatrixIndexes, MatrixValue>
 	//aggregate binary instruction for the mmrj
 	protected AggregateBinaryInstruction[] aggBinInstructions=null;
 //	private MatrixIndexes indexBuf=new MatrixIndexes();
+	private boolean useNativeBLAS = false; // Since MR is in maintenance mode
 	
 	@Override
 	public void reduce(TripleIndexes triple, Iterator<TaggedMatrixValue> values,
@@ -112,7 +113,7 @@ implements Reducer<TripleIndexes, TaggedMatrixValue, MatrixIndexes, MatrixValue>
 		{
 			try {
 				resultblock=left.getValue().aggregateBinaryOperations(left.getValue(), right.getValue(), 
-						resultblock, (AggregateBinaryOperator) aggBinInstruction.getOperator());
+						resultblock, (AggregateBinaryOperator) aggBinInstruction.getOperator(), useNativeBLAS);
 		//		System.out.println("resultblock: \n"+resultblock);
 				IndexedMatrixValue out=cachedValues.getFirst(aggBinInstruction.output);
 				if(out==null)

@@ -54,6 +54,7 @@ import org.apache.sysml.runtime.matrix.data.OperationsOnMatrixValues;
 import org.apache.sysml.runtime.matrix.operators.AggregateBinaryOperator;
 import org.apache.sysml.runtime.matrix.operators.AggregateOperator;
 import org.apache.sysml.runtime.matrix.operators.Operator;
+import org.apache.sysml.utils.NativeHelper;
 
 public class MapmmSPInstruction extends BinarySPInstruction 
 {	
@@ -138,7 +139,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 		//execute mapmm and aggregation if necessary and put output into symbol table
 		if( _aggtype == SparkAggType.SINGLE_BLOCK )
 		{
-			JavaRDD<MatrixBlock> out = in1.map(new RDDMapMMFunction2(type, in2));
+			JavaRDD<MatrixBlock> out = in1.map(new RDDMapMMFunction2(type, in2, NativeHelper.isNativeLibraryLoaded()));
 			MatrixBlock out2 = RDDAggregateUtils.sumStable(out);
 			
 			//put output block into symbol table (no lineage because single block)
@@ -155,12 +156,12 @@ public class MapmmSPInstruction extends BinarySPInstruction
 							+numParts+" partitions to satisfy size restrictions of output partitions.");
 					in1 = in1.repartition(numParts);
 				}
-				out = in1.flatMapToPair( new RDDFlatMapMMFunction(type, in2) );
+				out = in1.flatMapToPair( new RDDFlatMapMMFunction(type, in2, NativeHelper.isNativeLibraryLoaded()) );
 			}
 			else if( preservesPartitioning(mcRdd, type) )
-				out = in1.mapPartitionsToPair(new RDDMapMMPartitionFunction(type, in2), true);
+				out = in1.mapPartitionsToPair(new RDDMapMMPartitionFunction(type, in2, NativeHelper.isNativeLibraryLoaded()), true);
 			else
-				out = in1.mapToPair( new RDDMapMMFunction(type, in2) );
+				out = in1.mapToPair( new RDDMapMMFunction(type, in2, NativeHelper.isNativeLibraryLoaded()) );
 			
 			//empty output block filter
 			if( !_outputEmpty )
@@ -252,11 +253,13 @@ public class MapmmSPInstruction extends BinarySPInstruction
 		private final CacheType _type;
 		private final AggregateBinaryOperator _op;
 		private final PartitionedBroadcast<MatrixBlock> _pbc;
+		private boolean _useNativeBLAS;
 		
-		public RDDMapMMFunction( CacheType type, PartitionedBroadcast<MatrixBlock> binput )
+		public RDDMapMMFunction( CacheType type, PartitionedBroadcast<MatrixBlock> binput, boolean useNativeBLAS )
 		{
 			_type = type;
 			_pbc = binput;
+			_useNativeBLAS = useNativeBLAS;
 			
 			//created operator for reuse
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
@@ -280,7 +283,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 				
 				//execute matrix-vector mult
 				OperationsOnMatrixValues.performAggregateBinary( 
-						new MatrixIndexes(1,ixIn.getRowIndex()), left, ixIn, blkIn, ixOut, blkOut, _op);						
+						new MatrixIndexes(1,ixIn.getRowIndex()), left, ixIn, blkIn, ixOut, blkOut, _op, _useNativeBLAS);						
 			}
 			else //if( _type == CacheType.RIGHT )
 			{
@@ -289,7 +292,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 				
 				//execute matrix-vector mult
 				OperationsOnMatrixValues.performAggregateBinary(
-						ixIn, blkIn, new MatrixIndexes(ixIn.getColumnIndex(),1), right, ixOut, blkOut, _op);					
+						ixIn, blkIn, new MatrixIndexes(ixIn.getColumnIndex(),1), right, ixOut, blkOut, _op, _useNativeBLAS);					
 			}
 			
 			//output new tuple
@@ -307,11 +310,13 @@ public class MapmmSPInstruction extends BinarySPInstruction
 		private final CacheType _type;
 		private final AggregateBinaryOperator _op;
 		private final PartitionedBroadcast<MatrixBlock> _pbc;
+		private boolean _useNativeBLAS;
 		
-		public RDDMapMMFunction2( CacheType type, PartitionedBroadcast<MatrixBlock> binput )
+		public RDDMapMMFunction2( CacheType type, PartitionedBroadcast<MatrixBlock> binput, boolean useNativeBLAS )
 		{
 			_type = type;
 			_pbc = binput;
+			_useNativeBLAS = useNativeBLAS;
 			
 			//created operator for reuse
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
@@ -332,7 +337,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 				
 				//execute matrix-vector mult
 				return (MatrixBlock) OperationsOnMatrixValues.performAggregateBinaryIgnoreIndexes( 
-						left, blkIn, new MatrixBlock(), _op);						
+						left, blkIn, new MatrixBlock(), _op, _useNativeBLAS);						
 			}
 			else //if( _type == CacheType.RIGHT )
 			{
@@ -341,7 +346,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 				
 				//execute matrix-vector mult
 				return (MatrixBlock) OperationsOnMatrixValues.performAggregateBinaryIgnoreIndexes(
-						blkIn, right, new MatrixBlock(), _op);
+						blkIn, right, new MatrixBlock(), _op, _useNativeBLAS);
 			}
 		}
 	}
@@ -353,11 +358,13 @@ public class MapmmSPInstruction extends BinarySPInstruction
 		private final CacheType _type;
 		private final AggregateBinaryOperator _op;
 		private final PartitionedBroadcast<MatrixBlock> _pbc;
+		private boolean _useNativeBLAS;
 		
-		public RDDMapMMPartitionFunction( CacheType type, PartitionedBroadcast<MatrixBlock> binput )
+		public RDDMapMMPartitionFunction( CacheType type, PartitionedBroadcast<MatrixBlock> binput, boolean useNativeBLAS )
 		{
 			_type = type;
 			_pbc = binput;
+			_useNativeBLAS = useNativeBLAS;
 			
 			//created operator for reuse
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
@@ -368,7 +375,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 		public LazyIterableIterator<Tuple2<MatrixIndexes, MatrixBlock>> call(Iterator<Tuple2<MatrixIndexes, MatrixBlock>> arg0)
 			throws Exception 
 		{
-			return new MapMMPartitionIterator(arg0);
+			return new MapMMPartitionIterator(arg0, _useNativeBLAS);
 		}
 		
 		/**
@@ -378,8 +385,10 @@ public class MapmmSPInstruction extends BinarySPInstruction
 		 */
 		private class MapMMPartitionIterator extends LazyIterableIterator<Tuple2<MatrixIndexes, MatrixBlock>>
 		{
-			public MapMMPartitionIterator(Iterator<Tuple2<MatrixIndexes, MatrixBlock>> in) {
+			boolean _useNativeBLAS;
+			public MapMMPartitionIterator(Iterator<Tuple2<MatrixIndexes, MatrixBlock>> in, boolean useNativeBLAS) {
 				super(in);
+				_useNativeBLAS = useNativeBLAS;
 			}
 
 			@Override
@@ -396,7 +405,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 					MatrixBlock left = _pbc.getBlock(1, (int)ixIn.getRowIndex());
 					
 					//execute index preserving matrix multiplication
-					left.aggregateBinaryOperations(left, blkIn, blkOut, _op);						
+					left.aggregateBinaryOperations(left, blkIn, blkOut, _op, _useNativeBLAS);						
 				}
 				else //if( _type == CacheType.RIGHT )
 				{
@@ -404,7 +413,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 					MatrixBlock right = _pbc.getBlock((int)ixIn.getColumnIndex(), 1);
 
 					//execute index preserving matrix multiplication
-					blkIn.aggregateBinaryOperations(blkIn, right, blkOut, _op);	
+					blkIn.aggregateBinaryOperations(blkIn, right, blkOut, _op, _useNativeBLAS);	
 				}
 			
 				return new Tuple2<MatrixIndexes,MatrixBlock>(ixIn, blkOut);
@@ -419,11 +428,13 @@ public class MapmmSPInstruction extends BinarySPInstruction
 		private final CacheType _type;
 		private final AggregateBinaryOperator _op;
 		private final PartitionedBroadcast<MatrixBlock> _pbc;
+		private boolean _useNativeBLAS;
 		
-		public RDDFlatMapMMFunction( CacheType type, PartitionedBroadcast<MatrixBlock> binput )
+		public RDDFlatMapMMFunction( CacheType type, PartitionedBroadcast<MatrixBlock> binput, boolean useNativeBLAS )
 		{
 			_type = type;
 			_pbc = binput;
+			_useNativeBLAS = useNativeBLAS;
 			
 			//created operator for reuse
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
@@ -451,7 +462,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 					
 					//execute matrix-vector mult
 					OperationsOnMatrixValues.performAggregateBinary( 
-							new MatrixIndexes(i,ixIn.getRowIndex()), left, ixIn, blkIn, ixOut, blkOut, _op);	
+							new MatrixIndexes(i,ixIn.getRowIndex()), left, ixIn, blkIn, ixOut, blkOut, _op, _useNativeBLAS);	
 					
 					ret.add(new Tuple2<MatrixIndexes, MatrixBlock>(ixOut, blkOut));
 				}
@@ -469,7 +480,7 @@ public class MapmmSPInstruction extends BinarySPInstruction
 					
 					//execute matrix-vector mult
 					OperationsOnMatrixValues.performAggregateBinary(
-							ixIn, blkIn, new MatrixIndexes(ixIn.getColumnIndex(),j), right, ixOut, blkOut, _op);					
+							ixIn, blkIn, new MatrixIndexes(ixIn.getColumnIndex(),j), right, ixOut, blkOut, _op, _useNativeBLAS);					
 				
 					ret.add(new Tuple2<MatrixIndexes, MatrixBlock>(ixOut, blkOut));
 				}

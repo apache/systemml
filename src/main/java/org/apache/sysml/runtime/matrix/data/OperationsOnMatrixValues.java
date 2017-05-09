@@ -261,7 +261,7 @@ public class OperationsOnMatrixValues
 	}
 	
 	public static void performAggregateBinary(MatrixIndexes indexes1, MatrixValue value1, MatrixIndexes indexes2, MatrixValue value2, 
-			MatrixIndexes indexesOut, MatrixValue valueOut, AggregateBinaryOperator op)
+			MatrixIndexes indexesOut, MatrixValue valueOut, AggregateBinaryOperator op, boolean useNativeBLAS)
 	throws DMLRuntimeException
 	{
 		//compute output index
@@ -269,21 +269,21 @@ public class OperationsOnMatrixValues
 		
 		//perform on the value
 		if( value2 instanceof CompressedMatrixBlock )
-			value2.aggregateBinaryOperations(value1, value2, valueOut, op);
+			value2.aggregateBinaryOperations(value1, value2, valueOut, op, useNativeBLAS);
 		else //default
-			value1.aggregateBinaryOperations(indexes1, value1, indexes2, value2, valueOut, op);
+			value1.aggregateBinaryOperations(indexes1, value1, indexes2, value2, valueOut, op, useNativeBLAS);
 	}
 
 	public static MatrixValue performAggregateBinaryIgnoreIndexes(
 			MatrixValue value1, MatrixValue value2,
-			MatrixValue valueOut, AggregateBinaryOperator op) 
+			MatrixValue valueOut, AggregateBinaryOperator op, boolean useNativeBLAS) 
 	throws DMLRuntimeException {
 			
 		//perform on the value
 		if( value2 instanceof CompressedMatrixBlock )
-			value2.aggregateBinaryOperations(value1, value2, valueOut, op);
+			value2.aggregateBinaryOperations(value1, value2, valueOut, op, useNativeBLAS);
 		else
-			value1.aggregateBinaryOperations(value1, value2, valueOut, op);
+			value1.aggregateBinaryOperations(value1, value2, valueOut, op, useNativeBLAS);
 		return valueOut;
 	}
 

@@ -50,6 +50,7 @@ import org.apache.sysml.runtime.matrix.data.OperationsOnMatrixValues;
 import org.apache.sysml.runtime.matrix.operators.AggregateBinaryOperator;
 import org.apache.sysml.runtime.matrix.operators.AggregateOperator;
 import org.apache.sysml.runtime.matrix.operators.Operator;
+import org.apache.sysml.utils.NativeHelper;
 
 import scala.Tuple2;
 
@@ -109,7 +110,7 @@ public class Tsmm2SPInstruction extends UnarySPInstruction
 		if( OptimizerUtils.estimateSize(outputDim, outputDim) <= 32*1024*1024 ) { //default: <=32MB
 			//output large blocks and reduceAll to avoid skew on combineByKey
 			JavaRDD<MatrixBlock> tmp2 = in.map(
-					new RDDTSMM2ExtFunction(bpmb, _type, outputDim, (int)mc.getRowsPerBlock()));
+					new RDDTSMM2ExtFunction(bpmb, _type, outputDim, (int)mc.getRowsPerBlock(), NativeHelper.isNativeLibraryLoaded()));
 			MatrixBlock out = RDDAggregateUtils.sumStable(tmp2);
 		      
 			//put output block into symbol table (no lineage because single block)
@@ -118,7 +119,7 @@ public class Tsmm2SPInstruction extends UnarySPInstruction
 		}
 		else {
 			//output individual output blocks and aggregate by key (no action)
-			JavaPairRDD<MatrixIndexes,MatrixBlock> tmp2 = in.flatMapToPair(new RDDTSMM2Function(bpmb, _type));
+			JavaPairRDD<MatrixIndexes,MatrixBlock> tmp2 = in.flatMapToPair(new RDDTSMM2Function(bpmb, _type, NativeHelper.isNativeLibraryLoaded()));
 			JavaPairRDD<MatrixIndexes,MatrixBlock> out = RDDAggregateUtils.sumByKeyStable(tmp2, false);
 			
 			//put output RDD handle into symbol table
@@ -135,10 +136,12 @@ public class Tsmm2SPInstruction extends UnarySPInstruction
 		private Broadcast<PartitionedBlock<MatrixBlock>> _pb = null;
 		private MMTSJType _type = null;
 		private AggregateBinaryOperator _op = null;
+		private boolean _useNativeBLAS;
 		
-		public RDDTSMM2Function( Broadcast<PartitionedBlock<MatrixBlock>> pb, MMTSJType type ) {
+		public RDDTSMM2Function( Broadcast<PartitionedBlock<MatrixBlock>> pb, MMTSJType type, boolean useNativeBLAS ) {
 			_pb = pb;
 			_type = type;
+			_useNativeBLAS = useNativeBLAS;
 			
 			//created operator for reuse
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
@@ -166,7 +169,7 @@ public class Tsmm2SPInstruction extends UnarySPInstruction
 				MatrixBlock mbin2t = transpose(mbin2, new MatrixBlock()); //prep for transpose rewrite mm
 				
 				MatrixBlock out2 = (MatrixBlock) OperationsOnMatrixValues.performAggregateBinaryIgnoreIndexes( //mm
-						_type.isLeft() ? mbin2t : mbin, _type.isLeft() ? mbin : mbin2t, new MatrixBlock(), _op);
+						_type.isLeft() ? mbin2t : mbin, _type.isLeft() ? mbin : mbin2t, new MatrixBlock(), _op, _useNativeBLAS);
 				MatrixIndexes ixout2 = _type.isLeft() ? new MatrixIndexes(2,1) : new MatrixIndexes(1,2);
 				ret.add(new Tuple2<MatrixIndexes,MatrixBlock>(ixout2, out2));
 				
@@ -192,12 +195,14 @@ public class Tsmm2SPInstruction extends UnarySPInstruction
 		private AggregateBinaryOperator _op = null;
 		private int _outputDim = -1;
 		private int _blen = -1; 
+		private boolean _useNativeBLAS;
 		
-		public RDDTSMM2ExtFunction( Broadcast<PartitionedBlock<MatrixBlock>> pb, MMTSJType type, int outputDim, int blen ) {
+		public RDDTSMM2ExtFunction( Broadcast<PartitionedBlock<MatrixBlock>> pb, MMTSJType type, int outputDim, int blen, boolean useNativeBLAS ) {
 			_pb = pb;
 			_type = type;
 			_outputDim = outputDim;
 			_blen = blen;
+			_useNativeBLAS = useNativeBLAS;
 			
 			//created operator for reuse
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
@@ -228,7 +233,7 @@ public class Tsmm2SPInstruction extends UnarySPInstruction
 				MatrixBlock mbin2t = transpose(mbin2, new MatrixBlock()); //prep for transpose rewrite mm
 				
 				MatrixBlock out2 = (MatrixBlock) OperationsOnMatrixValues.performAggregateBinaryIgnoreIndexes( //mm
-						_type.isLeft() ? mbin2t : mbin, _type.isLeft() ? mbin : mbin2t, new MatrixBlock(), _op);
+						_type.isLeft() ? mbin2t : mbin, _type.isLeft() ? mbin : mbin2t, new MatrixBlock(), _op, _useNativeBLAS);
 				
 				MatrixIndexes ixout2 = _type.isLeft() ? new MatrixIndexes(2,1) : new MatrixIndexes(1,2);
 				out.copy((int)(ixout2.getRowIndex()-1)*_blen, (int)(ixout2.getRowIndex()-1)*_blen+out2.getNumRows()-1, 

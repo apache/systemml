@@ -44,6 +44,8 @@ public class AggregateBinaryInstruction extends BinaryMRInstructionBase implemen
 {	
 	private String _opcode = null;
 	
+	boolean useNativeBLAS = false; // Since MR is in maintenance mode
+	
 	//optional argument for cpmm
 	private MMCJType _aggType = MMCJType.AGG;
 	
@@ -166,7 +168,7 @@ public class AggregateBinaryInstruction extends BinaryMRInstructionBase implemen
 					    in1.getIndexes(), in1.getValue(), 
 						in2.getIndexes(), in2.getValue(), 
 						out.getIndexes(), out.getValue(), 
-						((AggregateBinaryOperator)optr));
+						((AggregateBinaryOperator)optr), useNativeBLAS);
 			
 			//put the output value in the cache
 			if(out==tempValue)
@@ -213,7 +215,7 @@ public class AggregateBinaryInstruction extends BinaryMRInstructionBase implemen
 				//process instruction
 				OperationsOnMatrixValues.performAggregateBinary(in1.getIndexes(), in1.getValue(), 
 							in2BlockIndex, in2BlockValue, out.getIndexes(), out.getValue(), 
-							((AggregateBinaryOperator)optr));	
+							((AggregateBinaryOperator)optr), useNativeBLAS);	
 				
 				removeOutput &= ( !_outputEmptyBlocks && out.getValue().isEmpty() );
 			}
@@ -242,7 +244,7 @@ public class AggregateBinaryInstruction extends BinaryMRInstructionBase implemen
 				OperationsOnMatrixValues.performAggregateBinary(in1BlockIndex, in1BlockValue, 
 						in2.getIndexes(), in2.getValue(),
 						out.getIndexes(), out.getValue(), 
-							((AggregateBinaryOperator)optr));
+							((AggregateBinaryOperator)optr), useNativeBLAS);
 			
 				removeOutput &= ( !_outputEmptyBlocks && out.getValue().isEmpty() );
 			}

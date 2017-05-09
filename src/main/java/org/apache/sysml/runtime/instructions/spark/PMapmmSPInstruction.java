@@ -49,6 +49,7 @@ import org.apache.sysml.runtime.matrix.data.OperationsOnMatrixValues;
 import org.apache.sysml.runtime.matrix.operators.AggregateBinaryOperator;
 import org.apache.sysml.runtime.matrix.operators.AggregateOperator;
 import org.apache.sysml.runtime.matrix.operators.Operator;
+import org.apache.sysml.utils.NativeHelper;
 
 /**
  * This pmapmm matrix multiplication instruction is still experimental
@@ -119,7 +120,7 @@ public class PMapmmSPInstruction extends BinarySPInstruction
 			
 			//matrix multiplication
 			JavaPairRDD<MatrixIndexes,MatrixBlock> rdd2 = in2
-					.flatMapToPair(new PMapMMFunction(bpmb, i/mc1.getRowsPerBlock()));
+					.flatMapToPair(new PMapMMFunction(bpmb, i/mc1.getRowsPerBlock(), NativeHelper.isNativeLibraryLoaded()));
 			rdd2 = RDDAggregateUtils.sumByKeyStable(rdd2, false);
 			rdd2.persist(pmapmmStorageLevel)
 			    .count();
@@ -171,11 +172,13 @@ public class PMapmmSPInstruction extends BinarySPInstruction
 		private AggregateBinaryOperator _op = null;
 		private Broadcast<PartitionedBlock<MatrixBlock>> _pbc = null;
 		private long _offset = -1;
+		private boolean _useNativeBLAS;
 		
-		public PMapMMFunction( Broadcast<PartitionedBlock<MatrixBlock>> binput, long offset )
+		public PMapMMFunction( Broadcast<PartitionedBlock<MatrixBlock>> binput, long offset, boolean useNativeBLAS )
 		{
 			_pbc = binput;
 			_offset = offset;
+			_useNativeBLAS = useNativeBLAS;
 			
 			//created operator for reuse
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
@@ -202,7 +205,7 @@ public class PMapmmSPInstruction extends BinarySPInstruction
 			
 				//execute matrix-vector mult
 				OperationsOnMatrixValues.performAggregateBinary( 
-						new MatrixIndexes(i,ixIn.getRowIndex()), left, ixIn, blkIn, ixOut, blkOut, _op);						
+						new MatrixIndexes(i,ixIn.getRowIndex()), left, ixIn, blkIn, ixOut, blkOut, _op, _useNativeBLAS);						
 				
 				//output new tuple
 				ixOut.setIndexes(_offset+i, ixOut.getColumnIndex());

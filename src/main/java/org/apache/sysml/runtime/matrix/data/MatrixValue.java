@@ -146,11 +146,11 @@ public abstract class MatrixValue implements WritableComparable
 	throws DMLRuntimeException;
 	
 	public abstract MatrixValue aggregateBinaryOperations(MatrixValue m1Value, MatrixValue m2Value, 
-			MatrixValue result, AggregateBinaryOperator op) 
+			MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS) 
 	throws DMLRuntimeException;
 	
 	public abstract MatrixValue aggregateBinaryOperations(MatrixIndexes m1Index, MatrixValue m1Value, MatrixIndexes m2Index, MatrixValue m2Value, 
-			MatrixValue result, AggregateBinaryOperator op) 
+			MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS) 
 	throws DMLRuntimeException;
 	
 	public abstract MatrixValue unaryOperations(UnaryOperator op, MatrixValue result) 

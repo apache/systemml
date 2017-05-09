@@ -53,7 +53,7 @@ public class CM_N_COVCell extends MatrixValue implements WritableComparable
 
 	@Override
 	public MatrixValue aggregateBinaryOperations(MatrixValue m1Value,
-			MatrixValue m2Value, MatrixValue result, AggregateBinaryOperator op)
+			MatrixValue m2Value, MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS)
 			throws DMLRuntimeException {
 		throw new DMLRuntimeException("operation not supported fro WeightedCell");
 	}
@@ -319,7 +319,7 @@ public class CM_N_COVCell extends MatrixValue implements WritableComparable
 	@Override
 	public MatrixValue aggregateBinaryOperations(MatrixIndexes m1Index,
 			MatrixValue m1Value, MatrixIndexes m2Index, MatrixValue m2Value,
-			MatrixValue result, AggregateBinaryOperator op)
+			MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS)
 			throws DMLRuntimeException {
 		throw new DMLRuntimeException("operation not supported fro WeightedCell");
 	}

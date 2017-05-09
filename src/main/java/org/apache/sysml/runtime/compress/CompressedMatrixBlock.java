@@ -963,18 +963,18 @@ public class CompressedMatrixBlock extends MatrixBlock implements Externalizable
 	}
 	
 	@Override
-	public MatrixValue aggregateBinaryOperations(MatrixValue mv1, MatrixValue mv2, MatrixValue result, AggregateBinaryOperator op)
+	public MatrixValue aggregateBinaryOperations(MatrixValue mv1, MatrixValue mv2, MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS)
 			throws DMLRuntimeException 
 	{
 		//call uncompressed matrix mult if necessary
 		if( !isCompressed() ) {
-			return super.aggregateBinaryOperations(mv1, mv2, result, op);
+			return super.aggregateBinaryOperations(mv1, mv2, result, op, useNativeBLAS);
 		}
 	
 		//multi-threaded mm of single uncompressed colgroup
 		if( isSingleUncompressedGroup() ){
 			MatrixBlock tmp = ((ColGroupUncompressed)_colGroups.get(0)).getData();
-			return tmp.aggregateBinaryOperations(this==mv1?tmp:mv1, this==mv2?tmp:mv2, result, op);
+			return tmp.aggregateBinaryOperations(this==mv1?tmp:mv1, this==mv2?tmp:mv2, result, op, useNativeBLAS);
 		}
 		
 		Timing time = LOG.isDebugEnabled() ? new Timing(true) : null;
@@ -2003,12 +2003,12 @@ public class CompressedMatrixBlock extends MatrixBlock implements Externalizable
 	@Override
 	public MatrixValue aggregateBinaryOperations(MatrixIndexes m1Index,
 			MatrixValue m1Value, MatrixIndexes m2Index, MatrixValue m2Value,
-			MatrixValue result, AggregateBinaryOperator op)
+			MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS)
 			throws DMLRuntimeException {
 		printDecompressWarning("aggregateBinaryOperations");
 		MatrixBlock left = isCompressed() ? decompress() : this;
 		MatrixBlock right = getUncompressed(m2Value);
-		return left.aggregateBinaryOperations(m1Index, left, m2Index, right, result, op);
+		return left.aggregateBinaryOperations(m1Index, left, m2Index, right, result, op, useNativeBLAS);
 	}
 
 	@Override

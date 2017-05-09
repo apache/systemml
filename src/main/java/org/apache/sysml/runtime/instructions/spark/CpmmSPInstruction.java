@@ -39,6 +39,7 @@ import org.apache.sysml.runtime.matrix.mapred.IndexedMatrixValue;
 import org.apache.sysml.runtime.matrix.operators.AggregateBinaryOperator;
 import org.apache.sysml.runtime.matrix.operators.AggregateOperator;
 import org.apache.sysml.runtime.matrix.operators.Operator;
+import org.apache.sysml.utils.NativeHelper;
 
 /**
  * Cpmm: cross-product matrix multiplication operation (distributed matrix multiply
@@ -98,7 +99,7 @@ public class CpmmSPInstruction extends BinarySPInstruction
 		JavaPairRDD<Long, IndexedMatrixValue> tmp2 = in2.mapToPair(new CpmmIndexFunction(false));
 		JavaPairRDD<MatrixIndexes,MatrixBlock> out = tmp1
 				   .join(tmp2)                              // join over common dimension
-				   .mapToPair(new CpmmMultiplyFunction());  // compute block multiplications
+				   .mapToPair(new CpmmMultiplyFunction(NativeHelper.isNativeLibraryLoaded()));  // compute block multiplications
 				   
 		//process cpmm aggregation and handle outputs				
 		if( _aggtype == SparkAggType.SINGLE_BLOCK )
@@ -150,11 +151,13 @@ public class CpmmSPInstruction extends BinarySPInstruction
 		private static final long serialVersionUID = -2009255629093036642L;
 		
 		private AggregateBinaryOperator _op = null;
+		private boolean _useNativeBLAS;
 		
-		public CpmmMultiplyFunction()
+		public CpmmMultiplyFunction(boolean useNativeBLAS)
 		{
 			AggregateOperator agg = new AggregateOperator(0, Plus.getPlusFnObject());
 			_op = new AggregateBinaryOperator(Multiply.getMultiplyFnObject(), agg);
+			_useNativeBLAS = useNativeBLAS;
 		}
 
 		@Override
@@ -167,7 +170,7 @@ public class CpmmSPInstruction extends BinarySPInstruction
 			MatrixBlock blkOut = new MatrixBlock();
 			
 			//core block matrix multiplication 
-			blkIn1.aggregateBinaryOperations(blkIn1, blkIn2, blkOut, _op);
+			blkIn1.aggregateBinaryOperations(blkIn1, blkIn2, blkOut, _op, _useNativeBLAS);
 			
 			//return target block
 			ixOut.setIndexes(arg0._2()._1().getIndexes().getRowIndex(), 

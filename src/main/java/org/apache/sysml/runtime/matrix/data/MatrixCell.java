@@ -170,7 +170,7 @@ public class MatrixCell extends MatrixValue implements WritableComparable, Seria
 
 	@Override
 	public MatrixValue aggregateBinaryOperations(MatrixValue value1,
-			MatrixValue value2, MatrixValue result, AggregateBinaryOperator op) 
+			MatrixValue value2, MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS) 
 	throws DMLRuntimeException {
 		
 		MatrixCell c1=checkType(value1);
@@ -431,7 +431,7 @@ public class MatrixCell extends MatrixValue implements WritableComparable, Seria
 	@Override
 	public MatrixValue aggregateBinaryOperations(MatrixIndexes m1Index,
 			MatrixValue m1Value, MatrixIndexes m2Index, MatrixValue m2Value,
-			MatrixValue result, AggregateBinaryOperator op)
+			MatrixValue result, AggregateBinaryOperator op, boolean useNativeBLAS)
 			throws DMLRuntimeException {
 		throw new DMLRuntimeException("MatrixCell.aggregateBinaryOperations should never be called");
 	}

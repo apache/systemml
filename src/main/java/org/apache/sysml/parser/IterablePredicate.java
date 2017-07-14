@@ -19,6 +19,7 @@
 
 package org.apache.sysml.parser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.sysml.lops.Lop;
@@ -27,21 +28,23 @@ import org.apache.sysml.lops.Lop;
 public class IterablePredicate extends Expression 
 {
 	
-	private DataIdentifier _iterVar;	// variable being iterated over
+	private ArrayList<DataIdentifier> _iterVar;	// variable being iterated over
 	private Expression _fromExpr;
 	private Expression _toExpr;
 	private Expression _incrementExpr;
 	private HashMap<String,String> _parforParams;
+	private boolean _isIterVarMatrix;
 	
 	
-	public IterablePredicate(DataIdentifier iterVar, Expression fromExpr, Expression toExpr, 
+	public IterablePredicate(ArrayList<DataIdentifier> iterVar, Expression fromExpr, Expression toExpr, 
 			Expression incrementExpr, HashMap<String,String> parForParamValues,
-			String filename, int blp, int bcp, int elp, int ecp)
+			String filename, int blp, int bcp, int elp, int ecp, boolean isIterVarMatrix)
 	{
 		_iterVar = iterVar;
 		_fromExpr = fromExpr;
 		_toExpr = toExpr;
 		_incrementExpr = incrementExpr;
+		_isIterVarMatrix = isIterVarMatrix;
 		
 		_parforParams = parForParamValues;
 		this.setAllPositions(filename, blp, bcp, elp, ecp);
@@ -51,7 +54,8 @@ public class IterablePredicate extends Expression
 	{ 
 		StringBuilder sb = new StringBuilder();
 		sb.append( "(" );
-		sb.append( _iterVar.getName() );
+		for(DataIdentifier v : _iterVar)
+			sb.append( v.getName() );
 		sb.append(" in seq(");
 		sb.append(_fromExpr.toString());
 		sb.append(",");
@@ -88,7 +92,8 @@ public class IterablePredicate extends Expression
 	 
 	public VariableSet variablesUpdated() {
 		VariableSet result = new VariableSet();
-		result.addVariable(_iterVar.getName(), _iterVar);
+		for(DataIdentifier v : _iterVar)
+			result.addVariable(v.getName(), v);
 		
 	 	return result;
 	}
@@ -107,7 +112,10 @@ public class IterablePredicate extends Expression
 		throws LanguageException 
 	{		
 		//recursive validate
-		if (_iterVar instanceof FunctionCallIdentifier
+		boolean isIterVarFunctionCallIdentifer = false;
+		for(DataIdentifier v : _iterVar)
+			isIterVarFunctionCallIdentifer = isIterVarFunctionCallIdentifer || (v instanceof FunctionCallIdentifier);
+		if (isIterVarFunctionCallIdentifer
 				|| _fromExpr instanceof FunctionCallIdentifier
 				||	_toExpr instanceof FunctionCallIdentifier
 				||	_incrementExpr instanceof FunctionCallIdentifier){
@@ -116,19 +124,33 @@ public class IterablePredicate extends Expression
 		}
 		
 		//1) VALIDATE ITERATION VARIABLE (index)
-		// check the variable has either 1) not been defined already OR 2) defined as integer scalar   
-		if (ids.containsKey(_iterVar.getName())){
-			DataIdentifier otherDI = ids.get(_iterVar.getName());
-			if( otherDI.getDataType() != DataType.SCALAR || otherDI.getValueType() != ValueType.INT ){
-				raiseValidateError("iterable predicate in for loop '" + _iterVar.getName() + "' must be a scalar integer", conditional);
-			}	
+		// check the variable has either 1) not been defined already OR 2) defined as integer scalar
+		for(DataIdentifier v : _iterVar) {
+			if (ids.containsKey(v.getName())){
+				DataIdentifier otherDI = ids.get(v.getName());
+				if( otherDI.getDataType() != DataType.SCALAR || otherDI.getValueType() != ValueType.INT ){
+					raiseValidateError("iterable predicate in for loop '" + v.getName() + "' must be a scalar integer", conditional);
+				}	
+			}
 		}
 		
 		// set the values for DataIdentifer iterable variable
-		_iterVar.setIntProperties();
+		if(_isIterVarMatrix) {
+			for(DataIdentifier v : _iterVar) {
+				v.setDataType(DataType.MATRIX);
+				v.setValueType(ValueType.DOUBLE);
+				v.setDimensions(-1, -1);
+			}
+		}
+		else {
+			if(_iterVar.size() != 1)
+				raiseValidateError("expected only one iterable variable", conditional);
+			_iterVar.get(0).setIntProperties();
+		}
 			
 		// add the iterVar to the variable set
-		ids.put(_iterVar.getName(), _iterVar);
+		for(DataIdentifier v : _iterVar)
+			ids.put(v.getName(), v);
 		
 		
 		//2) VALIDATE FOR PREDICATE in (from, to, increment)		
@@ -148,16 +170,18 @@ public class IterablePredicate extends Expression
 			_incrementExpr.validateExpression(ids, constVars, conditional);
 		
 		//check for scalar expression output
-		checkNumericScalarOutput( _fromExpr );
-		checkNumericScalarOutput( _toExpr );
-		checkNumericScalarOutput( _incrementExpr );
+		if(!_isIterVarMatrix) {
+			checkNumericScalarOutput( _fromExpr );
+			checkNumericScalarOutput( _toExpr );
+			checkNumericScalarOutput( _incrementExpr );
+		}
 	}
 		
-	public DataIdentifier getIterVar() {
+	public ArrayList<DataIdentifier> getIterVar() {
 		return _iterVar;
 	}
 
-	public void setIterVar(DataIdentifier iterVar) {
+	public void setIterVar(ArrayList<DataIdentifier> iterVar) {
 		_iterVar = iterVar;
 	}
 
@@ -193,18 +217,19 @@ public class IterablePredicate extends Expression
 		_parforParams = params;
 	}
 	
-	public static String[] createIterablePredicateVariables( String varName, Lop from, Lop to, Lop incr )
+	public static String[] createIterablePredicateVariables( ArrayList<DataIdentifier> iterVarNames, Lop from, Lop to, Lop incr )
 	{
-		String[] ret = new String[4]; //varname, from, to, incr
+		String[] ret = new String[iterVarNames.size() + 3]; //varname, from, to, incr
 		
-		ret[0] = varName;
+		for(int i = 0; i < iterVarNames.size(); i++)
+			ret[i] = iterVarNames.get(i).getName();
 		
 		if( from.getType()==Lop.Type.Data )
-			ret[1] = from.getOutputParameters().getLabel();
+			ret[iterVarNames.size()] = from.getOutputParameters().getLabel();
 		if( to.getType()==Lop.Type.Data )
-			ret[2] = to.getOutputParameters().getLabel();
+			ret[iterVarNames.size()+1] = to.getOutputParameters().getLabel();
 		if( incr != null && incr.getType()==Lop.Type.Data )
-			ret[3] = incr.getOutputParameters().getLabel();
+			ret[iterVarNames.size()+2] = incr.getOutputParameters().getLabel();
 		
 		return ret;
 	}

@@ -28,6 +28,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.sysml.conf.ConfigurationManager;
 import org.apache.sysml.hops.OptimizerUtils;
 import org.apache.sysml.runtime.controlprogram.context.SparkExecutionContext;
+import org.apache.sysml.conf.DMLConfig;
 import org.apache.sysml.runtime.matrix.mapred.MRConfigurationNames;
 import org.apache.sysml.runtime.util.UtilFunctions;
 
@@ -147,7 +148,17 @@ public class InfrastructureAnalyzer
 	 */
 	public static long getLocalMaxMemory()
 	{
-		return _localJVMMaxMem;
+		double prefetchMemoryBudgetInMB = ConfigurationManager.getDMLConfig().getDoubleValue(DMLConfig.PREFETCH_MEM_BUDGET);
+		if(prefetchMemoryBudgetInMB <= 0) {
+			return _localJVMMaxMem;
+		}
+		else {
+			long MBInBytes = 1000000;
+			// Ensure that prefetch memory budget is no larger than 20% of available memory
+			if(_localJVMMaxMem*0.2 <= prefetchMemoryBudgetInMB*MBInBytes)
+				throw new RuntimeException("ERROR: Prefetch memory budget (" + prefetchMemoryBudgetInMB + " mb) cannot be greater than 20% of available memory (" + (((double)_localJVMMaxMem)/MBInBytes) + " mb)");
+			return _localJVMMaxMem - ((long)(prefetchMemoryBudgetInMB*MBInBytes));
+		}
 	}
 
 	public static void setLocalMaxMemory( long localMem )

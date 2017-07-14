@@ -380,7 +380,7 @@ public class DMLProgram
 			String sbName = null;
 			ForProgramBlock rtpb = null;
 			IterablePredicate iterPred = fsb.getIterPredicate();
-			String [] iterPredData= IterablePredicate.createIterablePredicateVariables(iterPred.getIterVar().getName(),
+			String [] iterPredData= IterablePredicate.createIterablePredicateVariables(iterPred.getIterVar(),
 					                                                                   fsb.getFromLops(), fsb.getToLops(), fsb.getIncrementLops()); 
 			
 			if( sb instanceof ParForStatementBlock )

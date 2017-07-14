@@ -82,6 +82,7 @@ public class DMLConfig
 	// Fraction of available memory to use. The available memory is computer when the GPUContext is created
 	// to handle the tradeoff on calling cudaMemGetInfo too often.
 	public static final String GPU_MEMORY_UTILIZATION_FACTOR    = "gpu.memory.util.factor";
+	public static final String PREFETCH_MEM_BUDGET    = "prefetch.budget.mb";
 
 	// supported prefixes for custom map/reduce configurations
 	public static final String PREFIX_MAPRED = "mapred";
@@ -123,6 +124,7 @@ public class DMLConfig
 
 		_defaultVals.put(GPU_MEMORY_UTILIZATION_FACTOR,      "0.9" );
 		_defaultVals.put(MAX_GPUS_PER_PROCESS,	"-1");
+		_defaultVals.put(PREFETCH_MEM_BUDGET,      "0" );
 	}
 	
 	public DMLConfig()

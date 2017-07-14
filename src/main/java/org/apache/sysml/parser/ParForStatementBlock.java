@@ -1005,13 +1005,15 @@ public class ParForStatementBlock extends ForStatementBlock
 				
 				if( lFlag || rIsParent(sb,this) ) //add only if in subtree of this
 				{
+					String name = ip.getIterVar().get(0)._name;
+					
 					//check for internal names
-					if(   ip.getIterVar()._name.equals( INTERAL_FN_INDEX_ROW )
-					   || ip.getIterVar()._name.equals( INTERAL_FN_INDEX_COL ))
+					if(   name.equals( INTERAL_FN_INDEX_ROW )
+					   || name.equals( INTERAL_FN_INDEX_COL ))
 					{
 						
 						throw new LanguageException(" The iteration variable must not use the " +
-								"internal iteration variable name prefix '"+ip.getIterVar()._name+"'.");
+								"internal iteration variable name prefix '"+name+"'.");
 					}
 					
 					long low = Integer.MIN_VALUE;
@@ -1029,11 +1031,11 @@ public class ParForStatementBlock extends ForStatementBlock
 					else 
 						incr = ( low <= up ) ? 1 : -1;
 
-					_bounds._lower.put(ip.getIterVar()._name, low);
-					_bounds._upper.put(ip.getIterVar()._name, up);
-					_bounds._increment.put(ip.getIterVar()._name, incr);
+					_bounds._lower.put(name, low);
+					_bounds._upper.put(name, up);
+					_bounds._increment.put(name, incr);
 					if( lFlag ) //if local (required for constant check)
-						_bounds._local.add(ip.getIterVar()._name);
+						_bounds._local.add(name);
 				}	
 				
 				//recursive invocation (but not for nested parfors due to constant check)

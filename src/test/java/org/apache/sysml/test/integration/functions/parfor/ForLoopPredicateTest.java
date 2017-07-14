@@ -38,11 +38,12 @@ public class ForLoopPredicateTest extends AutomatedTestBase
 	private final static String TEST_NAME5 = "for_pred3a"; //expression
 	private final static String TEST_NAME6 = "for_pred3b"; //expression seq
 	private final static String TEST_NAME7 = "for_pred1a_seq"; //const seq two parameters (this tests is only for parser)
+	private final static String TEST_NAME8 = "for_iterator1"; //iterator
 	private final static String TEST_DIR = "functions/parfor/";
 	private final static String TEST_CLASS_DIR = TEST_DIR + ForLoopPredicateTest.class.getSimpleName() + "/";
 	
 	private final static double from = 1;
-	private final static double to = 10.2;
+	private final static double to = 450.2;
 	private final static int increment = 1;
 	
 	@Override
@@ -55,6 +56,7 @@ public class ForLoopPredicateTest extends AutomatedTestBase
 		addTestConfiguration(TEST_NAME5, new TestConfiguration(TEST_CLASS_DIR, TEST_NAME5, new String[]{"R"}));
 		addTestConfiguration(TEST_NAME6, new TestConfiguration(TEST_CLASS_DIR, TEST_NAME6, new String[]{"R"}));
 		addTestConfiguration(TEST_NAME7, new TestConfiguration(TEST_CLASS_DIR, TEST_NAME7, new String[]{"R"}));
+		addTestConfiguration(TEST_NAME8, new TestConfiguration(TEST_CLASS_DIR, TEST_NAME8, new String[]{"R"}));
 	}
 
 	@Test
@@ -112,6 +114,12 @@ public class ForLoopPredicateTest extends AutomatedTestBase
 	}
 	
 	@Test
+	public void testForIterator1() 
+	{
+		runForPredicateTest(8, true);
+	}
+	
+	@Test
 	public void testForConstDoubleSeqPredicate() 
 	{
 		runForPredicateTest(2, false);
@@ -158,6 +166,7 @@ public class ForLoopPredicateTest extends AutomatedTestBase
 			case 5: TEST_NAME = TEST_NAME5; break;
 			case 6: TEST_NAME = TEST_NAME6; break;
 			case 7: TEST_NAME = TEST_NAME7; break;
+			case 8: TEST_NAME = TEST_NAME8; break;
 		}
 		
 		getAndLoadTestConfiguration(TEST_NAME);

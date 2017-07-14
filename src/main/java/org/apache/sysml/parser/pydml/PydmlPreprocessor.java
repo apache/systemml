@@ -53,6 +53,7 @@ import org.apache.sysml.parser.pydml.PydmlParser.IgnoreNewLineContext;
 import org.apache.sysml.parser.pydml.PydmlParser.ImportStatementContext;
 import org.apache.sysml.parser.pydml.PydmlParser.IndexedExpressionContext;
 import org.apache.sysml.parser.pydml.PydmlParser.InternalFunctionDefExpressionContext;
+import org.apache.sysml.parser.pydml.PydmlParser.IterableForStatementContext;
 import org.apache.sysml.parser.pydml.PydmlParser.IterablePredicateColonExpressionContext;
 import org.apache.sysml.parser.pydml.PydmlParser.IterablePredicateSeqExpressionContext;
 import org.apache.sysml.parser.pydml.PydmlParser.MatrixDataTypeCheckContext;
@@ -396,5 +397,11 @@ public class PydmlPreprocessor implements PydmlListener {
 
 	@Override
 	public void exitElifBranch(ElifBranchContext ctx) {}
+
+	@Override
+	public void enterIterableForStatement(IterableForStatementContext ctx) {}
+
+	@Override
+	public void exitIterableForStatement(IterableForStatementContext ctx) {}
 
 }

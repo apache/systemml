@@ -182,6 +182,7 @@ statement returns [ org.apache.sysml.parser.common.StatementInfo info ]
     // ------------------------------------------
     // ForStatement & ParForStatement
     | 'for' (OPEN_PAREN iterVar=ID 'in' iterPred=iterablePredicate (',' parForParams+=strictParameterizedExpression)* CLOSE_PAREN |  iterVar=ID 'in' iterPred=iterablePredicate (',' parForParams+=strictParameterizedExpression)* ) ':'  NEWLINE INDENT (body+=statement)+  DEDENT  # ForStatement
+    | 'for' (OPEN_PAREN iterVars+=ID  ( ',' iterVars+=ID )* 'in' iterPreds+=expression  ( ',' iterPreds+=expression )* (',' paramExprs+=parameterizedExpression)* CLOSE_PAREN |  iterVars+=ID  ( ',' iterVars+=ID )* 'in' iterPreds+=expression  ( ',' iterPreds+=expression )* (',' paramExprs+=parameterizedExpression)* ) ':'  NEWLINE INDENT (body+=statement)+  DEDENT  # IterableForStatement
     // Convert strictParameterizedExpression to HashMap<String, String> for parForParams
     | 'parfor' (OPEN_PAREN iterVar=ID 'in' iterPred=iterablePredicate (',' parForParams+=strictParameterizedExpression)* CLOSE_PAREN | iterVar=ID 'in' iterPred=iterablePredicate (',' parForParams+=strictParameterizedExpression)* ) ':' NEWLINE INDENT (body+=statement)+  DEDENT  # ParForStatement
     | 'while' ( OPEN_PAREN predicate=expression CLOSE_PAREN | predicate=expression ) ':' NEWLINE INDENT (body+=statement)+  DEDENT  # WhileStatement

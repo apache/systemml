@@ -75,6 +75,7 @@ statement returns [ org.apache.sysml.parser.common.StatementInfo info ]
     // ------------------------------------------
     // ForStatement & ParForStatement
     | 'for' '(' iterVar=ID 'in' iterPred=iterablePredicate (',' parForParams+=strictParameterizedExpression)* ')' (body+=statement ';'* | '{' (body+=statement ';'* )*  '}')  # ForStatement
+    | 'for' '(' iterVars+=ID  ( ',' iterVars+=ID )* 'in'  iterPreds+=expression  ( ',' iterPreds+=expression )*  (',' paramExprs+=parameterizedExpression)*  ')' (body+=statement ';'* | '{' (body+=statement ';'* )*  '}')  # IterableForStatement
     // Convert strictParameterizedExpression to HashMap<String, String> for parForParams
     | 'parfor' '(' iterVar=ID 'in' iterPred=iterablePredicate (',' parForParams+=strictParameterizedExpression)* ')' (body+=statement ';'* | '{' (body+=statement ';'*)*  '}')  # ParForStatement
     | 'while' '(' predicate=expression ')' (body+=statement ';'* | '{' (body+=statement ';'*)* '}')  # WhileStatement

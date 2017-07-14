@@ -48,6 +48,7 @@ import org.apache.sysml.parser.FunctionStatement;
 import org.apache.sysml.parser.IfStatement;
 import org.apache.sysml.parser.ImportStatement;
 import org.apache.sysml.parser.IndexedIdentifier;
+import org.apache.sysml.parser.IntIdentifier;
 import org.apache.sysml.parser.IterablePredicate;
 import org.apache.sysml.parser.LanguageException;
 import org.apache.sysml.parser.ParForStatement;
@@ -88,6 +89,7 @@ import org.apache.sysml.parser.dml.DmlParser.IfdefAssignmentStatementContext;
 import org.apache.sysml.parser.dml.DmlParser.ImportStatementContext;
 import org.apache.sysml.parser.dml.DmlParser.IndexedExpressionContext;
 import org.apache.sysml.parser.dml.DmlParser.InternalFunctionDefExpressionContext;
+import org.apache.sysml.parser.dml.DmlParser.IterableForStatementContext;
 import org.apache.sysml.parser.dml.DmlParser.IterablePredicateColonExpressionContext;
 import org.apache.sysml.parser.dml.DmlParser.IterablePredicateSeqExpressionContext;
 import org.apache.sysml.parser.dml.DmlParser.MatrixDataTypeCheckContext;
@@ -649,6 +651,84 @@ public class DmlSyntacticValidator extends CommonSyntacticValidator implements D
 		ctx.info.stmt = whileStmt;
 		setFileLineColumn(ctx.info.stmt, ctx);
 	}
+	
+	@Override
+	public void exitIterableForStatement(IterableForStatementContext ctx) {
+		ForStatement forStmt = new ForStatement();
+		int line = ctx.start.getLine();
+		int col = ctx.start.getCharPositionInLine();
+		
+		if(ctx.iterVars != null && ctx.iterVars.size() > 0) {
+			if(ctx.iterPreds != null && ctx.iterPreds.size() > 0) {
+				ArrayList<DataIdentifier> iterVars = new ArrayList<DataIdentifier>();
+				for(Token iterVar : ctx.iterVars) {
+					iterVars.add(new DataIdentifier(iterVar.getText()));
+				}
+				ArrayList<Expression> iterPreds = new ArrayList<Expression>();
+				for(ExpressionContext iterPred : ctx.iterPreds) {
+					iterPreds.add(iterPred.info.expr);
+				}
+				if(iterVars.size() != iterPreds.size()) {
+					notifyErrorListeners("invalid syntax: the number of iter variables should match: " + iterVars + " != " + iterPreds, ctx.start);
+				}
+				else if(iterPreds.size() == 0) {
+					notifyErrorListeners("invalid syntax: at minimum, we allow iterating over 1 variables", ctx.start);
+				}
+				else if(iterPreds.size() >= 2) {
+					notifyErrorListeners("invalid syntax: in current version, we allow iterating over only 1 variables", ctx.start);
+					// notifyErrorListeners("invalid syntax: at maximum, we allow iterating over two variables", ctx.start);
+				}
+				else {
+					// TODO:
+					HashMap<String, String> parForParamValues = null;
+					forStmt.setAllPositions(currentFile, line, col, line, col);
+					ArrayList<ParameterExpression> paramExpression = getParameterExpressionList(ctx.paramExprs);
+					if(paramExpression != null && paramExpression.size() > 0 && !paramExpression.get(0).getName().equals("nrow")) {
+						notifyErrorListeners("invalid syntax: expected \'nrow\' instead of " + paramExpression.get(0).getName(), ctx.start);
+						return;
+					}
+					
+					Expression incrementExpr = null;
+					if(paramExpression == null || paramExpression.size() == 0) {
+						incrementExpr = new IntIdentifier(1, currentFile, line, col, line, col);
+					}
+					else if(paramExpression.size() >= 2) {
+						notifyErrorListeners("invalid syntax: more than 2 parameters not allowed in for", ctx.start);
+						return;
+					}
+					else {
+						incrementExpr = paramExpression.get(0).getExpr();
+					}
+					
+					IterablePredicate predicate = null;
+					if(iterPreds.size() == 1)
+						predicate = new IterablePredicate(iterVars, iterPreds.get(0), new IntIdentifier(1, currentFile, line, col, line, col), incrementExpr, parForParamValues, currentFile, line, col, line, col, true);
+					else if(iterPreds.size() == 2)
+						predicate = new IterablePredicate(iterVars, iterPreds.get(0), iterPreds.get(1), incrementExpr, parForParamValues, currentFile, line, col, line, col, true);
+					else
+						notifyErrorListeners("invalid syntax: at maximum, we allow iterating over two variables", ctx.start);
+					
+					forStmt.setPredicate(predicate);
+					
+					if(ctx.body.size() > 0) {
+						for(StatementContext stmtCtx : ctx.body) {
+							forStmt.addStatementBlock(getStatementBlock(stmtCtx.info.stmt));
+						}
+						forStmt.mergeStatementBlocks();
+					}
+					ctx.info.stmt = forStmt;
+					setFileLineColumn(ctx.info.stmt, ctx);
+				}
+			}
+			else {
+				notifyErrorListeners("invalid syntax: the matrices to be iterated on cannot be empty", ctx.start);
+			}
+		}
+		else {
+			notifyErrorListeners("invalid syntax: atleast one iteration variable required", ctx.start);
+		}
+		
+	}
 
 	@Override
 	public void exitForStatement(ForStatementContext ctx) {
@@ -657,12 +737,15 @@ public class DmlSyntacticValidator extends CommonSyntacticValidator implements D
 		int col = ctx.start.getCharPositionInLine();
 
 		DataIdentifier iterVar = new DataIdentifier(ctx.iterVar.getText());
+		ArrayList<DataIdentifier> iterVars = new ArrayList<DataIdentifier>(); 
+		iterVars.add(iterVar);
+		
 		HashMap<String, String> parForParamValues = null;
 		Expression incrementExpr = null; //1/-1
 		if(ctx.iterPred.info.increment != null) {
 			incrementExpr = ctx.iterPred.info.increment;
 		}
-		IterablePredicate predicate = new IterablePredicate(iterVar, ctx.iterPred.info.from, ctx.iterPred.info.to, incrementExpr, parForParamValues, currentFile, line, col, line, col);
+		IterablePredicate predicate = new IterablePredicate(iterVars, ctx.iterPred.info.from, ctx.iterPred.info.to, incrementExpr, parForParamValues, currentFile, line, col, line, col, false);
 		forStmt.setPredicate(predicate);
 
 		if(ctx.body.size() > 0) {
@@ -682,6 +765,9 @@ public class DmlSyntacticValidator extends CommonSyntacticValidator implements D
 		int col = ctx.start.getCharPositionInLine();
 
 		DataIdentifier iterVar = new DataIdentifier(ctx.iterVar.getText());
+		ArrayList<DataIdentifier> iterVars = new ArrayList<DataIdentifier>(); 
+		iterVars.add(iterVar);
+		
 		HashMap<String, String> parForParamValues = new HashMap<String, String>();
 		if(ctx.parForParams != null && ctx.parForParams.size() > 0) {
 			for(StrictParameterizedExpressionContext parForParamCtx : ctx.parForParams) {
@@ -696,7 +782,7 @@ public class DmlSyntacticValidator extends CommonSyntacticValidator implements D
 		if( ctx.iterPred.info.increment != null ) {
 			incrementExpr = ctx.iterPred.info.increment;
 		}
-		IterablePredicate predicate = new IterablePredicate(iterVar, ctx.iterPred.info.from, ctx.iterPred.info.to, incrementExpr, parForParamValues, currentFile, line, col, line, col);
+		IterablePredicate predicate = new IterablePredicate(iterVars, ctx.iterPred.info.from, ctx.iterPred.info.to, incrementExpr, parForParamValues, currentFile, line, col, line, col, false);
 		parForStmt.setPredicate(predicate);
 		if(ctx.body.size() > 0) {
 			for(StatementContext stmtCtx : ctx.body) {
@@ -1059,5 +1145,10 @@ public class DmlSyntacticValidator extends CommonSyntacticValidator implements D
 		}
 		ctx.info.expr = new ExpressionList(values);
 	}
+
+	@Override
+	public void enterIterableForStatement(IterableForStatementContext ctx) { }
+
+	
 
 }

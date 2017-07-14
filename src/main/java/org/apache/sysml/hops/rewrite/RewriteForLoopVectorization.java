@@ -60,14 +60,14 @@ public class RewriteForLoopVectorization extends StatementBlockRewriteRule
 	{
 		ArrayList<StatementBlock> ret = new ArrayList<StatementBlock>();
 		
-		if( sb instanceof ForStatementBlock )
+		if( sb instanceof ForStatementBlock &&  ((ForStatementBlock) sb).getIterPredicate().getIterVar().size() == 1 )
 		{
 			ForStatementBlock fsb = (ForStatementBlock) sb;
 			ForStatement fs = (ForStatement) fsb.getStatement(0);
 			Hop from = fsb.getFromHops();
 			Hop to = fsb.getToHops();
 			Hop incr = fsb.getIncrementHops();
-			String iterVar = fsb.getIterPredicate().getIterVar().getName();
+			String iterVar = fsb.getIterPredicate().getIterVar().get(0).getName();
 			
 			if( fs.getBody()!=null && fs.getBody().size()==1 ) //single child block
 			{

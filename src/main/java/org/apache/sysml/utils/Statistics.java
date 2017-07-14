@@ -145,6 +145,11 @@ public class Statistics
 	public static void decrementNoOfExecutedMRJobs() {
 		numExecutedMRJobs.decrement();
 	}
+	
+	public static long batchFetchingTimeInNext = 0;
+	public static long batchFetchingTimeInIndexing = 0;
+	public static long batchPrefetchWaitTime = 0;
+	public static long batchFirstBatchFetchTime = 0;
 
 	public static long getNoOfCompiledMRJobs() {
 		return numCompiledMRJobs.longValue();
@@ -405,6 +410,10 @@ public class Statistics
 		nativeConv2dBwdFilterTime = 0;
 		nativeConv2dBwdDataTime = 0;
 		LibMatrixDNN.resetStatistics();
+		batchFetchingTimeInIndexing = 0;
+		batchFetchingTimeInNext = 0;
+		batchPrefetchWaitTime = 0;
+		batchFirstBatchFetchTime = 0;
 	}
 
 	public static void resetJITCompileTime(){
@@ -719,7 +728,13 @@ public class Statistics
 				sb.append("MatrixBlock times (recomputeNNZ/examSparsity/allocateDoubleArr):\t" + String.format("%.3f", recomputeNNZTime*1e-9) + "/" +
 					String.format("%.3f", examSparsityTime*1e-9) + "/" + String.format("%.3f", allocateDoubleArrTime*1e-9)  + ".\n");
 			}
-			
+			if(batchFetchingTimeInIndexing > 0) {
+				sb.append("Batch-Fetch (next,indx,wait,first):\t" + String.format("%.3f", batchFetchingTimeInNext*1e-9) + "/"
+						+ String.format("%.3f", batchFetchingTimeInIndexing*1e-9) + "/" 
+						+ String.format("%.3f", batchPrefetchWaitTime*1e-9) + "/" 
+						+ String.format("%.3f", batchFirstBatchFetchTime*1e-9)
+						+ " sec.\n");
+			}
 			sb.append("Cache hits (Mem, WB, FS, HDFS):\t" + CacheStatistics.displayHits() + ".\n");
 			sb.append("Cache writes (WB, FS, HDFS):\t" + CacheStatistics.displayWrites() + ".\n");
 			sb.append("Cache times (ACQr/m, RLS, EXP):\t" + CacheStatistics.displayTime() + " sec.\n");

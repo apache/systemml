@@ -242,7 +242,7 @@ public class MatrixIndexingSPInstruction  extends IndexingSPInstruction
 		return mbout;
 	}
 	
-	private static JavaPairRDD<MatrixIndexes,MatrixBlock> generalCaseRightIndexing(JavaPairRDD<MatrixIndexes,MatrixBlock> in1, 
+	public static JavaPairRDD<MatrixIndexes,MatrixBlock> generalCaseRightIndexing(JavaPairRDD<MatrixIndexes,MatrixBlock> in1, 
 			 MatrixCharacteristics mcIn, MatrixCharacteristics mcOut, IndexRange ixrange, SparkAggType aggType) {
 		JavaPairRDD<MatrixIndexes,MatrixBlock> out = null;
 		

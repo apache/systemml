@@ -51,6 +51,7 @@ import org.apache.sysml.parser.dml.DmlParser.IfdefAssignmentStatementContext;
 import org.apache.sysml.parser.dml.DmlParser.ImportStatementContext;
 import org.apache.sysml.parser.dml.DmlParser.IndexedExpressionContext;
 import org.apache.sysml.parser.dml.DmlParser.InternalFunctionDefExpressionContext;
+import org.apache.sysml.parser.dml.DmlParser.IterableForStatementContext;
 import org.apache.sysml.parser.dml.DmlParser.IterablePredicateColonExpressionContext;
 import org.apache.sysml.parser.dml.DmlParser.IterablePredicateSeqExpressionContext;
 import org.apache.sysml.parser.dml.DmlParser.MatrixDataTypeCheckContext;
@@ -396,5 +397,11 @@ public class DmlPreprocessor implements DmlListener {
 
 	@Override
 	public void exitMultiIdExpression(MultiIdExpressionContext ctx) {}
+
+	@Override
+	public void enterIterableForStatement(IterableForStatementContext ctx) { }
+	
+	@Override
+	public void exitIterableForStatement(IterableForStatementContext ctx) { }
 
 }

@@ -332,8 +332,9 @@ public class ForStatementBlock extends StatementBlock
 		
 		// for now just print the warn set
 		for (String varName : _warnSet.getVariableNames()) {
-			if( !ip.getIterVar().getName().equals( varName)  )
-				LOG.warn(_warnSet.getVariable(varName).printWarningLocation() + "Initialization of " + varName + " depends on for execution");
+			for(DataIdentifier v : ip.getIterVar())
+				if( !v.getName().equals( varName)  )
+					LOG.warn(_warnSet.getVariable(varName).printWarningLocation() + "Initialization of " + varName + " depends on for execution");
 		}
 		
 		// Cannot remove kill variables

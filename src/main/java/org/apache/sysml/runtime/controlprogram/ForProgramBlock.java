@@ -28,8 +28,10 @@ import org.apache.sysml.parser.ForStatementBlock;
 import org.apache.sysml.parser.Expression.ValueType;
 import org.apache.sysml.runtime.DMLRuntimeException;
 import org.apache.sysml.runtime.DMLScriptException;
+import org.apache.sysml.runtime.controlprogram.caching.MatrixObject;
 import org.apache.sysml.runtime.controlprogram.caching.MatrixObject.UpdateType;
 import org.apache.sysml.runtime.controlprogram.context.ExecutionContext;
+import org.apache.sysml.runtime.controlprogram.util.BatchIteratorFactory;
 import org.apache.sysml.runtime.instructions.Instruction;
 import org.apache.sysml.runtime.instructions.cp.Data;
 import org.apache.sysml.runtime.instructions.cp.IntObject;
@@ -115,16 +117,29 @@ public class ForProgramBlock extends ProgramBlock
 	{
 		// add the iterable predicate variable to the variable set
 		String iterVarName = _iterablePredicateVars[0];
-
-		// evaluate from, to, incr only once (assumption: known at for entry)
-		IntObject from = executePredicateInstructions( 1, _fromInstructions, ec );
-		IntObject to   = executePredicateInstructions( 2, _toInstructions, ec );
-		IntObject incr = (_incrementInstructions == null || _incrementInstructions.isEmpty()) && _iterablePredicateVars[3]==null ? 
-				new IntObject((from.getLongValue()<=to.getLongValue()) ? 1 : -1) :
-				executePredicateInstructions( 3, _incrementInstructions, ec );
 		
-		if ( incr.getLongValue() == 0 ) //would produce infinite loop
-			throw new DMLRuntimeException(this.printBlockErrorLocation() + "Expression for increment of variable '" + iterVarName + "' must evaluate to a non-zero value.");
+		Iterable<Data> genericIterator = null;
+				
+		if( _iterablePredicateVars[1] != null ) {
+			//probe for matrix variables
+			Data ldat = ec.getVariable( _iterablePredicateVars[1] );
+			if( ldat != null && ldat instanceof MatrixObject ) {
+				// Iterable for loop
+				genericIterator = BatchIteratorFactory.getBatchIterator(ec, _iterablePredicateVars);
+			}
+		}		
+
+		if(genericIterator == null) {
+			// evaluate from, to, incr only once (assumption: known at for entry)
+			IntObject from = executePredicateInstructions( 1, _fromInstructions, ec );
+			IntObject to   = executePredicateInstructions( 2, _toInstructions, ec );
+			IntObject incr = (_incrementInstructions == null || _incrementInstructions.isEmpty()) && _iterablePredicateVars[3]==null ? 
+					new IntObject((from.getLongValue()<=to.getLongValue()) ? 1 : -1) :
+					executePredicateInstructions( 3, _incrementInstructions, ec );
+			if ( incr.getLongValue() == 0 ) //would produce infinite loop
+				throw new DMLRuntimeException(this.printBlockErrorLocation() + "Expression for increment of variable '" + iterVarName + "' must evaluate to a non-zero value.");
+			genericIterator = (Iterable<Data>)(new SequenceIterator(iterVarName, from, to, incr));
+		}
 		
 		// execute for loop
 		try 
@@ -132,10 +147,8 @@ public class ForProgramBlock extends ProgramBlock
 			// prepare update in-place variables
 			UpdateType[] flags = prepareUpdateInPlaceVariables(ec, _tid);
 			
-			// run for loop body for each instance of predicate sequence 
-			SequenceIterator seqIter = new SequenceIterator(iterVarName, from, to, incr);
-			for( IntObject iterVar : seqIter ) 
-			{
+			// run for loop body for each instance of predicate sequence
+			for( Data iterVar : genericIterator )  {
 				//set iteration variable
 				ec.setVariable(iterVarName, iterVar); 
 				
@@ -237,7 +250,7 @@ public class ForProgramBlock extends ProgramBlock
 	/**
 	 * Utility class for iterating over positive or negative predicate sequences.
 	 */
-	protected class SequenceIterator implements Iterator<IntObject>, Iterable<IntObject>
+	protected class SequenceIterator implements Iterator<Data>, Iterable<Data>
 	{
 		private String _varName = null;
 		private long _cur = -1;
@@ -265,7 +278,7 @@ public class ForProgramBlock extends ProgramBlock
 		}
 
 		@Override
-		public Iterator<IntObject> iterator() {
+		public Iterator<Data> iterator() {
 			if( _inuse )
 				throw new RuntimeException("Unsupported reuse of iterator.");				
 			_inuse = true;

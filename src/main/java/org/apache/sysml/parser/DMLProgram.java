@@ -33,6 +33,7 @@ public class DMLProgram
 	private ArrayList<StatementBlock> _blocks;
 	private HashMap<String, FunctionStatementBlock> _functionBlocks;
 	private HashMap<String,DMLProgram> _namespaces;
+	private VariableSet _globals; // global variables
 	public static final String DEFAULT_NAMESPACE = ".defaultNS";
 	public static final String INTERNAL_NAMESPACE = "_internal"; // used for multi-return builtin functions
 	private static final Log LOG = LogFactory.getLog(DMLProgram.class.getName());
@@ -41,6 +42,11 @@ public class DMLProgram
 		_blocks = new ArrayList<>();
 		_functionBlocks = new HashMap<>();
 		_namespaces = new HashMap<>();
+		_globals = new VariableSet();
+	}
+
+	public VariableSet getGlobalVariables() {
+		return _globals;
 	}
 	
 	public HashMap<String,DMLProgram> getNamespaces(){

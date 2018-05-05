@@ -609,28 +609,16 @@ public class StatementBlock extends LiveVariableAnalysis implements ParseInfo
 						fcall.getParamExprs().size() + " found, but " + fstmt.getInputParams().size()+" expected.");
 				}
 
-				for (int i =0; i < fstmt.getInputParams().size(); i++) {
+				for (int i = 0; i < fstmt.getInputParams().size(); i++) {
 					DataIdentifier currFormalParam = fstmt.getInputParams().get(i);
+					Expression exp = fcall.getParamExprs().get(i).getExpr();
+					bindScopeVariable(newStatements, exp, prefix, currFormalParam);
+				}
 
+				// copy the referenced global variables into function scope
+				for (DataIdentifier v : fstmt.getScopeVariables()) {
 					// create new assignment statement
-					String newFormalParameterName = prefix + currFormalParam.getName();
-					DataIdentifier newTarget = new DataIdentifier(currFormalParam);
-					newTarget.setName(newFormalParameterName);
-
-					Expression currCallParam = fcall.getParamExprs().get(i).getExpr();
-
-					//auto casting of inputs on inlining (if required)
-					ValueType targetVT = newTarget.getValueType();
-					if (newTarget.getDataType() == DataType.SCALAR && currCallParam.getOutput() != null
-							&& targetVT != currCallParam.getOutput().getValueType() && targetVT != ValueType.STRING) {
-						currCallParam = new BuiltinFunctionExpression(
-								BuiltinFunctionExpression.getValueTypeCastOperator(targetVT),
-								new Expression[] { currCallParam }, newTarget);
-					}
-
-					// create the assignment statement to bind the call parameter to formal parameter
-					AssignmentStatement binding = new AssignmentStatement(newTarget, currCallParam, newTarget);
-					newStatements.add(binding);
+					bindScopeVariable(newStatements, v, prefix, v);
 				}
 
 				for (Statement stmt : sblock._statements){
@@ -708,6 +696,26 @@ public class StatementBlock extends LiveVariableAnalysis implements ParseInfo
 		}
 
 		return newStatements;
+	}
+
+	private void bindScopeVariable(ArrayList<Statement> newStatements, Expression currCallParam, String prefix, DataIdentifier currFormalParam) {
+		// create new assignment statement
+		String newFormalParameterName = prefix + currFormalParam.getName();
+		DataIdentifier newTarget = new DataIdentifier(currFormalParam);
+		newTarget.setName(newFormalParameterName);
+
+		//auto casting of inputs on inlining (if required)
+		ValueType targetVT = newTarget.getValueType();
+		if (newTarget.getDataType() == DataType.SCALAR && currCallParam.getOutput() != null
+				&& targetVT != currCallParam.getOutput().getValueType() && targetVT != ValueType.STRING) {
+			currCallParam = new BuiltinFunctionExpression(
+					BuiltinFunctionExpression.getValueTypeCastOperator(targetVT),
+					new Expression[] { currCallParam }, newTarget);
+		}
+
+		// create the assignment statement to bind the call parameter to formal parameter
+		AssignmentStatement binding = new AssignmentStatement(newTarget, currCallParam, newTarget);
+		newStatements.add(binding);
 	}
 
 	public VariableSet validate(DMLProgram dmlProg, VariableSet ids, HashMap<String, ConstIdentifier> constVars, boolean conditional)

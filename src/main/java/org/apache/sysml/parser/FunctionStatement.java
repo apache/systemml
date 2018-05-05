@@ -29,6 +29,7 @@ public class FunctionStatement extends Statement
 	protected String _name;
 	protected ArrayList <DataIdentifier> _inputParams;
 	protected ArrayList <DataIdentifier> _outputParams;
+	protected ArrayList <DataIdentifier> _scopeVariables; // the copied variables of this function scope
 	
 	@Override
 	public Statement rewriteStatement(String prefix) {
@@ -41,6 +42,7 @@ public class FunctionStatement extends Statement
 		 _name = null;
 		 _inputParams = new ArrayList<>();
 		 _outputParams = new ArrayList<>();
+		 _scopeVariables = new ArrayList<>();
 	}
 	
 	public ArrayList<DataIdentifier> getInputParams(){
@@ -49,6 +51,10 @@ public class FunctionStatement extends Statement
 	
 	public ArrayList<DataIdentifier> getOutputParams(){
 		return _outputParams;
+	}
+	
+	public ArrayList<DataIdentifier> getScopeVariables() {
+		return _scopeVariables;
 	}
 	
 	public void setInputParams(ArrayList<DataIdentifier> inputParams){

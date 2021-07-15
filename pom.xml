@@ -50,6 +50,9 @@
 		<jcuda.version>10.2.0</jcuda.version>
 		<!-->Testing settings<!-->
 		<maven.test.skip>true</maven.test.skip>
+		<test-parallel>classes</test-parallel>
+		<test-threadCount>12</test-threadCount>
+		<test-forkCount>1C</test-forkCount>
 		<rerun.failing.tests.count>2</rerun.failing.tests.count>
 		<jacoco.skip>true</jacoco.skip>
 		<automatedtestbase.outputbuffering>false</automatedtestbase.outputbuffering>
@@ -289,10 +292,10 @@
 				<version>3.0.0-M5</version>
 				<configuration>
 					<skipTests>${maven.test.skip}</skipTests>
-					<parallel>classes</parallel>
-					<threadCount>12</threadCount>
+					<parallel>${test-parallel}</parallel>
+					<threadCount>${test-threadCount}</threadCount>
 					<!-- 1C means the number of threads times 1 possible maximum forks for testing-->
-					<forkCount>1C</forkCount>
+					<forkCount>${test-forkCount}</forkCount>
 					<reuseForks>false</reuseForks>
 					<reportFormat>brief</reportFormat>
 					<trimStackTrace>true</trimStackTrace>

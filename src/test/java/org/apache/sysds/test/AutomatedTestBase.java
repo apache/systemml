@@ -1496,8 +1496,10 @@ public abstract class AutomatedTestBase {
 
 		if(TEST_GPU)
 			args.add("-gpu");
-		if(VERBOSE_STATS)
+		if(VERBOSE_STATS) {
 			args.add("-stats");
+			args.add("100");
+		}
 	}
 
 	public static int getRandomAvailablePort() {

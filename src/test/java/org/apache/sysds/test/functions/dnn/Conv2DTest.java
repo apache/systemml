@@ -269,7 +269,7 @@ public class Conv2DTest extends AutomatedTestBase
 			
 			String RI_HOME = SCRIPT_DIR + TEST_DIR;
 			fullDMLScriptName = RI_HOME + TEST_NAME + ".dml";
-			programArgs = new String[] {"recompile_runtime", "-args", 
+			programArgs = new String[] {"-explain", "recompile_runtime", "-args",
 				String.valueOf(imgSize), String.valueOf(numImg), 
 				String.valueOf(numChannels), String.valueOf(numFilters), 
 				String.valueOf(filterSize), String.valueOf(stride), String.valueOf(pad), 

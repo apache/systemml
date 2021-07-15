@@ -82,7 +82,7 @@ public class UnaryMatrixFEDInstruction extends UnaryFEDInstruction {
 			//(only assumption for sparse-unsafe: fed mapping covers entire matrix)
 			FederatedRequest fr1 = FederationUtils.callInstruction(instString, output,
 				new CPOperand[] {input1}, new long[] {mo1.getFedMapping().getID()});
-			mo1.getFedMapping().execute(getTID(), true, fr1);
+			mo1.getFedMapping().execute(getTID(), fr1);
 
 			setOutputFedMapping(ec, mo1, fr1.getID());
 		}
@@ -132,7 +132,7 @@ public class UnaryMatrixFEDInstruction extends UnaryFEDInstruction {
 
 		FederatedRequest fr4 = FederationUtils.callInstruction(modifiedInstString, output, out.getFedMapping().getID(),
 			new CPOperand[] {output}, new long[] {out.getFedMapping().getID()});
-		out.getFedMapping().execute(getTID(), true, fr4);
+		out.getFedMapping().execute(getTID(), fr4);
 
 		out.setFedMapping(out.getFedMapping().copyWithNewID(fr4.getID()));
 

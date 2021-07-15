@@ -102,7 +102,7 @@ public class ReorgFEDInstruction extends UnaryFEDInstruction {
 			FederatedRequest fr1 = FederationUtils.callInstruction(instString,
 				output, new CPOperand[] {input1},
 				new long[] {mo1.getFedMapping().getID()}, true);
-			mo1.getFedMapping().execute(getTID(), true, fr1);
+			mo1.getFedMapping().execute(getTID(), fr1);
 
 			//drive output federated mapping
 			MatrixObject out = ec.getMatrixObject(output);
@@ -114,7 +114,7 @@ public class ReorgFEDInstruction extends UnaryFEDInstruction {
 			FederatedRequest fr1 = FederationUtils.callInstruction(instString,
 				output, new CPOperand[] {input1},
 				new long[] {mo1.getFedMapping().getID()}, true);
-			mo1.getFedMapping().execute(getTID(), true, fr1);
+			mo1.getFedMapping().execute(getTID(), fr1);
 
 			if(mo1.isFederated(FederationMap.FType.ROW))
 				mo1.getFedMapping().reverseFedMap();

@@ -43,7 +43,7 @@ public class BinaryFrameScalarFEDInstruction extends BinaryFEDInstruction
 		//compute results
 		FederatedRequest fr1 = FederationUtils.callInstruction(instString,
 			output, new CPOperand[] {input1}, new long[] {fedMap.getID()});
-		fedMap.execute(getTID(), true, fr1);
+		fedMap.execute(getTID(), fr1);
 
 		FrameObject out = ec.getFrameObject(output);
 		out.setSchema(fo.getSchema());

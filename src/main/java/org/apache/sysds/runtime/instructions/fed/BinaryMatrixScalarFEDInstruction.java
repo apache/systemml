@@ -49,10 +49,10 @@ public class BinaryMatrixScalarFEDInstruction extends BinaryFEDInstruction
 		//execute federated matrix-scalar operation and cleanups
 		if( fr1 != null ) {
 			FederatedRequest fr3 = mo.getFedMapping().cleanup(getTID(), fr1.getID());
-			mo.getFedMapping().execute(getTID(), true, fr1, fr2, fr3);
+			mo.getFedMapping().execute(getTID(), fr1, fr2, fr3);
 		}
 		else
-			mo.getFedMapping().execute(getTID(), true, fr2);
+			mo.getFedMapping().execute(getTID(), fr2);
 		
 		//derive new fed mapping for output
 		MatrixObject out = ec.getMatrixObject(output);

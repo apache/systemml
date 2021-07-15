@@ -201,6 +201,18 @@ public abstract class ColGroupValue extends ColGroupCompressed implements Clonea
 	}
 
 	/**
+	 * Set the counts, this is used while compressing since the counts are cleanly available there, and therefore a
+	 * iteration though the data, is not needed to construct the counts.
+	 * 
+	 * NOTE THIS IS UNSAFE since it does not verify that the counts given are correct.
+	 * 
+	 * @param counts The counts to set.
+	 */
+	protected final void setCounts(int[] counts) {
+		this.counts = new SoftReference<>(counts);
+	}
+
+	/**
 	 * Get the cached counts. If they are not materialized or the garbage collector have removed them, then null is
 	 * returned
 	 * 

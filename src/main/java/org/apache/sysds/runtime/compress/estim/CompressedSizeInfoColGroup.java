@@ -50,7 +50,7 @@ public class CompressedSizeInfoColGroup {
 	/**
 	 * Map containing a mapping to unique values, but not necessarily the actual values contained in this column group
 	 */
-	private final AMapToData _map;
+	private AMapToData _map;
 
 	/**
 	 * Join columns without analyzing the content. This only specify the compression ratio if encoded in DDC since this
@@ -243,17 +243,8 @@ public class CompressedSizeInfoColGroup {
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(_facts.cols);
-	}
-
-	@Override
-	public boolean equals(Object that) {
-		throw new NotImplementedException();
-		// if(!(that instanceof CompressedSizeInfoColGroup))
-		// return false;
-		// return Arrays.equals(_facts.cols, ((CompressedSizeInfoColGroup) that)._facts.cols);
+	public void clearMap(){
+		_map = null;
 	}
 
 	@Override

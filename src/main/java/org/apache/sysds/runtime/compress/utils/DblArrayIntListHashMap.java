@@ -20,22 +20,28 @@
 package org.apache.sysds.runtime.compress.utils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- * This class provides a memory-efficient replacement for {@code HashMap<DblArray,IntArrayList>} for restricted use
- * cases.
- * 
- */
-public class DblArrayIntListHashMap extends CustomHashMap {
+public class DblArrayIntListHashMap {
 
 	protected static final Log LOG = LogFactory.getLog(DblArrayIntListHashMap.class.getName());
 
-	private DArrayIListEntry[] _data = null;
+	protected static final int INIT_CAPACITY = 8;
+	protected static final int RESIZE_FACTOR = 2;
+	protected static final float LOAD_FACTOR = 0.5f;
 	public static int hashMissCount = 0;
+
+	protected int _size = -1;
+
+	protected DArrayIListEntry[] _data = null;
+
+	public int size() {
+		return _size;
+	}
 
 	public DblArrayIntListHashMap() {
 		_data = new DArrayIListEntry[INIT_CAPACITY];
@@ -43,8 +49,27 @@ public class DblArrayIntListHashMap extends CustomHashMap {
 	}
 
 	public DblArrayIntListHashMap(int init_capacity) {
-		_data = new DArrayIListEntry[init_capacity];
+		_data = new DArrayIListEntry[getPow2(init_capacity)];
 		_size = 0;
+	}
+
+	private int getPow2(int x) {
+		x = x - 1;
+		x |= x >> 1;
+		x |= x >> 2;
+		x |= x >> 4;
+		x |= x >> 5;
+		x |= x >> 6;
+		x |= x >> 8;
+		x |= x >> 9;
+		x |= x >> 10;
+		x |= x >> 11;
+		x |= x >> 12;
+		x |= x >> 13;
+		x |= x >> 14;
+		x |= x >> 15;
+		x |= x >> 16;
+		return Math.max(x + 1, 4);
 	}
 
 	public IntArrayList get(DblArray key) {
@@ -56,83 +81,67 @@ public class DblArrayIntListHashMap extends CustomHashMap {
 		int ix = indexFor(hash, _data.length);
 
 		// find entry
-		for(DArrayIListEntry e = _data[ix]; e != null; e = e.next) {
-			if(e.key.equals(key)) {
-				return e.value;
-			}else{
-				hashMissCount++;
-			}
 
+		while(_data[ix] != null && !_data[ix].keyEquals(key)) {
+			hash = Integer.hashCode(hash + 1); // hash of hash
+			ix = indexFor(hash, _data.length);
+			hashMissCount++;
 		}
-
+		DArrayIListEntry e = _data[ix];
+		if(e != null)
+			return e.value;
 		return null;
 	}
 
-	public void appendValue(DblArray key, IntArrayList value) {
+	private void appendValue(DblArray key, IntArrayList value) {
 		// compute entry index position
 		int hash = hash(key);
 		int ix = indexFor(hash, _data.length);
 
 		// add new table entry (constant time)
-		DArrayIListEntry enew = new DArrayIListEntry(key, value);
-		enew.next = _data[ix]; // colliding entries / null
-		_data[ix] = enew;
-		if(enew.next != null && enew.next.key == key) {
-			enew.next = enew.next.next;
-			_size--;
+		while(_data[ix] != null && !_data[ix].keyEquals(key)) {
+			hash = Integer.hashCode(hash + 1); // hash of hash
+			ix = indexFor(hash, _data.length);
+			hashMissCount++;
 		}
+		_data[ix] = new DArrayIListEntry(key, value);
 		_size++;
-
-		// resize if necessary
-		if(_size >= LOAD_FACTOR * _data.length)
-			resize();
 	}
 
-	public void appendValue(DblArray key, int value){
+	public void appendValue(DblArray key, int value) {
 		int hash = hash(key);
 		int ix = indexFor(hash, _data.length);
-		IntArrayList lstPtr = null; // The list to add the value to.
-		if(_data[ix] == null) {
-			lstPtr = new IntArrayList();
-			_data[ix] = new DArrayIListEntry(key, lstPtr);
+
+		while(_data[ix] != null && !_data[ix].keyEquals(key)) {
+			hash = Integer.hashCode(hash + 1); // hash of hash
+			ix = indexFor(hash, _data.length);
+			hashMissCount++;
+		}
+
+		DArrayIListEntry e = _data[ix];
+		if(e == null) {
+			final IntArrayList lstPtr = new IntArrayList();
+			lstPtr.appendValue(value);
+			_data[ix] = new DArrayIListEntry(new DblArray(key), lstPtr);
 			_size++;
 		}
 		else {
-			for(DArrayIListEntry e = _data[ix]; e != null; e = e.next) {
-				if(e.key == key) {
-					lstPtr = e.value;
-					break;
-				}
-				else if(e.next == null) {
-					lstPtr = new IntArrayList();
-					// Swap to place the new value, in front.
-					DArrayIListEntry eOld = _data[ix];
-					_data[ix] = new DArrayIListEntry(key, lstPtr);
-					_data[ix].next = eOld;
-					_size++;
-					break;
-				}
-				DblArrayIntListHashMap.hashMissCount++;
-			}
+			final IntArrayList lstPtr = e.value;
+			lstPtr.appendValue(value);
 		}
-		lstPtr.appendValue(value);
 
 		// resize if necessary
 		if(_size >= LOAD_FACTOR * _data.length)
 			resize();
 	}
 
-	public ArrayList<DArrayIListEntry> extractValues() {
-		ArrayList<DArrayIListEntry> ret = new ArrayList<>();
-		for(DArrayIListEntry e : _data) {
-			if(e != null) {
-				while(e.next != null) {
-					ret.add(e);
-					e = e.next;
-				}
+	public List<DArrayIListEntry> extractValues() {
+		List<DArrayIListEntry> ret = new ArrayList<>();
+
+		for(DArrayIListEntry e : _data)
+			if(e != null)
 				ret.add(e);
-			}
-		}
+
 		// Collections.sort(ret);
 		return ret;
 	}
@@ -148,20 +157,33 @@ public class DblArrayIntListHashMap extends CustomHashMap {
 		_size = 0;
 
 		// rehash all entries
-		for(DArrayIListEntry e : olddata) {
-			if(e != null) {
-				while(e.next != null) {
-					appendValue(e.key, e.value);
-					e = e.next;
-				}
+		for(DArrayIListEntry e : olddata)
+			if(e != null)
 				appendValue(e.key, e.value);
-			}
-		}
 	}
 
-	private static int hash(DblArray key) {
+	public void reset() {
+		Arrays.fill(_data, null);
+		_size = 0;
+	}
+
+	public void reset(int size) {
+		int newSize = getPow2(size);
+		if(newSize > _data.length) {
+			_data = new DArrayIListEntry[newSize];
+		}
+		else {
+			Arrays.fill(_data, null);
+			// only allocate new if the size is smaller than 2x
+			if(size < _data.length / 2)
+				_data = new DArrayIListEntry[newSize];
+		}
+		_size = 0;
+	}
+
+	protected static int hash(DblArray key) {
 		int h = key.hashCode();
-		
+
 		// This function ensures that hashCodes that differ only by
 		// constant multiples at each bit position have a bounded
 		// number of collisions (approximately 8 at default load factor).
@@ -169,67 +191,38 @@ public class DblArrayIntListHashMap extends CustomHashMap {
 		return h ^ (h >>> 7) ^ (h >>> 4);
 	}
 
-	private static int indexFor(int h, int length) {
+	protected static int indexFor(int h, int length) {
 		return h & (length - 1);
 	}
 
-	public class DArrayIListEntry implements Comparator<DArrayIListEntry>, Comparable<DArrayIListEntry> {
+	public class DArrayIListEntry {
 		public DblArray key;
 		public IntArrayList value;
-		public DArrayIListEntry next;
 
 		public DArrayIListEntry(DblArray ekey, IntArrayList evalue) {
 			key = ekey;
 			value = evalue;
-			next = null;
 		}
 
 		@Override
-		public int compare(DArrayIListEntry o1, DArrayIListEntry o2) {
-			double[] o1d = o1.key.getData();
-			double[] o2d = o2.key.getData();
-			for(int i = 0; i < o1d.length && i < o2d.length; i++) {
-				if(o1d[i] > o2d[i]) {
-					return 1;
-				}
-				else if(o1d[i] < o2d[i]) {
-					return -1;
-				}
-			}
-			if(o1d.length == o2d.length){
-				return 0;
-			}
-			else if(o1d.length > o2d.length) {
-				return 1;
-			}
-			else {
-				return -1;
-			}
+		public String toString() {
+			return key + ":" + value;
+
 		}
 
-		@Override
-		public int compareTo(DArrayIListEntry o) {
-			return compare(this, o);
-		}
-
-		@Override
-		public String toString(){
-			if(next == null){
-				return key + ":" + value;
-			}else{
-				return key +":" + value + "," + next;
-			}
+		public boolean keyEquals(DblArray keyThat) {
+			return key.equals(keyThat);
 		}
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getClass().getSimpleName() + this.hashCode());
-		sb.append("   "+  _size);
-		for(int i = 0 ; i < _data.length; i++){
+		sb.append("   " + _size);
+		for(int i = 0; i < _data.length; i++) {
 			DArrayIListEntry ent = _data[i];
-			if(ent != null){
+			if(ent != null) {
 
 				sb.append("\n");
 				sb.append("id:" + i);

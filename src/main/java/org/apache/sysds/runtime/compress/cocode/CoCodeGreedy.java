@@ -56,20 +56,20 @@ public class CoCodeGreedy extends AColumnCoCoder {
 
 	private List<CompressedSizeInfoColGroup> coCodeBruteForce(List<CompressedSizeInfoColGroup> inputColumns) {
 
-		List<int[]> workset = new ArrayList<>(inputColumns.size());
+		List<ColIndexes> workset = new ArrayList<>(inputColumns.size());
 
 		for(int i = 0; i < inputColumns.size(); i++)
-			workset.add(inputColumns.get(i).getColumns());
+			workset.add(new ColIndexes(inputColumns.get(i).getColumns()));
 
 		// process merging iterations until no more change
 		while(workset.size() > 1) {
 			double changeInSize = 0;
 			CompressedSizeInfoColGroup tmp = null;
-			int[] selected1 = null, selected2 = null;
+			ColIndexes selected1 = null, selected2 = null;
 			for(int i = 0; i < workset.size(); i++) {
 				for(int j = i + 1; j < workset.size(); j++) {
-					final int[] c1 = workset.get(i);
-					final int[] c2 = workset.get(j);
+					final ColIndexes c1 = workset.get(i);
+					final ColIndexes c2 = workset.get(j);
 					final double costC1 = _cest.getCostOfColumnGroup(mem.get(c1));
 					final double costC2 = _cest.getCostOfColumnGroup(mem.get(c2));
 
@@ -102,7 +102,8 @@ public class CoCodeGreedy extends AColumnCoCoder {
 			if(tmp != null) {
 				workset.remove(selected1);
 				workset.remove(selected2);
-				workset.add(tmp.getColumns());
+				mem.remove(selected1, selected2);
+				workset.add(new ColIndexes(tmp.getColumns()));
 			}
 			else
 				break;
@@ -113,7 +114,7 @@ public class CoCodeGreedy extends AColumnCoCoder {
 
 		List<CompressedSizeInfoColGroup> ret = new ArrayList<>(workset.size());
 
-		for(int[] w : workset)
+		for(ColIndexes w : workset)
 			ret.add(mem.get(w));
 
 		return ret;
@@ -131,22 +132,27 @@ public class CoCodeGreedy extends AColumnCoCoder {
 			mem.put(new ColIndexes(g.getColumns()), g);
 		}
 
-		public CompressedSizeInfoColGroup get(CompressedSizeInfoColGroup g) {
-			return mem.get(new ColIndexes(g.getColumns()));
+		// public CompressedSizeInfoColGroup get(CompressedSizeInfoColGroup g) {
+		// 	return mem.get(new ColIndexes(g.getColumns()));
+		// }
+
+		public CompressedSizeInfoColGroup get(ColIndexes c) {
+			return mem.get(c);
 		}
 
-		public CompressedSizeInfoColGroup get(int[] c) {
-			return mem.get(new ColIndexes(c));
+		public void remove(ColIndexes c1, ColIndexes c2){
+			mem.remove(c1);
+			mem.remove(c2);
 		}
 
-		public CompressedSizeInfoColGroup getOrCreate(int[] c1, int[] c2) {
-			final int[] c = Util.join(c1, c2);
-			final ColIndexes cI = new ColIndexes(Util.join(c1, c2));
+		public CompressedSizeInfoColGroup getOrCreate(ColIndexes c1, ColIndexes c2) {
+			final int[] c = Util.join(c1._indexes, c2._indexes);
+			final ColIndexes cI = new ColIndexes(c);
 			CompressedSizeInfoColGroup g = mem.get(cI);
 			st2++;
 			if(g == null) {
-				final CompressedSizeInfoColGroup left = mem.get(new ColIndexes(c1));
-				final CompressedSizeInfoColGroup right = mem.get(new ColIndexes(c2));
+				final CompressedSizeInfoColGroup left = mem.get(c1);
+				final CompressedSizeInfoColGroup right = mem.get(c2);
 				final boolean leftConst = left.getBestCompressionType(_cs) == CompressionType.CONST &&
 					left.getNumOffs() == 0;
 				final boolean rightConst = right.getBestCompressionType(_cs) == CompressionType.CONST &&
@@ -191,14 +197,16 @@ public class CoCodeGreedy extends AColumnCoCoder {
 
 	private static class ColIndexes {
 		final int[] _indexes;
+		final int _hash;
 
 		public ColIndexes(int[] indexes) {
 			_indexes = indexes;
+			_hash = Arrays.hashCode(_indexes);
 		}
 
 		@Override
 		public int hashCode() {
-			return Arrays.hashCode(_indexes);
+			return _hash;
 		}
 
 		@Override

@@ -41,6 +41,7 @@ import org.apache.sysds.runtime.compress.estim.CompressedSizeEstimator;
 import org.apache.sysds.runtime.compress.estim.CompressedSizeEstimatorFactory;
 import org.apache.sysds.runtime.compress.estim.CompressedSizeInfo;
 import org.apache.sysds.runtime.compress.utils.DblArrayIntListHashMap;
+import org.apache.sysds.runtime.compress.utils.DoubleCountHashMap;
 import org.apache.sysds.runtime.compress.workload.WTreeRoot;
 import org.apache.sysds.runtime.controlprogram.parfor.stat.Timing;
 import org.apache.sysds.runtime.matrix.data.LibMatrixReorg;
@@ -187,7 +188,8 @@ public class CompressedMatrixBlockFactory {
 		_stats.denseSize = MatrixBlock.estimateSizeInMemory(mb.getNumRows(), mb.getNumColumns(), 1.0);
 		_stats.originalSize = mb.getInMemorySize();
 
-		res = new CompressedMatrixBlock(mb); // copy metadata.
+		res = new CompressedMatrixBlock(mb); // copy metadata and allocate soft reference
+
 		classifyPhase();
 		if(coCodeColGroups == null)
 			return abortCompression();
@@ -198,13 +200,17 @@ public class CompressedMatrixBlockFactory {
 
 		if(res == null)
 			return abortCompression();
+		final long oldNNZ = mb.getNonZeros();
+		if(oldNNZ != -1 && oldNNZ != 0)
+			res.setNonZeros(oldNNZ);
+		else
+			res.recomputeNonZeros();
 
-		res.recomputeNonZeros();
 		return new ImmutablePair<>(res, _stats);
 	}
 
 	private void classifyPhase() {
-		CompressedSizeEstimator sizeEstimator = CompressedSizeEstimatorFactory.getSizeEstimator(mb, compSettings);
+		CompressedSizeEstimator sizeEstimator = CompressedSizeEstimatorFactory.getSizeEstimator(mb, compSettings, k);
 		CompressedSizeInfo sizeInfos = sizeEstimator.computeCompressedSizeInfos(k);
 		_stats.estimatedSizeCols = sizeInfos.memoryEstimate();
 		logPhase();
@@ -229,9 +235,9 @@ public class CompressedMatrixBlockFactory {
 	private void transposePhase() {
 		boolean sparse = mb.isInSparseFormat();
 		transposeHeuristics();
-		mb = compSettings.transposed ? LibMatrixReorg.transpose(mb,
-			new MatrixBlock(mb.getNumColumns(), mb.getNumRows(), sparse),
-			k) : new MatrixBlock(mb.getNumRows(), mb.getNumColumns(), sparse).copyShallow(mb);
+		if(compSettings.transposed)
+			mb = LibMatrixReorg.transpose(mb, new MatrixBlock(mb.getNumColumns(), mb.getNumRows(), sparse), k, true);
+
 		logPhase();
 	}
 
@@ -245,9 +251,11 @@ public class CompressedMatrixBlockFactory {
 				break;
 			default:
 				if(mb.isInSparseFormat()) {
+					// compSettings.transposed = true;
+					// compSettings.transposed = false;
 					boolean isAboveRowNumbers = mb.getNumRows() > 500000;
-					boolean isAboveThreadToColumnRatio = coCodeColGroups.getNumberColGroups() > mb.getNumColumns() / 2;
-					compSettings.transposed = isAboveRowNumbers || isAboveThreadToColumnRatio;
+					boolean isAboveThreadToColumnRatio = coCodeColGroups.getNumberColGroups() > mb.getNumColumns() / 4;
+					compSettings.transposed = isAboveRowNumbers && isAboveThreadToColumnRatio;
 				}
 				else
 					compSettings.transposed = false;
@@ -345,10 +353,9 @@ public class CompressedMatrixBlockFactory {
 			return;
 		}
 
-		mb.cleanupBlock(true, true);
-
 		_stats.setColGroupsCounts(res.getColGroups());
 
+	
 		logPhase();
 
 	}
@@ -382,8 +389,9 @@ public class CompressedMatrixBlockFactory {
 					break;
 				case 3:
 					LOG.debug("--compression phase " + phase + " Compress  : " + getLastTimePhase());
-					LOG.debug("--compression Hash collisions:" + DblArrayIntListHashMap.hashMissCount);
+					LOG.debug("--compression Hash collisions:" + "(" +DblArrayIntListHashMap.hashMissCount+","+DoubleCountHashMap.hashMissCount+")");
 					DblArrayIntListHashMap.hashMissCount = 0;
+					DoubleCountHashMap.hashMissCount = 0;
 					LOG.debug("--compressed initial actual size:" + _stats.compressedInitialSize);
 					break;
 				case 4:

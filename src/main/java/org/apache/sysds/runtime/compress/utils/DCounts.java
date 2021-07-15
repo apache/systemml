@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,27 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.sysds.runtime.compress.utils;
 
-package org.apache.sysds.runtime.compress;
+public class DCounts {
+	public double key = Double.MAX_VALUE;
+	public int count;
 
-import org.apache.sysds.runtime.DMLRuntimeException;
-
-public class DMLCompressionException extends DMLRuntimeException{
-	private static final long serialVersionUID = 1L;
-
-	public DMLCompressionException(){
-		super("Invalid execution on Compressed MatrixBlock");
+	public DCounts(double key) {
+		this.key = key;
+		count = 1;
 	}
 
-	public DMLCompressionException(String string) {
-		super(string);
-	}
-	
-	public DMLCompressionException(Exception e) {
-		super(e);
+	public void inc() {
+		count++;
 	}
 
-	public DMLCompressionException(String string, Exception ex){
-		super(string,ex);
+	@Override
+	public String toString() {
+		return "[" + key + ", " + count + "]";
 	}
 }

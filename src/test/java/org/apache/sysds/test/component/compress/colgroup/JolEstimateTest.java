@@ -71,7 +71,7 @@ public abstract class JolEstimateTest {
 			CompressionSettings cs = new CompressionSettingsBuilder().setSamplingRatio(1.0)
 				.setValidCompressions(EnumSet.of(getCT())).create();
 			cs.transposed = true;
-			ABitmap ubm = BitmapEncoder.extractBitmap(colIndexes, mbt, true);
+			ABitmap ubm = BitmapEncoder.extractBitmap(colIndexes, mbt, true, 8);
 			cg = ColGroupFactory.compress(colIndexes, mbt.getNumColumns(), ubm, getCT(), cs, mbt, 1);
 			actualSize = cg.estimateInMemorySize();
 			actualNumberUnique = cg.getNumValues();
@@ -124,7 +124,7 @@ public abstract class JolEstimateTest {
 				.setValidCompressions(EnumSet.of(getCT())).setMinimumSampleSize(100).setSeed(seed).create();
 			cs.transposed = true;
 
-			final CompressedSizeInfoColGroup cgsi = CompressedSizeEstimatorFactory.getSizeEstimator(mbt, cs)
+			final CompressedSizeInfoColGroup cgsi = CompressedSizeEstimatorFactory.getSizeEstimator(mbt, cs, 1)
 				.estimateCompressedColGroupSize();
 
 			if(cg.getCompType() != CompressionType.UNCOMPRESSED && actualNumberUnique > 10) {

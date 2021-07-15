@@ -34,10 +34,14 @@ public class OffsetChar extends AOffset {
 	private final int offsetToFirst;
 
 	public OffsetChar(int[] indexes) {
+		this(indexes, 0, indexes.length);
+	}
+
+	public OffsetChar(int[] indexes, int apos, int alen) {
 		int endSize = 0;
-		offsetToFirst = indexes[0];
+		offsetToFirst = indexes[apos];
 		int ov = offsetToFirst;
-		for(int i = 1; i < indexes.length; i++) {
+		for(int i = apos+1; i < alen; i++) {
 			final int nv = indexes[i];
 			endSize += 1 + (nv - ov) / maxV;
 			ov = nv;
@@ -46,7 +50,7 @@ public class OffsetChar extends AOffset {
 		ov = offsetToFirst;
 		int p = 0;
 
-		for(int i = 1; i < indexes.length; i++) {
+		for(int i =  apos+1; i < alen; i++) {
 			final int nv = indexes[i];
 			final int offsetSize = (nv - ov);
 			if(offsetSize == 0)
@@ -153,7 +157,6 @@ public class OffsetChar extends AOffset {
 		public boolean hasNext() {
 			return index <= offsets.length;
 		}
-
 
 		@Override
 		public IterateCharOffset clone() {

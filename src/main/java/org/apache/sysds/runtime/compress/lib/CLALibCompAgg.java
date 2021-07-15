@@ -149,7 +149,7 @@ public class CLALibCompAgg {
 
 	private static MatrixBlock addCellCount(MatrixBlock ret, AggregateUnaryOperator op, int nRow, int nCol) {
 		if(op.indexFn instanceof ReduceAll)
-			ret.setValue(0, 1, nRow * nCol);
+			ret.setValue(0, 1, (long)nRow * (long)nCol);
 		else if(op.indexFn instanceof ReduceCol)
 			for(int i = 0; i < nRow; i++)
 				ret.setValue(i, 1, nCol);
@@ -307,7 +307,7 @@ public class CLALibCompAgg {
 	}
 
 	private static void divideByNumberOfCellsForMeanAll(CompressedMatrixBlock m1, MatrixBlock ret) {
-		ret.quickSetValue(0, 0, ret.quickGetValue(0, 0) / (m1.getNumColumns() * m1.getNumRows()));
+		ret.quickSetValue(0, 0, ret.quickGetValue(0, 0) / ((long)m1.getNumColumns() * (long)m1.getNumRows()));
 	}
 
 	private static void postProcessAggregate(CompressedMatrixBlock m1, MatrixBlock ret, AggregateUnaryOperator op) {

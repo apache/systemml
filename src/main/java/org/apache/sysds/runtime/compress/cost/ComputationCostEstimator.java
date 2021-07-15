@@ -92,7 +92,8 @@ public class ComputationCostEstimator implements ICostEstimate {
 
 	private double leftMultCost(CompressedSizeInfoColGroup g) {
 		final int nCols = g.getColumns().length;
-		final double preAggregateCost = _nRows * 2.5;
+		// final double preAggregateCost = _nRows * 2.5;
+		final double preAggregateCost = _nRows * 1.5;
 		// final double preAggregateCost = _nRows * 0.2;
 
 		final int numberTuples = g.getNumVals();

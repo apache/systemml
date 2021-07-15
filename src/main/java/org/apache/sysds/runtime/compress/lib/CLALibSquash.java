@@ -37,6 +37,7 @@ import org.apache.sysds.runtime.compress.colgroup.ColGroupFactory;
 import org.apache.sysds.runtime.compress.colgroup.ColGroupValue;
 import org.apache.sysds.runtime.compress.readers.ReaderColumnSelection;
 import org.apache.sysds.runtime.compress.utils.ABitmap;
+import org.apache.sysds.runtime.compress.utils.DblArrayIntListHashMap;
 import org.apache.sysds.runtime.util.CommonThreadPool;
 
 public class CLALibSquash {
@@ -121,8 +122,9 @@ public class CLALibSquash {
 	}
 
 	private static ABitmap extractBitmap(int[] colIndices, CompressedMatrixBlock compressedBlock) {
-		ABitmap x = BitmapEncoder.extractBitmap(colIndices,
-			ReaderColumnSelection.createCompressedReader(compressedBlock, colIndices), compressedBlock.getNumRows());
+		ReaderColumnSelection r = ReaderColumnSelection.createCompressedReader(compressedBlock, colIndices);
+		DblArrayIntListHashMap map = new DblArrayIntListHashMap(256);
+		ABitmap x = BitmapEncoder.extractBitmapMultiColumns(colIndices,r, compressedBlock.getNumRows(),map);
 		return BitmapLossyEncoder.makeBitmapLossy(x, compressedBlock.getNumRows());
 	}
 

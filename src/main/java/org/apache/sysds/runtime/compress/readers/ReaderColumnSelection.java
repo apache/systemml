@@ -34,9 +34,8 @@ public abstract class ReaderColumnSelection {
 	protected int _numRows = -1;
 	protected int _lastRow = -1;
 
-	private DblArray nonZeroReturn;
 	final protected DblArray emptyReturn = new DblArray();
-	
+
 	protected DblArray reusableReturn;
 	protected double[] reusableArr;
 
@@ -55,9 +54,16 @@ public abstract class ReaderColumnSelection {
 	 * @return next row
 	 */
 	public DblArray nextRow() {
-		while((nonZeroReturn = getNextRow()) != null && DblArray.isZero(nonZeroReturn)) {
+		DblArray ret = getNextRow();
+		while(ret != null && ret.isEmpty())
+			ret = getNextRow();
+
+		if(ret == null)
+			return null;
+		else {
+			ret.resetHash();
+			return ret;
 		}
-		return nonZeroReturn;
 	}
 
 	protected abstract DblArray getNextRow();

@@ -103,7 +103,7 @@ public class SampleEstimatorTest {
 
 		cs_estimate.transposed = true;
 
-		final CompressedSizeEstimator estimate = CompressedSizeEstimatorFactory.getSizeEstimator(mbt, cs_estimate);
+		final CompressedSizeEstimator estimate = CompressedSizeEstimatorFactory.getSizeEstimator(mbt, cs_estimate, 1);
 		final int estimate_1 = estimate.estimateCompressedColGroupSize(new int[] {0}).getNumVals() + 1;
 		final int estimate_2 = estimate.estimateCompressedColGroupSize(new int[] {1}).getNumVals() + 1;
 

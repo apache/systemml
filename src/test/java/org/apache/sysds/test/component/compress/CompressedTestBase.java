@@ -229,7 +229,7 @@ public abstract class CompressedTestBase extends TestBase {
 							colIndexes[x] = y;
 						}
 						// columns += Arrays.toString(colIndexes);
-						ABitmap ubm = BitmapEncoder.extractBitmap(colIndexes, mb, false);
+						ABitmap ubm = BitmapEncoder.extractBitmap(colIndexes, mb, false, 8);
 
 						EstimationFactors ef = CompressedSizeEstimator.estimateCompressedColGroupSize(ubm, colIndexes,
 							mb.getNumRows(), cs);
@@ -411,6 +411,7 @@ public abstract class CompressedTestBase extends TestBase {
 
 			MatrixBlock decompressedMatrixBlock = ((CompressedMatrixBlock) cmb).decompress(_k);
 			compareResultMatrices(mb, decompressedMatrixBlock, 1);
+			
 			assertEquals(this.toString() + " number of non zeros should be equal after decompression", mb.getNonZeros(),
 				decompressedMatrixBlock.getNonZeros());
 		}

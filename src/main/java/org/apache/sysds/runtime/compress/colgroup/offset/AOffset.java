@@ -77,6 +77,24 @@ public abstract class AOffset {
 	}
 
 	/**
+	 * Cache a iterator in use, note that there is no check for if the iterator is correctly positioned at the given row
+	 * 
+	 * @param it  The Iterator to cache
+	 * @param row The row index to cache the iterator as.
+	 */
+	public void cacheIterator(AIterator it, int row) {
+		if(skipIterators != null) {
+			Map<Integer, AIterator> sk = skipIterators.get();
+			sk.put(row, it);
+		}
+		else {
+			Map<Integer, AIterator> nsk = new HashMap<Integer, AIterator>();
+			nsk.put(row, it.clone());
+			skipIterators = new SoftReference<>(nsk);
+		}
+	}
+
+	/**
 	 * Write the offsets to disk.
 	 * 
 	 * If you implement another remember to write the ordinal of the new type to disk as well and add it to the

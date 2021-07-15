@@ -1,0 +1,133 @@
+#-------------------------------------------------------------
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+#-------------------------------------------------------------
+
+# Implements built-in for fixing erroneous values in the group.
+# for example, if two employees have the same rank, their values should fall into the same bucket 
+# the built-in identifies the values that do not follow the bin/range pattern and replace them
+# with the mix or the max value observed in the group.
+# INPUT PARAMETERS:
+# ---------------------------------------------------------------------------------------------
+# NAME            TYPE    DEFAULT     MEANING
+# ---------------------------------------------------------------------------------------------
+# X               Double    --       Matrix X 
+# source          Integer   --       source attribute to use for imputation and error correction
+# target          Integer   --       attribute to be fixed
+# replace         String    --       replace the error with min/max value of the group 
+# ---------------------------------------------------------------------------------------------
+
+
+#Output(s)
+# ---------------------------------------------------------------------------------------------
+# NAME            TYPE    DEFAULT     MEANING
+# ---------------------------------------------------------------------------------------------
+# X               Double   ---        Matrix with possible imputations 
+
+m_imputeByMVD = function(Matrix[Double] X, Integer sourceAttribute, Integer targetAttribute, String replace = "min", Boolean verbose = FALSE)
+return(Matrix[Double] X)
+{
+  S = X[, sourceAttribute]
+  T =  X[, targetAttribute]
+
+  XY = cbind(S, T)
+  
+  # replace the NaN values with zero
+  XY = replace(target = XY, pattern=NaN, replacement=0)
+  missing_mask = (XY == 0)
+  
+  # map the missing values to an arbitrary number (i.e., Max values + 1)
+  XY = missing_mask * (colMaxs(XY)+1) + XY
+  
+  # create mapping between source and target
+  ctab = (table(XY[,1], XY[,2], 1) > 0)
+
+  # table contain the 0,1 so multiply it with seq to get the original value
+  values = ctab * t(seq(1, ncol(ctab)))
+  values = removeEmpty(target=values, margin="cols")
+  bins = matrix(0, rows=nrow(ctab), cols=2)
+  # take care of zero value while computing the min value
+  ctabNonZero = replace(target=values, pattern = 0, replacement= max(values))
+  rowMin = rowMins(ctabNonZero)
+  rowMax = rowMaxs(values)
+
+  # create the ordered ranges of values for each distinct value in source attribute
+  # each distinct value in source will map to a group of different values in target
+  # assumption is that the group is non-overlapping, like the salaries of employees associated
+  # with their ranks. So not two employees with same rank could have huge difference in salaries
+  ranges = order(target=cbind(rowMin, rowMax, seq(1, nrow(ctab))), by = 1, decreasing=FALSE, index.return=FALSE)
+  ranges = fixRanges(ranges)
+
+  ranges = order(target=ranges, by=3, decreasing=FALSE, index.return=FALSE)
+  # open the source/target matrix so that each distinct value in source has a new column having its all values as rows
+  openXY = matrix(0, nrow(XY), max(XY[, 1]))
+  openXY =  ((openXY + t(seq(1, max(XY[, 1])))) == XY[, 1])
+  openXY = openXY * XY[, 2]
+  # identify and fix invalid value ranges
+  identify = (openXY > 0 & openXY < t(ranges[, 1])) | openXY > t(ranges[, 2])
+  # replace the column values with max value in the group
+  validValues = openXY*(identify == 0) 
+  impute = as.matrix(0)
+  
+  if(replace == "max")
+    impute = colMaxs(validValues)
+  else if(replace == "min")
+  {
+    zeroReplacement = max(validValues) + 9999
+    # replace the zeros with arbitrary large number to avoid 0 to be imputed as min value
+    validValues = replace(target = validValues, pattern = 0, replacement = zeroReplacement)
+    impute = colMins(validValues)
+    # retrieve original validValues
+    validValues = replace(target = validValues, pattern = zeroReplacement, replacement = 0)
+  
+  }
+  else stop("imputeByMVD: invalid parameter value, replace expected \"min\" or \"max\" found: "+replace)
+  
+  fixed = validValues + (identify * impute)
+  fixed = rowSums(fixed)  
+  X[, targetAttribute] = fixed
+  
+  if(verbose)
+    print("fixed data \n"+toString(X))
+}
+
+# function to fix the value ranges and make them non-overlapping
+fixRanges = function(Matrix[Double] ranges)
+return(Matrix[Double] ranges)
+{
+  for(i in 1:nrow(ranges)-1)
+  {
+    valCurr = as.scalar(ranges[i, 2]) # value we are checking 
+    valPre =  as.scalar(ranges[i, 1]) # max range of previous item 
+    valNext = as.scalar(ranges[i+1, 1]) # min range of next item 
+    valNextNext = as.scalar(ranges[i+1, 2]) # min range of next item 
+    if(valNext <= valCurr)
+    {
+      # compute the bucket size
+      currentBucket = abs(valCurr - valPre)
+      nextBucket = abs(valNextNext - valNext)
+      if(currentBucket > nextBucket ) { 
+        ranges[i, 2] = valNext - 1
+      }
+      else {
+        ranges[i+1, 1] = valCurr + 1
+      }
+    }
+  }
+}

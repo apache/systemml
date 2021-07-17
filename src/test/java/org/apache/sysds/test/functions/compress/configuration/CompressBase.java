@@ -66,7 +66,7 @@ public abstract class CompressBase extends AutomatedTestBase {
 			fullDMLScriptName = SCRIPT_DIR + "/functions/compress/compress_" + name + ".dml";
 
 			// programArgs = new String[] {"-stats", "100" , "-explain", "-nvargs", "A=" + input("A")};
-			programArgs = new String[] {"-stats", "100" ,  "-nvargs", "A=" + input("A")};
+			programArgs = new String[] {"-stats", "100",  "-nvargs", "A=" + input("A")};
 
 			LOG.debug(runTest(null));
 

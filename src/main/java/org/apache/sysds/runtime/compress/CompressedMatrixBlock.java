@@ -555,9 +555,10 @@ public class CompressedMatrixBlock extends MatrixBlock {
 			return out;
 
 		BinaryOperator bop = new BinaryOperator(Multiply.getMultiplyFnObject());
-		boolean allowOverlap = ConfigurationManager.getDMLConfig().getBooleanValue(DMLConfig.COMPRESSED_OVERLAPPING);
+		boolean allowOverlap = ConfigurationManager.getDMLConfig().getBooleanValue(DMLConfig.COMPRESSED_OVERLAPPING) && v.getNumColumns() > 1;
 		MatrixBlock tmp = CLALibRightMultBy.rightMultByMatrix(this, v, null, k, allowOverlap);
 
+			
 		if(ctype == ChainType.XtwXv) {
 			if(tmp instanceof CompressedMatrixBlock)
 				tmp = CLALibBinaryCellOp.binaryOperations(bop, (CompressedMatrixBlock) tmp, w, null);

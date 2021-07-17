@@ -245,7 +245,7 @@ public class ColGroupSDCZeros extends ColGroupValue {
 				preAV[offOut + getIndex(it.getDataIndexAndIncrement())] += mV[offLeft + i];
 			}
 		}
-		if(it != null)
+		if(it != null && cu + 1 < m.getNumColumns())
 			_indexes.cacheIterator(it, cu+1);
 	}
 

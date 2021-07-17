@@ -1,0 +1,217 @@
+#-------------------------------------------------------------
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+#-------------------------------------------------------------
+
+# Imports
+source("nn/layers/affine.dml") as affine
+source("nn/layers/logcosh_loss.dml") as logcosh
+source("nn/layers/elu.dml") as elu
+source("nn/layers/sigmoid.dml") as sigmoid
+source("nn/optim/sgd.dml") as sgd
+
+init_model = function(Integer inputDimension, Integer outputDimension, int seed = -1)
+  return(list[unknown] model){
+  [W1, b1] = affine::init(inputDimension, 200, seed = seed)
+  lseed = ifelse(seed==-1, -1, seed + 1);
+  [W2, b2] = affine::init(200, 200,  seed = lseed)
+  lseed = ifelse(seed==-1, -1, seed + 2);
+  [W3, b3] = affine::init(200, outputDimension, seed = lseed)
+  model = list(W1, W2, W3, b1, b2, b3)
+}
+
+
+predict = function(matrix[double] X,
+                   list[unknown] model)
+    return (matrix[double] probs) {
+
+  W1 = as.matrix(model[1])
+  W2 = as.matrix(model[2])
+  W3 = as.matrix(model[3])
+  b1 = as.matrix(model[4])
+  b2 = as.matrix(model[5])
+  b3 = as.matrix(model[6])
+
+  out1elu = elu::forward(affine::forward(X, W1, b1),1)
+  out2elu = elu::forward(affine::forward(out1elu, W2, b2),1)
+  probs = elu::forward(affine::forward(out2elu, W3, b3),1)
+}
+
+eval = function(matrix[double] probs, matrix[double] y)
+    return (double loss) {
+  loss = logcosh::forward(probs, y)
+}
+
+gradients = function(list[unknown] model,
+                     list[unknown] hyperparams,
+                     matrix[double] features,
+                     matrix[double] labels)
+    return (list[unknown] gradients) {
+
+  W1 = as.matrix(model[1])
+  W2 = as.matrix(model[2])
+  W3 = as.matrix(model[3])
+  b1 = as.matrix(model[4])
+  b2 = as.matrix(model[5])
+  b3 = as.matrix(model[6])
+
+  # Compute forward pass
+  out1 = affine::forward(features, W1, b1)
+  out1elu = elu::forward(out1, 1)
+  out2 = affine::forward(out1elu, W2, b2)
+  out2elu = elu::forward(out2, 1)
+  out3 = affine::forward(out2elu, W3, b3)
+  probs = elu::forward(out3,1)
+
+  # Compute loss & accuracy for training data
+  loss = logcosh::forward(probs, labels)
+  print("Batch loss: " + loss)
+
+  # Compute data backward pass
+  dprobs = logcosh::backward(probs, labels)
+  dout3 = elu::backward(dprobs, out3, 1)
+  [dout2elu, dW3, db3] = affine::backward(dout3, out2elu, W3, b3)
+  dout2 = elu::backward(dout2elu, out2, 1)
+  [dout1elu, dW2, db2] = affine::backward(dout2, out1elu, W2, b2)
+  dout1 = elu::backward(dout1elu, out1, 1)
+  [dfeatures, dW1, db1] = affine::backward(dout1, features, W1, b1)
+
+  gradients = list(dW1, dW2, dW3, db1, db2, db3)
+}
+
+aggregation = function(list[unknown] model,
+                       list[unknown] hyperparams,
+                       list[unknown] gradients)
+    return (list[unknown] model_result) {
+
+  W1 = as.matrix(model[1])
+  W2 = as.matrix(model[2])
+  W3 = as.matrix(model[3])
+  b1 = as.matrix(model[4])
+  b2 = as.matrix(model[5])
+  b3 = as.matrix(model[6])
+  dW1 = as.matrix(gradients[1])
+  dW2 = as.matrix(gradients[2])
+  dW3 = as.matrix(gradients[3])
+  db1 = as.matrix(gradients[4])
+  db2 = as.matrix(gradients[5])
+  db3 = as.matrix(gradients[6])
+  learning_rate = as.double(as.scalar(hyperparams["learning_rate"]))
+
+  # Optimize with SGD
+  W3 = sgd::update(W3, dW3, learning_rate)
+  b3 = sgd::update(b3, db3, learning_rate)
+  W2 = sgd::update(W2, dW2, learning_rate)
+  b2 = sgd::update(b2, db2, learning_rate)
+  W1 = sgd::update(W1, dW1, learning_rate)
+  b1 = sgd::update(b1, db1, learning_rate)
+
+  model_result = list(W1, W2, W3, b1, b2, b3)
+}
+
+
+train = function(matrix[double] X, matrix[double] y,
+                 int epochs, int batch_size, double learning_rate, 
+                 int seed = -1)
+    return (list[unknown] model_trained) {
+
+  N = nrow(X)  # num examples
+  D = ncol(X)  # num features
+  K = ncol(y)  # num classes
+
+  model = init_model(D, K, seed)
+  W1 = as.matrix(model[1])
+  W2 = as.matrix(model[2])
+  W3 = as.matrix(model[3])
+  b1 = as.matrix(model[4])
+  b2 = as.matrix(model[5])
+  b3 = as.matrix(model[6])
+  
+  # Create the hyper parameter list
+  hyperparams = list(learning_rate=learning_rate)
+
+  # Calculate iterations
+  iters = ceil(N / batch_size)
+
+  for (e in 1:epochs) {
+    for(i in 1:iters) {
+      # Create the model list
+      model_list = list(W1, W2, W3, b1, b2, b3)
+
+      # Get next batch
+      beg = ((i-1) * batch_size) %% N + 1
+      end = min(N, beg + batch_size - 1)
+      X_batch = X[beg:end,]
+      y_batch = y[beg:end,]
+
+      gradients_list = gradients(model_list, hyperparams, X_batch, y_batch)
+      model_updated = aggregation(model_list, hyperparams, gradients_list)
+
+      W1 = as.matrix(model_updated[1])
+      W2 = as.matrix(model_updated[2])
+      W3 = as.matrix(model_updated[3])
+      b1 = as.matrix(model_updated[4])
+      b2 = as.matrix(model_updated[5])
+      b3 = as.matrix(model_updated[6])
+
+    }
+  }
+
+  model_trained = list(W1, W2, W3, b1, b2, b3)
+}
+
+train_paramserv = function(matrix[Double] X, matrix[Double] y,
+    Integer epochs, Integer batch_size, Double learning_rate, Integer workers,
+    String utype, String freq, String mode, Integer seed)
+    return (list[unknown] model_trained) {
+
+  N = nrow(X)  # num examples
+  D = ncol(X)  # num features
+  K = ncol(y)  # num classes
+
+  # Create the model list
+  model_list = init_model(D, K, seed)
+
+  # Create the hyper parameter list
+  params = list(learning_rate=learning_rate)
+  
+  # Use paramserv function
+  model_trained = paramserv(model=model_list, features=X, labels=y, 
+    val_features=matrix(0, rows=0, cols=0), val_labels=matrix(0, rows=0, cols=0), 
+    upd="./network/TwoNN.dml::gradients", agg="./network/TwoNN.dml::aggregation",
+    mode=mode, utype=utype, freq=freq, epochs=epochs, batchsize=batch_size,
+    k=workers, hyperparams=params, checkpointing="NONE")
+
+}
+
+save_model = function (list[unknown] model, String baseFolder){
+  W1  = as.matrix(model[1])
+  W2  = as.matrix(model[2])
+  W3  = as.matrix(model[3])
+  b1  = as.matrix(model[4])
+  b2  = as.matrix(model[5])
+  b3  = as.matrix(model[6])
+
+  write(W1, (baseFolder + "/W1.data"), format="binary")
+  write(W2, (baseFolder + "/W2.data"), format="binary")
+  write(W3, (baseFolder + "/W3.data"), format="binary")
+  write(b1, (baseFolder + "/b1.data"), format="binary")
+  write(b2, (baseFolder + "/b2.data") , format="binary")
+  write(b3, (baseFolder + "/b3.data") , format="binary")
+}

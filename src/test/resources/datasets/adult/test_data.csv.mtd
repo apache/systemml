@@ -1,0 +1,8 @@
+{
+    "data_type": "frame",
+    "format": "csv",
+    "header": true,
+    "naStrings": [ "?", "" ],
+    "rows": 16281,
+    "cols": 15
+}

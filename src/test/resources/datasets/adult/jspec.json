@@ -1,0 +1,24 @@
+{
+    "impute":
+    [ { "name": "age", "method": "global_mean" }
+     ,{ "name": "workclass" , "method": "global_mode" }
+     ,{ "name": "fnlwgt", "method": "global_mean" }
+     ,{ "name": "education", "method": "global_mode"  }
+     ,{ "name": "education-num", "method": "global_mean" }
+     ,{ "name": "marital-status"      , "method": "global_mode" }
+     ,{ "name": "occupation"        , "method": "global_mode" }
+     ,{ "name": "relationship" , "method": "global_mode" }
+     ,{ "name": "race"        , "method": "global_mode" }
+     ,{ "name": "sex"        , "method": "global_mode" }
+     ,{ "name": "capital-gain", "method": "global_mean" }
+     ,{ "name": "capital-loss", "method": "global_mean" }
+     ,{ "name": "hours-per-week", "method": "global_mean" }
+     ,{ "name": "native-country"        , "method": "global_mode" }
+    ],
+    "bin":
+    [ { "name": "age"  , "method": "equi-width", "numbins": 3 }],
+   "dummycode": ["age", "workclass", "education", "marital-status", "occupation", "relationship", "race", "sex", "native-country"],
+   "recode": ["income"]
+
+
+}

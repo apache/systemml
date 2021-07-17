@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Iterator interface, that returns a iterator of the indexes (not offsets)
  */
-public abstract class AIterator {
+public abstract class AIterator implements Comparable<AIterator> {
 	protected static final Log LOG = LogFactory.getLog(AIterator.class.getName());
 
 	protected int index;
@@ -112,4 +112,23 @@ public abstract class AIterator {
 	 * Copy the iterator with the current values.
 	 */
 	public abstract AIterator clone();
+
+	@Override
+	public boolean equals(Object that) {
+		if(that instanceof AIterator) {
+			AIterator thatIt = (AIterator) that;
+			return thatIt.dataIndex == dataIndex && thatIt.index == index && thatIt.offset == offset;
+		}
+		return false;
+	}
+
+	@Override
+	public int compareTo(AIterator that) {
+		if(that.index > index)
+			return 1;
+		else if(that.index == this.index)
+			return 0;
+		else
+			return -1;
+	}
 }

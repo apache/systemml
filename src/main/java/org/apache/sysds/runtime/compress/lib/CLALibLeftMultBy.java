@@ -416,7 +416,8 @@ public class CLALibLeftMultBy {
 					ColGroupValue cg = v.get(j);
 					preAgg.get(j % colGroupBlocking).reset(rowBlockSize, cg.getNumValues(), false);
 				}
-				int colBlockSize = 16000;
+				// int colBlockSize = 16000;
+				int colBlockSize = 64000;
 
 				for(int h = rl; h < ru; h += rowBlockSize) {
 					for(int i = 0; i < that.getNumColumns(); i += colBlockSize) {

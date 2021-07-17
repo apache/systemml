@@ -26,6 +26,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -417,20 +418,20 @@ public class CompressedMatrixBlock extends MatrixBlock {
 
 	@Override
 	public double quickGetValue(int r, int c) {
-		throw new NotImplementedException("Should not call quick get Value on Compressed Matrix Block");
-		// if(isOverlapping()) {
-		// 	double v = 0.0;
-		// 	for(AColGroup group : _colGroups)
-		// 		if(Arrays.binarySearch(group.getColIndices(), c) >= 0)
-		// 			v += group.get(r, c);
-		// 	return v;
-		// }
-		// else {
-		// 	for(AColGroup group : _colGroups)
-		// 		if(Arrays.binarySearch(group.getColIndices(), c) >= 0)
-		// 			return group.get(r, c);
-		// 	return 0;
-		// }
+		// throw new NotImplementedException("Should not call quick get Value on Compressed Matrix Block");
+		if(isOverlapping()) {
+			double v = 0.0;
+			for(AColGroup group : _colGroups)
+				if(Arrays.binarySearch(group.getColIndices(), c) >= 0)
+					v += group.get(r, c);
+			return v;
+		}
+		else {
+			for(AColGroup group : _colGroups)
+				if(Arrays.binarySearch(group.getColIndices(), c) >= 0)
+					return group.get(r, c);
+			return 0;
+		}
 
 	}
 

@@ -309,12 +309,10 @@ public class CompressedMatrixBlock extends MatrixBlock {
 
 	private MatrixBlock getCachedDecompressed() {
 		if(decompressedVersion != null) {
-			MatrixBlock mb = decompressedVersion.get();
+			final MatrixBlock mb = decompressedVersion.get();
 			if(mb != null) {
 				DMLCompressionStatistics.addDecompressCacheCount();
-				if(DMLScript.STATISTICS || LOG.isDebugEnabled()) {
-					LOG.debug("decompressed block was in soft reference.");
-				}
+				LOG.debug("Decompressed block was in soft reference.");
 				return mb;
 			}
 		}

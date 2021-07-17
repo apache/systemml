@@ -57,11 +57,11 @@ public class CLALibScalar {
 
 	public static MatrixBlock scalarOperations(ScalarOperator sop, CompressedMatrixBlock m1, MatrixValue result) {
 		// Special case handling of overlapping relational operations
-		if(CLALibRelationalOp.isValidForRelationalOperation(sop, m1)) {
-			MatrixBlock ret =  CLALibRelationalOp.overlappingRelativeRelationalOperation(sop, m1);
-			ret.recomputeNonZeros();
-			return ret;
-		}
+		// if(CLALibRelationalOp.isValidForRelationalOperation(sop, m1)) {
+		// 	MatrixBlock ret =  CLALibRelationalOp.overlappingRelativeRelationalOperation(sop, m1);
+		// 	ret.recomputeNonZeros();
+		// 	return ret;
+		// }
 
 		if(isInvalidForCompressedOutput(m1, sop)) {
 			LOG.warn("scalar overlapping not supported for op: " + sop.fn);

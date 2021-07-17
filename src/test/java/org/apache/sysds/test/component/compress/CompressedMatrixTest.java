@@ -200,7 +200,7 @@ public class CompressedMatrixTest extends AbstractCompressedUnaryTests {
 			// deserialize compressed matrix block
 			ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 			DataInputStream fis = new DataInputStream(bis);
-			CompressedMatrixBlock cmb2 = new CompressedMatrixBlock();
+			CompressedMatrixBlock cmb2 = new CompressedMatrixBlock(-1,-1);
 			cmb2.readFields(fis);
 
 			// decompress the compressed matrix block
@@ -508,7 +508,7 @@ public class CompressedMatrixTest extends AbstractCompressedUnaryTests {
 		try {
 			if(!(cmb instanceof CompressedMatrixBlock) || rows * cols > 10000)
 				return;
-			CompressedMatrixBlock cmbCopy = new CompressedMatrixBlock();
+			CompressedMatrixBlock cmbCopy = new CompressedMatrixBlock(cmb.getNumRows(), cmb.getNumColumns());
 			cmbCopy.copy(cmb);
 
 			compareResultMatrices(mb, cmbCopy, 1);
@@ -521,7 +521,7 @@ public class CompressedMatrixTest extends AbstractCompressedUnaryTests {
 
 	@Test(expected = DMLRuntimeException.class)
 	public void testCompressedMatrixCopyMatrixBlock_shouldThrowException() {
-		CompressedMatrixBlock cmbCopy = new CompressedMatrixBlock();
+		CompressedMatrixBlock cmbCopy = new CompressedMatrixBlock(mb.getNumRows(), mb.getNumColumns());
 		cmbCopy.copy(mb);
 	}
 

@@ -226,32 +226,30 @@ public class ColGroupSDCZeros extends ColGroupValue {
 		if(m.isInSparseFormat())
 			preAggregateSparse(m.getSparseBlock(), preAgg, rl, ru);
 		else
-			preAggregateDense(m, preAgg, rl, ru);
+			preAggregateDenseOld(m, preAgg, rl, ru);
 	}
 
 	@Override
-	public void preAggregateDense(MatrixBlock m, MatrixBlock preAgg, int rl, int ru, int cl, int cu){
+	public void preAggregateDense(MatrixBlock m, MatrixBlock preAgg, int rl, int ru, int cl, int cu) {
 		final double[] mV = m.getDenseBlockValues();
 		final double[] preAV = preAgg.getDenseBlockValues();
 		final int numVals = getNumValues();
 
-		final int blockSize = 2000;
-		for(int block = cl; block < cu; block += blockSize) {
-			final int blockEnd = Math.min(block + blockSize, cu);
-			final AIterator itStart = _indexes.getIterator(block);
-			AIterator it;
-			for(int rowLeft = rl, offOut = 0; rowLeft < ru; rowLeft++, offOut += numVals) {
-				final int offLeft = rowLeft * _numRows;
-				it = itStart.clone();
-				while(it.value() < blockEnd && it.hasNext()) {
-					final int i = it.value();
-					preAV[offOut + getIndex(it.getDataIndexAndIncrement())] += mV[offLeft + i];
-				}
+		final AIterator itStart = _indexes.getIterator(cl);
+		AIterator it = null;
+		for(int rowLeft = rl, offOut = 0; rowLeft < ru; rowLeft++, offOut += numVals) {
+			final int offLeft = rowLeft * _numRows;
+			it = itStart.clone();
+			while(it.value() < cu && it.hasNext()) {
+				final int i = it.value();
+				preAV[offOut + getIndex(it.getDataIndexAndIncrement())] += mV[offLeft + i];
 			}
 		}
+		if(it != null && cu + 1 < m.getNumColumns())
+			_indexes.cacheIterator(it, cu+1);
 	}
 
-	private void preAggregateDense(MatrixBlock m, MatrixBlock preAgg, int rl, int ru) {
+	private void preAggregateDenseOld(MatrixBlock m, MatrixBlock preAgg, int rl, int ru) {
 		final double[] preAV = preAgg.getDenseBlockValues();
 		final double[] mV = m.getDenseBlockValues();
 		final int numVals = getNumValues();

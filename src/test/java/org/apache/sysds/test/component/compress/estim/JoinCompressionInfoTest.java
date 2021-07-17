@@ -99,7 +99,7 @@ public class JoinCompressionInfoTest {
 
 			cs_estimate.transposed = true;
 
-			final CompressedSizeEstimator es = CompressedSizeEstimatorFactory.getSizeEstimator(mbt, cs_estimate);
+			final CompressedSizeEstimator es = CompressedSizeEstimatorFactory.getSizeEstimator(mbt, cs_estimate, 1);
 			CompressedSizeInfoColGroup g1 = es.estimateCompressedColGroupSize(new int[] {0});
 			CompressedSizeInfoColGroup g2 = es.estimateCompressedColGroupSize(new int[] {1});
 			g1 = es.estimateJoinCompressedSize(g1, g2);

@@ -20,18 +20,19 @@
 package org.apache.sysds.runtime.compress.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 
 /**
  * This class provides a memory-efficient replacement for {@code HashMap<Double,IntArrayList>} for restricted use cases.
  * 
- * TODO: Fix allocation of size such that it contains some amount of overhead from the start, to enable hashmap
- * performance.
  */
-public class DoubleIntListHashMap extends CustomHashMap {
-
+public class DoubleIntListHashMap {
+	protected static final int INIT_CAPACITY = 8;
+	protected static final int RESIZE_FACTOR = 2;
+	protected static final float LOAD_FACTOR = 0.50f;
+	protected int _size = -1;
 	private DIListEntry[] _data = null;
+	public static int hashMissCount = 0;
 
 	public DoubleIntListHashMap() {
 		_data = new DIListEntry[INIT_CAPACITY];
@@ -41,6 +42,10 @@ public class DoubleIntListHashMap extends CustomHashMap {
 	public DoubleIntListHashMap(int init_capacity) {
 		_data = new DIListEntry[init_capacity];
 		_size = 0;
+	}
+
+	public int size() {
+		return _size;
 	}
 
 	public IntArrayList get(double key) {
@@ -114,7 +119,6 @@ public class DoubleIntListHashMap extends CustomHashMap {
 					_size++;
 					break;
 				}
-				DblArrayIntListHashMap.hashMissCount++;
 			}
 		}
 		lstPtr.appendValue(value);
@@ -213,7 +217,9 @@ public class DoubleIntListHashMap extends CustomHashMap {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getClass().getSimpleName() + this.hashCode());
-		sb.append("\n" + Arrays.toString(_data));
+		for(int i = 0; i < _data.length; i++)
+			if(_data[i] != null)
+				sb.append(", " + _data[i]);
 		return sb.toString();
 	}
 }

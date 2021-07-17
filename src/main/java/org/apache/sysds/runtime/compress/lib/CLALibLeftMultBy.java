@@ -88,11 +88,12 @@ public class CLALibLeftMultBy {
 		return ret;
 	}
 
-	public static void leftMultByTransposeSelf(List<AColGroup> groups, MatrixBlock result, int k, int numColumns,
-		Pair<Integer, int[]> v, boolean overlapping) {
-
+	public static void leftMultByTransposeSelf(CompressedMatrixBlock cmb, MatrixBlock result, int k) {
+		final int numColumns = cmb.getNumColumns();
+		final boolean overlapping = cmb.isOverlapping();
 		result.allocateDenseBlock();
-
+		List<AColGroup> groups = new ArrayList<>(cmb.getColGroups().size());
+		
 		if(overlapping) {
 			LOG.warn("Inefficient TSMM with overlapping matrix could be implemented multi-threaded but is not yet.");
 			leftMultByCompressedTransposedMatrix(groups, groups, result);
@@ -105,10 +106,12 @@ public class CLALibLeftMultBy {
 			try {
 				ExecutorService pool = CommonThreadPool.get(k);
 				ArrayList<Callable<Object>> tasks = new ArrayList<>();
+
 				for(int i = 0; i < groups.size(); i++) {
 					final AColGroup g = groups.get(i);
 					tasks.add(new LeftMultByCompressedTransposedMatrixTask(groups, g, result, i, groups.size()));
 				}
+				
 				for(Future<Object> tret : pool.invokeAll(tasks))
 					tret.get();
 				pool.shutdown();
@@ -117,6 +120,7 @@ public class CLALibLeftMultBy {
 				throw new DMLRuntimeException(e);
 			}
 		}
+
 		// Move values in the lower part of the matrix to the upper part
 		copyToUpperTriangle(result.getDenseBlockValues(), numColumns);
 		// calculate the number of non zeros, and allocate all value locations by copying upper triangle back to bottom.
@@ -269,7 +273,7 @@ public class CLALibLeftMultBy {
 					}
 					else {
 
-						List<List<AColGroup>> split = split(colGroups, Math.max(k / 2 / that.getNumRows(), 1));
+						List<List<AColGroup>> split = split(colGroups, Math.max(k / that.getNumRows(), 1));
 						for(int blo = 0; blo < that.getNumRows(); blo += rowBlockSize) {
 							for(List<AColGroup> gr : split)
 								tasks.add(new LeftMatrixColGroupMultTaskNew(gr, that, ret, numColumns, blo,
@@ -383,18 +387,16 @@ public class CLALibLeftMultBy {
 			}
 		}
 		else {
-
 			List<ColGroupValue> v = new ArrayList<>();
 			int rowBlockSize = 1;
-			int colBlockSize = 4000;
-			int colGroupBlocking = 4;
 			List<MatrixBlock> preAgg = new ArrayList<>();
+			int colGroupBlocking = 16;
 			for(int j = 0; j < colGroupBlocking; j++) {
 				MatrixBlock m = new MatrixBlock(1, 1, false);
 				m.allocateDenseBlock();
 				preAgg.add(m);
-
 			}
+
 			MatrixBlock tmpRes = new MatrixBlock(rowBlockSize, numColumns, false);
 
 			for(int j = 0; j < colGroups.size(); j++) {
@@ -411,8 +413,11 @@ public class CLALibLeftMultBy {
 			for(int g = 0; g < v.size(); g += colGroupBlocking) {
 				final int gEnd = Math.min(g + colGroupBlocking, colGroups.size());
 				for(int j = g; j < gEnd && j < v.size(); j++) {
-					preAgg.get(j % colGroupBlocking).reset(rowBlockSize, v.get(j).getNumValues(), false);
+					ColGroupValue cg = v.get(j);
+					preAgg.get(j % colGroupBlocking).reset(rowBlockSize, cg.getNumValues(), false);
 				}
+				// int colBlockSize = 16000;
+				int colBlockSize = 64000;
 
 				for(int h = rl; h < ru; h += rowBlockSize) {
 					for(int i = 0; i < that.getNumColumns(); i += colBlockSize) {

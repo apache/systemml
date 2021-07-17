@@ -217,7 +217,7 @@ public class ColGroupSDCSingle extends ColGroupValue {
 	}
 
 	@Override
-	public void preAggregateDense(MatrixBlock m, MatrixBlock preAgg, int rl, int ru, int cl, int cu){
+	public void preAggregateDense(MatrixBlock m, MatrixBlock preAgg, int rl, int ru, int cl, int cu) {
 		final double[] mV = m.getDenseBlockValues();
 		final double[] preAV = preAgg.getDenseBlockValues();
 		final int numVals = getNumValues();
@@ -371,9 +371,9 @@ public class ColGroupSDCSingle extends ColGroupValue {
 			while(itThat.hasNext()) {
 				final int thatV = itThat.value();
 				final int fr = that.getIndex(itThat.getDataIndexAndIncrement());
-				if(thatV == itThis.skipTo(thatV)) 
+				if(thatV == itThis.skipTo(thatV))
 					that._dict.addToEntry(ret, fr, 0, nCol);
-				else 
+				else
 					that._dict.addToEntry(ret, fr, 1, nCol);
 			}
 			return ret;
@@ -463,6 +463,16 @@ public class ColGroupSDCSingle extends ColGroupValue {
 			return ret;
 		}
 
+	}
+
+	public ColGroupSDCSingleZeros extractCommon(double[] constV) {
+		double[] commonV = _dict.getTuple(getNumValues() - 1, _colIndexes.length);
+
+		for(int i = 0; i < _colIndexes.length; i++)
+			constV[_colIndexes[i]] += commonV[i];
+
+		ADictionary subtractedDict = _dict.subtractTuple(commonV);
+		return new ColGroupSDCSingleZeros(_colIndexes, _numRows, subtractedDict, _indexes, getCounts());
 	}
 
 }

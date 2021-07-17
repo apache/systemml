@@ -50,6 +50,17 @@ public class OffsetFactory {
 			return new OffsetChar(indexes);
 	}
 
+
+	public static AOffset create(int[] indexes, int nRows, int apos, int alen){
+		final int endLength = alen - apos;
+		final float avgDist = (float) nRows / endLength;
+
+		if(avgDist < 256)
+			return new OffsetByte(indexes, apos, alen);
+		else 
+			return new OffsetChar(indexes, apos, alen);
+	}
+
 	/**
 	 * Read in AOffset from the DataInput.
 	 * 

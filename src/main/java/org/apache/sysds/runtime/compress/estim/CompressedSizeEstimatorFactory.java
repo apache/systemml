@@ -27,7 +27,7 @@ import org.apache.sysds.runtime.matrix.data.MatrixBlock;
 public class CompressedSizeEstimatorFactory {
 	protected static final Log LOG = LogFactory.getLog(CompressedSizeEstimatorFactory.class.getName());
 
-	public static CompressedSizeEstimator getSizeEstimator(MatrixBlock data, CompressionSettings cs) {
+	public static CompressedSizeEstimator getSizeEstimator(MatrixBlock data, CompressionSettings cs, int k) {
 
 		final int nRows = cs.transposed ? data.getNumColumns() : data.getNumRows();
 		final int nCols = cs.transposed ? data.getNumRows() : data.getNumColumns();
@@ -38,15 +38,15 @@ public class CompressedSizeEstimatorFactory {
 
 		final CompressedSizeEstimator est = (shouldUseExactEstimator(cs, nRows, sampleSize,
 			nnzRows)) ? new CompressedSizeEstimatorExact(data,
-				cs) : tryToMakeSampleEstimator(data, cs, sampleRatio, sampleSize, nRows, nnzRows);
+				cs) : tryToMakeSampleEstimator(data, cs, sampleRatio, sampleSize, nRows, nnzRows, k);
 
 		LOG.debug("Estimating using: " + est);
 		return est;
 	}
 
 	private static CompressedSizeEstimator tryToMakeSampleEstimator(MatrixBlock data, CompressionSettings cs,
-		double sampleRatio, int sampleSize, int nRows, int nnzRows) {
-		CompressedSizeEstimatorSample estS = new CompressedSizeEstimatorSample(data, cs, sampleSize);
+		double sampleRatio, int sampleSize, int nRows, int nnzRows, int k) {
+		CompressedSizeEstimatorSample estS = new CompressedSizeEstimatorSample(data, cs, sampleSize, k);
 		while(estS.getSample() == null) {
 			LOG.warn("Doubling sample size");
 			sampleSize = sampleSize * 2;

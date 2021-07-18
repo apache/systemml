@@ -513,7 +513,12 @@ public class Types
 			}
 		}
 	}
-	
+
+	public enum ReplicationType {
+		FULL, // full replication to all workers, broadcast
+		NONE,      // one slice per worker, broadcast sliced
+		PARTIAL        // one or more slices per worker, one or more copy of each slice
+	}
 
 	public enum FileFormat {
 		TEXT,   // text cell IJV representation (mm w/o header)

@@ -260,7 +260,7 @@ public final class IndexingFEDInstruction extends UnaryFEDInstruction {
 
 		sliceIxs = Arrays.stream(sliceIxs).filter(Objects::nonNull).toArray(int[][] :: new);
 
-		FederatedRequest[] fr1 = fedMap.broadcastSliced(in2, input2.isFrame(), sliceIxs);
+		FederatedRequest[] fr1 = fedMap.broadcastSliced(in2, input2.isFrame(), sliceIxs, in1.getUniqueID());
 		FederatedRequest[] fr2 = FederationUtils.callInstruction(instStrings, output, new CPOperand[]{input1, input2},
 			new long[]{fedMap.getID(), fr1[0].getID()});
 		FederatedRequest fr3 = fedMap.cleanup(getTID(), fr1[0].getID());

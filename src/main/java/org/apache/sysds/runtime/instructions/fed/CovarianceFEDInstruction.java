@@ -136,7 +136,7 @@ public class CovarianceFEDInstruction extends BinaryFEDInstruction {
 
 	private void processFedCovWeights(ExecutionContext ec, MatrixObject mo1, MatrixObject mo2, MatrixObject mo3) {
 
-		FederatedRequest[] fr2 = mo1.getFedMapping().broadcastSliced(mo3, false);
+		FederatedRequest[] fr2 = mo1.getFedMapping().broadcastSliced(mo3, false, mo1.getUniqueID());
 		FederatedRequest fr1 = FederationUtils.callInstruction(instString, output,
 			new CPOperand[]{input1, input2}, new long[]{mo1.getFedMapping().getID(), mo2.getFedMapping().getID()});
 		FederatedRequest fr3 = new FederatedRequest(FederatedRequest.RequestType.GET_VAR, fr1.getID());

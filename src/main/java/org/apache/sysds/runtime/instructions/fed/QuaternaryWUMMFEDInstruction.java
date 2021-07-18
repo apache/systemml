@@ -73,21 +73,21 @@ public class QuaternaryWUMMFEDInstruction extends QuaternaryFEDInstruction {
 					varNewIn[1] = U.getFedMapping().getID();
 				}
 				else {
-					frSliced = fedMap.broadcastSliced(U, false);
+					frSliced = fedMap.broadcastSliced(U, false, X.getUniqueID());
 					varNewIn[1] = frSliced[0].getID();
 				}
-				frB = fedMap.broadcast(V);
+				frB = fedMap.broadcast(V, X.getUniqueID());
 				varNewIn[2] = frB.getID();
 			}
 			else if(X.isFederated(FType.COL)) { // col partitioned X
-				frB = fedMap.broadcast(U);
+				frB = fedMap.broadcast(U, X.getUniqueID());
 				varNewIn[1] = frB.getID();
 				if(V.isFederated() && fedMap.isAligned(V.getFedMapping(), AlignType.COL, AlignType.COL_T)) {
 					// V federated and aligned
 					varNewIn[2] = V.getFedMapping().getID();
 				}
 				else {
-					frSliced = fedMap.broadcastSliced(V, true);
+					frSliced = fedMap.broadcastSliced(V, true, X.getUniqueID());
 					varNewIn[2] = frSliced[0].getID();
 				}
 			}

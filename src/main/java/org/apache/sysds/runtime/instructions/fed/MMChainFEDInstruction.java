@@ -82,7 +82,7 @@ public class MMChainFEDInstruction extends UnaryFEDInstruction {
 				+ "but invoked w/ "+mo1.isFederated()+" "+mo2.isFederated());
 
 		// broadcast vector mo2
-		FederatedRequest fr1 = mo1.getFedMapping().broadcast(mo2);
+		FederatedRequest fr1 = mo1.getFedMapping().broadcast(mo2, mo1.getUniqueID());
 
 		if(_type.isWeighted() && mo3.isFederated()
 			&& mo1.getFedMapping().isAligned(mo3.getFedMapping(), AlignType.ROW)) {
@@ -114,7 +114,7 @@ public class MMChainFEDInstruction extends UnaryFEDInstruction {
 		}
 		else { //XtwXv | XtXvy
 			//construct commands: broadcast vector mo3, execute, get and aggregate, cleanup
-			FederatedRequest[] fr0 = mo1.getFedMapping().broadcastSliced(mo3, false);
+			FederatedRequest[] fr0 = mo1.getFedMapping().broadcastSliced(mo3, false, mo1.getUniqueID());
 			FederatedRequest fr2 = FederationUtils.callInstruction(instString, output,
 				new CPOperand[]{input1, input2, input3},
 				new long[]{mo1.getFedMapping().getID(), fr1.getID(), fr0[0].getID()});

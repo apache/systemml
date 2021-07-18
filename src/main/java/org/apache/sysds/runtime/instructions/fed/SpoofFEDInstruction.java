@@ -98,10 +98,12 @@ public class SpoofFEDInstruction extends FEDInstruction
 
 
 		FederationMap fedMap = null;
+		long id = 0;
 		for(CPOperand cpo : _inputs) { // searching for the first federated matrix to obtain the federation map
 			Data tmpData = ec.getVariable(cpo);
 			if(tmpData instanceof MatrixObject && ((MatrixObject)tmpData).isFederated()) {
 				fedMap = ((MatrixObject)tmpData).getFedMapping();
+				id = ((MatrixObject)tmpData).getUniqueID();
 				break;
 			}
 		}
@@ -119,12 +121,12 @@ public class SpoofFEDInstruction extends FEDInstruction
 					frIds[index++] = mo.getFedMapping().getID();
 				}
 				else if(spoofType.needsBroadcastSliced(fedMap, mo.getNumRows(), mo.getNumColumns(), index)) {
-					FederatedRequest[] tmpFr = spoofType.broadcastSliced(mo, fedMap);
+					FederatedRequest[] tmpFr = spoofType.broadcastSliced(mo, fedMap, id);
 					frIds[index++] = tmpFr[0].getID();
 					frBroadcastSliced.add(tmpFr);
 				}
 				else {
-					FederatedRequest tmpFr = fedMap.broadcast(mo);
+					FederatedRequest tmpFr = fedMap.broadcast(mo, id);
 					frIds[index++] = tmpFr.getID();
 					frBroadcast.add(tmpFr);
 				}
@@ -171,8 +173,8 @@ public class SpoofFEDInstruction extends FEDInstruction
 			_output = out;
 		}
 		
-		protected FederatedRequest[] broadcastSliced(MatrixObject mo, FederationMap fedMap) {
-			return fedMap.broadcastSliced(mo, false);
+		protected FederatedRequest[] broadcastSliced(MatrixObject mo, FederationMap fedMap, long id) {
+			return fedMap.broadcastSliced(mo, false, id);
 		}
 
 		protected boolean needsBroadcastSliced(FederationMap fedMap, long rowNum, long colNum, int inputIndex) {
@@ -351,8 +353,8 @@ public class SpoofFEDInstruction extends FEDInstruction
 			_op = (SpoofOuterProduct)op;
 		}
 
-		protected FederatedRequest[] broadcastSliced(MatrixObject mo, FederationMap fedMap) {
-			return fedMap.broadcastSliced(mo, (fedMap.getType() == FType.COL));
+		protected FederatedRequest[] broadcastSliced(MatrixObject mo, FederationMap fedMap, long id) {
+			return fedMap.broadcastSliced(mo, (fedMap.getType() == FType.COL), id);
 		}
 
 		protected boolean needsBroadcastSliced(FederationMap fedMap, long rowNum, long colNum, int inputIndex) {

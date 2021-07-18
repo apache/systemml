@@ -20,12 +20,10 @@
 package org.apache.sysds.runtime.controlprogram.federated;
 
 import java.security.cert.CertificateException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.net.ssl.SSLException;
-
-import org.apache.log4j.Logger;
-import org.apache.sysds.conf.ConfigurationManager;
-import org.apache.sysds.conf.DMLConfig;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -42,12 +40,17 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import org.apache.commons.lang3.tuple.Triple;
+import org.apache.log4j.Logger;
+import org.apache.sysds.conf.ConfigurationManager;
+import org.apache.sysds.conf.DMLConfig;
 
 public class FederatedWorker {
 	protected static Logger log = Logger.getLogger(FederatedWorker.class);
 
 	private int _port;
 	private final ExecutionContextMap _ecm;
+	protected Set<Triple<Long, FederationMap.FType, Long>> _broadcastSet = new HashSet<>();
 
 	public FederatedWorker(int port) {
 		_ecm = new ExecutionContextMap();
@@ -62,6 +65,8 @@ public class FederatedWorker {
 		// TODO add ability to use real ssl files, not self signed certificates.
 		SelfSignedCertificate cert = new SelfSignedCertificate();
 		final SslContext cont2 = SslContextBuilder.forServer(cert.certificate(), cert.privateKey()).build();
+
+		FederatedWorker federatedWorker = this;
 
 		try {
 			b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
@@ -78,7 +83,7 @@ public class FederatedWorker {
 							new ObjectDecoder(Integer.MAX_VALUE,
 								ClassResolvers.weakCachingResolver(ClassLoader.getSystemClassLoader())));
 						cp.addLast("ObjectEncoder", new ObjectEncoder());
-						cp.addLast("FederatedWorkerHandler", new FederatedWorkerHandler(_ecm));
+						cp.addLast("FederatedWorkerHandler", new FederatedWorkerHandler(_ecm, federatedWorker));
 					}
 				}).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 			log.info("Starting Federated Worker server at port: " + _port);

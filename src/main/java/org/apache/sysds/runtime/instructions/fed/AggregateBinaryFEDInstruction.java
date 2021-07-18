@@ -94,7 +94,7 @@ public class AggregateBinaryFEDInstruction extends BinaryFEDInstruction {
 		}
 		else if(mo1.isFederated(FType.ROW) || mo1.isFederated(FType.PART)) { // MV + MM
 			//construct commands: broadcast rhs, fed mv, retrieve results
-			FederatedRequest fr1 = mo1.getFedMapping().broadcast(mo2);
+			FederatedRequest fr1 = mo1.getFedMapping().broadcast(mo2, mo1.getUniqueID());
 			FederatedRequest fr2 = FederationUtils.callInstruction(instString, output,
 				new CPOperand[]{input1, input2},
 				new long[]{mo1.getFedMapping().getID(), fr1.getID()}, true);
@@ -165,7 +165,7 @@ public class AggregateBinaryFEDInstruction extends BinaryFEDInstruction {
 			}
 			else {
 				//construct commands: broadcast rhs, fed mv, retrieve results
-				FederatedRequest[] fr1 = mo2.getFedMapping().broadcastSliced(mo1, true);
+				FederatedRequest[] fr1 = mo2.getFedMapping().broadcastSliced(mo1, true, mo1.getUniqueID());
 				FederatedRequest fr2 = FederationUtils.callInstruction(instString, output,
 					new CPOperand[]{input1, input2},
 					new long[]{fr1[0].getID(), mo2.getFedMapping().getID()}, true);
@@ -188,7 +188,7 @@ public class AggregateBinaryFEDInstruction extends BinaryFEDInstruction {
 		//#3 col-federated matrix vector multiplication
 		else if (mo1.isFederated(FType.COL)) {// VM + MM
 			//construct commands: broadcast rhs, fed mv, retrieve results
-			FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo2, true);
+			FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo2, true, mo1.getUniqueID());
 			FederatedRequest fr2 = FederationUtils.callInstruction(instString, output,
 				new CPOperand[]{input1, input2},
 				new long[]{mo1.getFedMapping().getID(), fr1[0].getID()}, true);

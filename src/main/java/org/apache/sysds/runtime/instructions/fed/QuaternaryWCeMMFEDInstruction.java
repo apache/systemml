@@ -82,22 +82,22 @@ public class QuaternaryWCeMMFEDInstruction extends QuaternaryFEDInstruction
 					varNewIn[1] = U.getFedMapping().getID();
 				}
 				else {
-					frSliced = fedMap.broadcastSliced(U, false);
+					frSliced = fedMap.broadcastSliced(U, false, X.getUniqueID());
 					varNewIn[1] = frSliced[0].getID();
 				}
-				FederatedRequest tmpFr = fedMap.broadcast(V);
+				FederatedRequest tmpFr = fedMap.broadcast(V, X.getUniqueID());
 				varNewIn[2] = tmpFr.getID();
 				frB.add(tmpFr);
 			}
 			else if(X.isFederated(FType.COL)) { // col paritioned X
-				FederatedRequest tmpFr = fedMap.broadcast(U);
+				FederatedRequest tmpFr = fedMap.broadcast(U, X.getUniqueID());
 				varNewIn[1] = tmpFr.getID();
 				frB.add(tmpFr);
 				if(V.isFederated() && fedMap.isAligned(V.getFedMapping(), AlignType.COL, AlignType.COL_T)) {
 					varNewIn[2] = V.getFedMapping().getID();
 				}
 				else {
-					frSliced = fedMap.broadcastSliced(V, true);
+					frSliced = fedMap.broadcastSliced(V, true, X.getUniqueID());
 					varNewIn[2] = frSliced[0].getID();
 				}
 			}

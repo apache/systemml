@@ -27,6 +27,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
@@ -47,6 +48,7 @@ import org.apache.sysds.runtime.controlprogram.federated.FederatedRequest.Reques
 import org.apache.sysds.runtime.controlprogram.federated.FederatedResponse.ResponseType;
 import org.apache.sysds.runtime.instructions.Instruction;
 import org.apache.sysds.runtime.instructions.InstructionParser;
+import org.apache.sysds.runtime.instructions.InstructionUtils;
 import org.apache.sysds.runtime.instructions.cp.Data;
 import org.apache.sysds.runtime.instructions.cp.ListObject;
 import org.apache.sysds.runtime.instructions.cp.ScalarObject;
@@ -68,12 +70,18 @@ public class FederatedWorkerHandler extends ChannelInboundHandlerAdapter {
 	protected static Logger log = Logger.getLogger(FederatedWorkerHandler.class);
 
 	private final ExecutionContextMap _ecm;
+	private final FederatedWorker _federatedWorker;
 
 	public FederatedWorkerHandler(ExecutionContextMap ecm) {
+		this(ecm, null);
+	}
+
+	public FederatedWorkerHandler(ExecutionContextMap ecm, FederatedWorker federatedWorker) {
 		// Note: federated worker handler created for every command;
 		// and concurrent parfor threads at coordinator need separate
 		// execution contexts at the federated sites too
 		_ecm = ecm;
+		_federatedWorker = federatedWorker;
 	}
 
 	@Override
@@ -248,9 +256,33 @@ public class FederatedWorkerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	private FederatedResponse putVariable(FederatedRequest request) {
-		checkNumParams(request.getNumParams(), 1);
+		checkNumParams(request.getNumParams(), 1, 2, 3, 5);
 		String varname = String.valueOf(request.getID());
 		ExecutionContext ec = _ecm.get(request.getTID());
+
+		// check if broadcast already exists, otherwise put
+		FederationMap.FType type;
+		long dataID;
+		if (request.getNumParams() == 2) {
+			dataID = (long) request.getParam(0);
+			type = (FederationMap.FType) request.getParam(1);
+			if(_federatedWorker._broadcastSet.contains(Triple.of(Long.valueOf(varname), type, dataID))) {
+				return new FederatedResponse(ResponseType.SUCCESS_EMPTY);
+			}
+		} else if (request.getNumParams() >= 3) {
+			dataID = (long) request.getParam(1);
+			type = (FederationMap.FType) request.getParam(2);
+			if(_federatedWorker._broadcastSet.contains(Triple.of(Long.valueOf(varname), type, dataID))) {
+				return new FederatedResponse(ResponseType.SUCCESS_EMPTY);
+			}
+			_federatedWorker._broadcastSet.add(Triple.of(Long.valueOf(varname), type, dataID));
+			if(request.getNumParams() == 5) {
+				long dataID2 = (long) request.getParam(3);
+				long dataID3 = (long) request.getParam(4);
+				_federatedWorker._broadcastSet.add(Triple.of(dataID2, type, dataID3));
+			}
+		}
+
 		if(ec.containsVariable(varname)) {
 			return new FederatedResponse(ResponseType.ERROR, "Variable " + request.getID() + " already existing.");
 		}
@@ -307,6 +339,15 @@ public class FederatedWorkerHandler extends ChannelInboundHandlerAdapter {
 		pb.getInstructions().clear();
 		Instruction receivedInstruction = InstructionParser.parseSingleInstruction((String) request.getParam(0));
 		pb.getInstructions().add(receivedInstruction);
+
+
+		if(receivedInstruction.getOpcode().equals("rmvar")) {
+			long id = Long.parseLong(InstructionUtils.getInstructionParts(receivedInstruction.getInstructionString())[1]);
+			if( _federatedWorker == null || (_federatedWorker._broadcastSet
+				.stream().anyMatch(e -> e.getLeft() == id)))
+				return new FederatedResponse(ResponseType.SUCCESS_EMPTY);
+		}
+
 
 		if (DMLScript.LINEAGE)
 			// Compiler assisted optimizations are not applicable for Fed workers.

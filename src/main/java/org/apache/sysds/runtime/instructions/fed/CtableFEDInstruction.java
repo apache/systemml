@@ -126,7 +126,7 @@ public class CtableFEDInstruction extends ComputationFEDInstruction {
 		boolean reversed, boolean reversedWeights, boolean fedOutput, Long[] dims1, Long[] dims2) {
 		Future<FederatedResponse>[] ffr;
 
-		FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo2, false);
+		FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo2, false, mo1.getUniqueID());
 		FederatedRequest fr2, fr3;
 		if(mo3 != null && mo1.isFederated() && mo3.isFederated()
 		&& mo1.getFedMapping().isAligned(mo3.getFedMapping(), AlignType.FULL)) { // mo1 and mo3 federated and aligned
@@ -154,7 +154,7 @@ public class CtableFEDInstruction extends ComputationFEDInstruction {
 			ffr = mo1.getFedMapping().execute(getTID(), true, fr1, fr2, fr3, fr4);
 
 		} else {
-			FederatedRequest[] fr4 = mo1.getFedMapping().broadcastSliced(mo3, false);
+			FederatedRequest[] fr4 = mo1.getFedMapping().broadcastSliced(mo3, false, mo1.getUniqueID());
 			if(!reversed && !reversedWeights)
 				fr2 = FederationUtils.callInstruction(instString, output, new CPOperand[] {input1, input2, input3},
 					new long[] {mo1.getFedMapping().getID(), fr1[0].getID(), fr4[0].getID()});

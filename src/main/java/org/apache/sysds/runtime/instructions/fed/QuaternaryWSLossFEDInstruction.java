@@ -86,22 +86,22 @@ public class QuaternaryWSLossFEDInstruction extends QuaternaryFEDInstruction {
 					varNewIn[1] = U.getFedMapping().getID();
 				}
 				else {
-					FederatedRequest[] tmpFrS = fedMap.broadcastSliced(U, false);
+					FederatedRequest[] tmpFrS = fedMap.broadcastSliced(U, false, X.getUniqueID());
 					varNewIn[1] = tmpFrS[0].getID();
 					frSliced.add(tmpFrS);
 				}
-				frB = fedMap.broadcast(V);
+				frB = fedMap.broadcast(V, X.getUniqueID());
 				varNewIn[2] = frB.getID();
 			}
 			else if(X.isFederated(FType.COL)) { // col partitioned X
-				frB = fedMap.broadcast(U);
+				frB = fedMap.broadcast(U, X.getUniqueID());
 				varNewIn[1] = frB.getID();
 				if(V.isFederated() && fedMap.isAligned(V.getFedMapping(), AlignType.COL, AlignType.COL_T)) {
 					// V federated and aligned
 					varNewIn[2] = V.getFedMapping().getID();
 				}
 				else {
-					FederatedRequest[] tmpFrS = fedMap.broadcastSliced(V, true);
+					FederatedRequest[] tmpFrS = fedMap.broadcastSliced(V, true, X.getUniqueID());
 					varNewIn[2] = tmpFrS[0].getID();
 					frSliced.add(tmpFrS);
 				}
@@ -118,7 +118,7 @@ public class QuaternaryWSLossFEDInstruction extends QuaternaryFEDInstruction {
 					varNewIn[3] = W.getFedMapping().getID();
 				}
 				else {
-					FederatedRequest[] tmpFrS = fedMap.broadcastSliced(W, false);
+					FederatedRequest[] tmpFrS = fedMap.broadcastSliced(W, false, X.getUniqueID());
 					varNewIn[3] = tmpFrS[0].getID();
 					frSliced.add(tmpFrS);
 				}

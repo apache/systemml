@@ -103,7 +103,7 @@ public class AppendFEDInstruction extends BinaryFEDInstruction {
 			MatrixObject moLoc = mo1.isFederated(FType.ROW) ? mo2 : mo1;
 			
 			//construct commands: broadcast lhs, fed append, clean broadcast
-			FederatedRequest[] fr1 = moFed.getFedMapping().broadcastSliced(moLoc, false);
+			FederatedRequest[] fr1 = moFed.getFedMapping().broadcastSliced(moLoc, false, moFed.getUniqueID());
 			FederatedRequest fr2 = FederationUtils.callInstruction(instString, output,
 				new CPOperand[]{input1, input2}, mo1.isFederated(FType.ROW) ?
 				new long[]{ moFed.getFedMapping().getID(), fr1[0].getID()} :

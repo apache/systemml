@@ -231,8 +231,8 @@ public class UnaryMatrixFEDInstruction extends UnaryFEDInstruction {
 
 		String ternaryInstString = InstructionUtils.constructTernaryString(instString, opCond, input1, op2, output);
 
-		FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(cond, false);
-		FederatedRequest[] fr2 = mo1.getFedMapping().broadcastSliced(mo2, false);
+		FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(cond, false, mo1.getUniqueID());
+		FederatedRequest[] fr2 = mo1.getFedMapping().broadcastSliced(mo2, false, mo1.getUniqueID());
 		FederatedRequest fr3 = FederationUtils.callInstruction(ternaryInstString, output,
 			new CPOperand[] {input1, opCond, op2}, new long[] {mo1.getFedMapping().getID(), fr1[0].getID(), fr2[0].getID()});
 		//TODO perf no need to execute here, we can piggyback the requests onto the final cumagg
@@ -262,7 +262,7 @@ public class UnaryMatrixFEDInstruction extends UnaryFEDInstruction {
 
 		String modifiedInstString = InstructionUtils.constructBinaryInstString(instString, opcode, input1, op2, output);
 
-		FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo2, false);
+		FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo2, false, mo1.getUniqueID());
 		FederatedRequest fr2 = FederationUtils.callInstruction(modifiedInstString, output,
 			new CPOperand[] {input1, op2}, new long[] {mo1.getFedMapping().getID(), fr1[0].getID()});
 		mo1.getFedMapping().execute(getTID(), true, fr1, fr2);

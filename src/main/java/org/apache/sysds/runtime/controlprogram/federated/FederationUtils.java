@@ -19,13 +19,17 @@
 
 package org.apache.sysds.runtime.controlprogram.federated;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.log4j.Logger;
 import org.apache.sysds.common.Types.ExecType;
 import org.apache.sysds.lops.Lop;
@@ -56,6 +60,7 @@ import org.apache.sysds.runtime.matrix.operators.SimpleOperator;
 public class FederationUtils {
 	protected static Logger log = Logger.getLogger(FederationUtils.class);
 	private static final IDSequence _idSeq = new IDSequence();
+	public static Map<Triple<Long, FederationMap.FType, InetSocketAddress>, Pair<Long, Boolean>> _broadcastMap = new HashMap<>();
 
 	public static void resetFedDataID() {
 		_idSeq.reset();
@@ -467,7 +472,7 @@ public class FederationUtils {
 			federatedLocalData));
 		return new FederationMap(id, fedMap);
 	}
-	
+
 	/**
 	 * Bind data from federated workers based on non-overlapping federated ranges.
 	 * @param readResponses responses from federated workers containing the federated ranges and data

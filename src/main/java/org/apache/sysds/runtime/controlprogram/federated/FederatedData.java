@@ -53,6 +53,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.concurrent.Promise;
+import org.apache.sysds.runtime.meta.MetaData;
+import org.apache.sysds.runtime.meta.MetaDataAll;
 
 public class FederatedData {
 	private static final Log LOG = LogFactory.getLog(FederatedData.class.getName());
@@ -64,6 +66,7 @@ public class FederatedData {
 	private final Types.DataType _dataType;
 	private final InetSocketAddress _address;
 	private final String _filepath;
+	private Types.ReplicationType _replicationType; // replica after broadcast
 
 	/**
 	 * The ID of default matrix/tensor on which operations get executed if no other ID is given.
@@ -76,6 +79,7 @@ public class FederatedData {
 		_filepath = filepath;
 		if(_address != null)
 			_allFedSites.add(_address);
+		_replicationType = null;
 	}
 
 	public FederatedData(Types.DataType dataType, InetSocketAddress address, String filepath, long varID) {
@@ -83,6 +87,17 @@ public class FederatedData {
 		_address = address;
 		_filepath = filepath;
 		_varID = varID;
+		_replicationType = null;
+	}
+
+	public FederatedData(Types.DataType dataType, InetSocketAddress address, String filepath, Types.ReplicationType replicationType) {
+		this(dataType, address, filepath);
+		_replicationType = replicationType;
+	}
+
+	public FederatedData(Types.DataType dataType, InetSocketAddress address, String filepath, long varID, Types.ReplicationType replicationType) {
+		this(dataType, address, filepath, varID);
+		_replicationType = replicationType;
 	}
 
 	public InetSocketAddress getAddress() {
@@ -104,6 +119,8 @@ public class FederatedData {
 	public Types.DataType getDataType() {
 		return _dataType;
 	}
+
+	public Types.ReplicationType getReplicationType() { return _replicationType; }
 
 	public boolean isInitialized() {
 		return _varID != -1;
@@ -132,6 +149,18 @@ public class FederatedData {
 			throw new DMLRuntimeException("Federated datatype \"" + _dataType.toString() + "\" is not supported.");
 		_varID = id;
 		FederatedRequest request = new FederatedRequest(RequestType.READ_VAR, id);
+		request.appendParam(_filepath);
+		request.appendParam(_dataType.name());
+		return executeFederatedOperation(request);
+	}
+
+	public synchronized Future<FederatedResponse> initFederatedData(long id, MetaData mtd) {
+		if(isInitialized())
+			throw new DMLRuntimeException("Tried to init already initialized data");
+		if(!_dataType.isMatrix() && !_dataType.isFrame())
+			throw new DMLRuntimeException("Federated datatype \"" + _dataType.toString() + "\" is not supported.");
+		_varID = id;
+		FederatedRequest request = new FederatedRequest(RequestType.READ_VAR, id, mtd);
 		request.appendParam(_filepath);
 		request.appendParam(_dataType.name());
 		return executeFederatedOperation(request);

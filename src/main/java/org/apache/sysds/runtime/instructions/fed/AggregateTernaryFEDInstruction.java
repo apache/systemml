@@ -102,8 +102,8 @@ public class AggregateTernaryFEDInstruction extends FEDInstruction {
 				throw new DMLRuntimeException("Not Implemented Federated Ternary Variation");
 			}
 		} else if(mo1.isFederated() && _ins.input3.isMatrix() && mo3 != null) {
-			FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo3, false);
-			FederatedRequest[] fr2 = mo1.getFedMapping().broadcastSliced(mo2, false);
+			FederatedRequest[] fr1 = mo1.getFedMapping().broadcastSliced(mo3, false, mo1.getUniqueID());
+			FederatedRequest[] fr2 = mo1.getFedMapping().broadcastSliced(mo2, false, mo1.getUniqueID());
 			FederatedRequest fr3 = FederationUtils.callInstruction(_ins.getInstructionString(),
 				_ins.getOutput(),
 				new CPOperand[] {_ins.input1, _ins.input2, _ins.input3},

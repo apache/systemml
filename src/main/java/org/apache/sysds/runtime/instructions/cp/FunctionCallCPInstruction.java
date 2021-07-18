@@ -118,20 +118,22 @@ public class FunctionCallCPInstruction extends CPInstruction {
 	}
 
 	@Override
-	public void processInstruction(ExecutionContext ec) {
+	public void
+
+	processInstruction(ExecutionContext ec) {
 		if( LOG.isTraceEnabled() ){
 			LOG.trace("Executing instruction : " + toString());
 		}
 		// get the function program block (stored in the Program object)
 		FunctionProgramBlock fpb = ec.getProgram().getFunctionProgramBlock(_namespace, _functionName, _opt);
-		
 		// sanity check number of function parameters
 		if( _boundInputs.length < fpb.getInputParams().size() ) {
+
 			throw new DMLRuntimeException("fcall "+_functionName+": "
 				+ "Number of bound input parameters does not match the function signature "
 				+ "("+_boundInputs.length+", but "+fpb.getInputParams().size()+" expected)");
 		}
-		
+
 		// check if function outputs can be reused from cache
 		LineageItem[] liInputs = _lineageInputs;
 		if (_lineageInputs == null)
@@ -139,7 +141,8 @@ public class FunctionCallCPInstruction extends CPInstruction {
 				? LineageItemUtils.getLineage(ec, _boundInputs) : null;
 		if (!fpb.isNondeterministic() && reuseFunctionOutputs(liInputs, fpb, ec))
 			return; //only if all the outputs are found in cache
-		
+
+
 		// create bindings to formal parameters for given function call
 		// These are the bindings passed to the FunctionProgramBlock for function execution 
 		LocalVariableMap functionVariables = new LocalVariableMap();
@@ -171,7 +174,7 @@ public class FunctionCallCPInstruction extends CPInstruction {
 			
 			//set input parameter
 			functionVariables.put(currFormalParam.getName(), value);
-			
+
 			//map lineage to function arguments
 			if( lineage != null ) {
 				LineageItem litem = _lineageInputs == null ? ec.getLineageItem(input) : _lineageInputs[i];
@@ -183,7 +186,6 @@ public class FunctionCallCPInstruction extends CPInstruction {
 		// Pin the input variables so that they do not get deleted 
 		// from pb's symbol table at the end of execution of function
 		boolean[] pinStatus = ec.pinVariables(_boundInputNames);
-		
 		// Create a symbol table under a new execution context for the function invocation,
 		// and copy the function arguments into the created table. 
 		ExecutionContext fn_ec = ExecutionContextFactory.createContext(false, false, ec.getProgram());
@@ -191,6 +193,7 @@ public class FunctionCallCPInstruction extends CPInstruction {
 			fn_ec.setGPUContexts(ec.getGPUContexts());
 			fn_ec.getGPUContext(0).initializeThread();
 		}
+
 		fn_ec.setVariables(functionVariables);
 		fn_ec.setLineage(lineage);
 		// execute the function block
@@ -243,7 +246,7 @@ public class FunctionCallCPInstruction extends CPInstruction {
 			
 			//add/replace data in symbol table
 			ec.setVariable(boundVarName, boundValue);
-			
+
 			//map lineage of function returns back to calling site
 			if( lineage != null ) //unchanged ref
 				ec.getLineage().set(boundVarName, lineage.get(retVarName));

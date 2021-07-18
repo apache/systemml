@@ -67,7 +67,7 @@ source("scripts/nn/optim/sgd_nesterov.dml") as sgd_nesterov
  */
 train = function(matrix[double] X, matrix[double] y, matrix[double] X_val,
   matrix[double] y_val, int epochs, int batch_size, double eta, int C, int Hin,
-	int Win, int seed = -1) return (list[unknown] model)
+	int Win, int seed = -1,boolean modelAvg) return (list[unknown] model)
 {
   N = nrow(X)
   K = ncol(y)
@@ -161,9 +161,11 @@ train = function(matrix[double] X, matrix[double] y, matrix[double] X_val,
 train_paramserv = function(matrix[double] X, matrix[double] y,
   matrix[double] X_val, matrix[double] y_val, int num_workers, int epochs,
   string utype, string freq, int batch_size, string scheme, string runtime_balancing,
-  string weighting, double eta, int C, int Hin, int Win, int seed = -1)
+  string weighting, double eta, int C, int Hin, int Win, int seed = -1,boolean modelAvg)
   return (list[unknown] model)
 {
+
+
   N = nrow(X)
   K = ncol(y)
 
@@ -208,7 +210,7 @@ train_paramserv = function(matrix[double] X, matrix[double] y,
     agg="./src/test/scripts/functions/federated/paramserv/CNN.dml::aggregation",
     val="./src/test/scripts/functions/federated/paramserv/CNN.dml::validate",
     k=num_workers, utype=utype, freq=freq, epochs=epochs, batchsize=batch_size,
-    scheme=scheme, runtime_balancing=runtime_balancing, weighting=weighting, hyperparams=hyperparams, seed=seed)
+    scheme=scheme, runtime_balancing=runtime_balancing, weighting=weighting, hyperparams=hyperparams, seed=seed,modelAvg= modelAvg)
 }
 
 /*

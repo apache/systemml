@@ -58,7 +58,7 @@ source("nn/optim/sgd.dml") as sgd
 train = function(matrix[double] X, matrix[double] y,
                  matrix[double] X_val, matrix[double] y_val,
                  int epochs, int batch_size, double eta,
-                 int seed = -1)
+                 int seed = -1 , boolean modelAvg )
     return (list[unknown] model) {
 
   N = nrow(X)  # num examples
@@ -126,7 +126,7 @@ train = function(matrix[double] X, matrix[double] y,
 train_paramserv = function(matrix[double] X, matrix[double] y,
                  matrix[double] X_val, matrix[double] y_val,
                  int num_workers, int epochs, string utype, string freq, int batch_size, string scheme, string runtime_balancing, string weighting,
-                 double eta, int seed = -1)
+                 double eta, int seed = -1,boolean modelAvg)
     return (list[unknown] model) {
 
   N = nrow(X)  # num examples
@@ -150,13 +150,15 @@ train_paramserv = function(matrix[double] X, matrix[double] y,
   model = list(W1, W2, W3, b1, b2, b3)
   # Create the hyper parameter list
   hyperparams = list(learning_rate=eta)
+
+while (FALSE) {}
   # Use paramserv function
   model = paramserv(model=model, features=X, labels=y, val_features=X_val, val_labels=y_val,
     upd="./src/test/scripts/functions/federated/paramserv/TwoNN.dml::gradients",
     agg="./src/test/scripts/functions/federated/paramserv/TwoNN.dml::aggregation",
     val="./src/test/scripts/functions/federated/paramserv/TwoNN.dml::validate",
     k=num_workers, utype=utype, freq=freq, epochs=epochs, batchsize=batch_size,
-    scheme=scheme, runtime_balancing=runtime_balancing, weighting=weighting, hyperparams=hyperparams, seed=seed)
+    scheme=scheme, runtime_balancing=runtime_balancing, weighting=weighting, hyperparams=hyperparams, seed=seed,modelAvg=modelAvg)
 }
 
 /*

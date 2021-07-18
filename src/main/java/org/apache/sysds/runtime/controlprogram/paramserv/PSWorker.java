@@ -57,10 +57,11 @@ public abstract class PSWorker implements Serializable
 	protected MatrixObject _labels;
 	protected String _updFunc;
 	protected Statement.PSFrequency _freq;
+	protected boolean _modelAvg;
 
 	protected PSWorker() {}
 
-	protected PSWorker(int workerID, String updFunc, Statement.PSFrequency freq, int epochs, long batchSize, ExecutionContext ec, ParamServer ps) {
+	protected PSWorker(int workerID, String updFunc, Statement.PSFrequency freq, int epochs, long batchSize, ExecutionContext ec, ParamServer ps,boolean modelAvg) {
 		_workerID = workerID;
 		_updFunc = updFunc;
 		_freq = freq;
@@ -68,6 +69,7 @@ public abstract class PSWorker implements Serializable
 		_batchSize = batchSize;
 		_ec = ec;
 		_ps = ps;
+		_modelAvg = modelAvg;
 		setupUpdateFunction(updFunc, ec);
 	}
 

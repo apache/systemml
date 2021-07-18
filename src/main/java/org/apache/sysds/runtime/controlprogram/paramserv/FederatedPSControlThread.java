@@ -64,6 +64,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.parseBoolean;
 import static org.apache.sysds.runtime.util.ProgramConverter.*;
 
 public class FederatedPSControlThread extends PSWorker implements Callable<Void> {
@@ -86,7 +87,7 @@ public class FederatedPSControlThread extends PSWorker implements Callable<Void>
 		PSRuntimeBalancing runtimeBalancing, boolean weighting, int epochs, long batchSize,
 		int numBatchesPerGlobalEpoch, ExecutionContext ec, ParamServer ps)
 	{
-		super(workerID, updFunc, freq, epochs, batchSize, ec, ps);
+		super(workerID, updFunc, freq, epochs, batchSize, ec, ps,false);
 
 		_numBatchesPerEpoch = numBatchesPerGlobalEpoch;
 		_runtimeBalancing = runtimeBalancing;
@@ -337,6 +338,7 @@ public class FederatedPSControlThread extends PSWorker implements Callable<Void>
 
 		// Push the gradients to ps
 		_ps.push(_workerID, gradients);
+		//_ps.push(_workerID, modell)
 	}
 
 	protected static int getNextLocalBatchNum(int currentLocalBatchNumber, int possibleBatchesPerLocalEpoch) {
@@ -360,7 +362,26 @@ public class FederatedPSControlThread extends PSWorker implements Callable<Void>
 			}
 		}
 	}
+	//****************************************  ATEFEH *********************************************************************
+	protected void weighAndPushModels(ListObject models) {
+		// scale gradients - must only include MatrixObjects
+		if(_weighting && _weightingFactor != 1) {
+			Timing tWeighting = DMLScript.STATISTICS ? new Timing(true) : null;
+			models.getData().parallelStream().forEach((matrix) -> {
+				MatrixObject matrixObject = (MatrixObject) matrix;
+				MatrixBlock input = matrixObject.acquireReadAndRelease().scalarOperations(
+						new RightScalarOperator(Multiply.getMultiplyFnObject(), _weightingFactor), new MatrixBlock());
+				matrixObject.acquireModify(input);
+				matrixObject.release();
+			});
+			accFedPSGradientWeightingTime(tWeighting);
+		}
 
+		// Push the gradients to ps
+		_ps.push(_workerID, models);
+		//_ps.push(_workerID, modell)
+	}
+//****************************************  ATEFEH *********************************************************************
 	/**
 	 * Computes all epochs and updates after N batches
 	 */

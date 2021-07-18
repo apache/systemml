@@ -26,14 +26,15 @@ source("src/test/scripts/functions/federated/paramserv/CNN.dml") as CNN
 features = read($features)
 labels = read($labels)
 
-if($network_type == "TwoNN") {
-  model = TwoNN::train_paramserv(features, labels, matrix(0, rows=100, cols=784), matrix(0, rows=100, cols=10), 0, $epochs, $utype, $freq, $batch_size, $scheme, $runtime_balancing, $weighting, $eta, $seed)
+ if($network_type == "TwoNN") {
+
+  model = TwoNN::train_paramserv(features, labels, matrix(0, rows=100, cols=784), matrix(0, rows=100, cols=10), 0, $epochs, $utype, $freq, $batch_size, $scheme, $runtime_balancing, $weighting, $eta, $seed, $modelAvg)
   print("Test results:")
   [loss_test, accuracy_test] = TwoNN::validate(matrix(0, rows=100, cols=784), matrix(0, rows=100, cols=10), model, list())
   print("[+] test loss: " + loss_test + ", test accuracy: " + accuracy_test + "\n")
 }
 else {
-  model = CNN::train_paramserv(features, labels, matrix(0, rows=100, cols=784), matrix(0, rows=100, cols=10), 0, $epochs, $utype, $freq, $batch_size, $scheme, $runtime_balancing, $weighting, $eta, $channels, $hin, $win, $seed)
+  model = CNN::train_paramserv(features, labels, matrix(0, rows=100, cols=784), matrix(0, rows=100, cols=10), 0, $epochs, $utype, $freq, $batch_size, $scheme, $runtime_balancing, $weighting, $eta, $channels, $hin, $win, $seed, $modelAvg)
   print("Test results:")
   hyperparams = list(learning_rate=$eta, C=$channels, Hin=$hin, Win=$win)
   [loss_test, accuracy_test] = CNN::validate(matrix(0, rows=100, cols=784), matrix(0, rows=100, cols=10), model, hyperparams)

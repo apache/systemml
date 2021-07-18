@@ -479,4 +479,51 @@ public class ParamservUtils {
 			ParamservUtils.cleanupListObject(gradients);
 		return accGradients;
 	}
+
+
+	/**
+		 * Accumulate the given models into the accrued accrueModels
+	 *
+	 * @param accModels accrued models list object
+	 * @param models given models list object
+	 * @param cleanup clean up the given models list object
+	 * @return new accrued models list object
+	 */
+	public static ListObject accrueModels(ListObject accModels, ListObject models, boolean cleanup) {
+		return accrueModels(accModels, models, false, cleanup);
+	}
+
+	/**
+	 * Accumulate the given models into the accrued models
+	 *
+	 * @param accModels accrued models list object
+	 * @param models given models list object
+	 * @param par parallel execution
+	 * @param cleanup clean up the given models list object
+	 * @return new accrued models list object
+	 */
+	public static ListObject accrueModels(ListObject accModels, ListObject models, boolean par, boolean cleanup) {
+		if (accModels == null)
+			return ParamservUtils.copyList(models, cleanup);
+		IntStream range = IntStream.range(0, accModels.getLength());
+		(par ? range.parallel() : range).forEach(i -> {
+			MatrixBlock mb1 = ((MatrixObject) accModels.getData().get(i)).acquireReadAndRelease();
+			MatrixBlock mb2 = ((MatrixObject) models.getData().get(i)).acquireReadAndRelease();
+			mb1.binaryOperationsInPlace(new BinaryOperator(Plus.getPlusFnObject()), mb2);
+		});
+		if (cleanup)
+			ParamservUtils.cleanupListObject(models);
+		return accModels;
+	}
+
+
+	//*******************************************   ATEFEH ********************************************************
+
+
+
+
+
+
+
+
 }
